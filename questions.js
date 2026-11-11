@@ -367,6 +367,153 @@ const QUESTIONS = [
       5: ["Torkoal", "Glalie", "Corphish", "Gligar", "Unfezant", "Leavanny", "Pignite", "Meltan", "Melmetal", "Sirfetch'd", "Dracovish"],
       6: ["Palpitoad", "Boldore"]
     }
+  },
+
+  // ================= HARD PROMPTS =================
+  // Marked hard: true. The Daily Charge ends with two of these.
+  {
+    hard: true,
+    prompt: "Name a One Piece Devil Fruit",
+    answers: {
+      1: ["Gomu Gomu no Mi|Gum-Gum Fruit|Gomu Gomu", "Mera Mera no Mi|Flame-Flame Fruit|Mera Mera", "Ope Ope no Mi|Op-Op Fruit|Ope Ope"],
+      2: ["Hito Hito no Mi|Human-Human Fruit", "Hana Hana no Mi|Flower-Flower Fruit", "Yami Yami no Mi|Dark-Dark Fruit", "Gura Gura no Mi|Tremor-Tremor Fruit", "Bara Bara no Mi|Chop-Chop Fruit", "Suna Suna no Mi|Sand-Sand Fruit", "Goro Goro no Mi|Rumble-Rumble Fruit", "Ito Ito no Mi|String-String Fruit", "Hie Hie no Mi|Ice-Ice Fruit", "Magu Magu no Mi|Magma-Magma Fruit", "Pika Pika no Mi|Glint-Glint Fruit"],
+      3: ["Yomi Yomi no Mi|Revive-Revive Fruit", "Mero Mero no Mi|Love-Love Fruit", "Moku Moku no Mi|Smoke-Smoke Fruit", "Nikyu Nikyu no Mi|Paw-Paw Fruit", "Uo Uo no Mi|Fish-Fish Fruit", "Soru Soru no Mi|Soul-Soul Fruit", "Mochi Mochi no Mi|Mochi-Mochi Fruit", "Kage Kage no Mi|Shadow-Shadow Fruit", "Doku Doku no Mi|Venom-Venom Fruit", "Gasu Gasu no Mi|Gas-Gas Fruit", "Tori Tori no Mi Model: Phoenix|Phoenix Fruit"],
+      4: ["Hobi Hobi no Mi|Hobby-Hobby Fruit", "Bari Bari no Mi|Barrier-Barrier Fruit", "Horo Horo no Mi|Hollow-Hollow Fruit", "Mane Mane no Mi|Clone-Clone Fruit", "Sube Sube no Mi|Slip-Slip Fruit", "Supa Supa no Mi|Dice-Dice Fruit", "Bomu Bomu no Mi|Bomb-Bomb Fruit", "Mogu Mogu no Mi|Dig-Dig Fruit", "Kilo Kilo no Mi|Kilo-Kilo Fruit", "Doru Doru no Mi|Wax-Wax Fruit", "Awa Awa no Mi|Bubble-Bubble Fruit", "Bisu Bisu no Mi|Biscuit-Biscuit Fruit", "Noro Noro no Mi|Slow-Slow Fruit", "Ori Ori no Mi|Bind-Bind Fruit", "Zushi Zushi no Mi|Press-Press Fruit", "Toshi Toshi no Mi|Age-Age Fruit", "Neko Neko no Mi Model: Leopard"],
+      5: ["Choki Choki no Mi|Snip-Snip Fruit", "Nagi Nagi no Mi|Calm-Calm Fruit", "Pamu Pamu no Mi|Pop-Pop Fruit", "Jake Jake no Mi|Jacket-Jacket Fruit", "Kachi Kachi no Mi|Hot-Hot Fruit", "Fuku Fuku no Mi|Clothes-Clothes Fruit", "Buki Buki no Mi|Arms-Arms Fruit", "Netsu Netsu no Mi|Heat-Heat Fruit", "Nui Nui no Mi|Stitch-Stitch Fruit", "Shiro Shiro no Mi|Castle-Castle Fruit", "Woshu Woshu no Mi|Wash-Wash Fruit", "Beri Beri no Mi|Berry-Berry Fruit", "Sabi Sabi no Mi|Rust-Rust Fruit", "Kira Kira no Mi|Sparkle-Sparkle Fruit"],
+      6: ["Sui Sui no Mi|Swim-Swim Fruit", "Ami Ami no Mi|Net-Net Fruit", "Hira Hira no Mi|Ripple-Ripple Fruit", "Ishi Ishi no Mi|Stone-Stone Fruit", "Pero Pero no Mi|Lick-Lick Fruit", "Mato Mato no Mi|Target-Target Fruit"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a Stand from JoJo's Bizarre Adventure",
+    answers: {
+      1: ["Star Platinum", "The World|Za Warudo", "Killer Queen", "Gold Experience", "Crazy Diamond"],
+      2: ["King Crimson", "Hermit Purple", "Magician's Red", "Hierophant Green", "Silver Chariot", "Sticky Fingers", "Stone Free", "Heaven's Door", "The Hand", "Echoes", "Made in Heaven", "Gold Experience Requiem|GER"],
+      3: ["Sex Pistols", "Aerosmith", "Purple Haze", "Moody Blues", "Spice Girl", "Whitesnake", "C-Moon", "Tusk", "D4C|Dirty Deeds Done Dirt Cheap", "Highway Star", "Bad Company", "The Fool", "Hanged Man", "Emperor", "Cream", "Death Thirteen", "Wonder of U", "Soft & Wet|Soft and Wet", "Diver Down", "Harvest", "Sheer Heart Attack"],
+      4: ["Tower of Gray", "Dark Blue Moon", "Strength", "Yellow Temperance", "Ebony Devil", "Lovers", "Sun", "Judgement", "High Priestess", "Geb", "Khnum", "Tohth", "Anubis", "Bastet", "Osiris", "Horus", "Atum", "Red Hot Chili Pepper", "Pearl Jam", "Surface", "Love Deluxe", "The Lock", "Cinderella", "Enigma", "Achtung Baby", "Super Fly", "Stray Cat", "Black Sabbath", "Kraft Work", "Man in the Mirror", "Mr. President", "Beach Boy", "The Grateful Dead", "Baby Face", "White Album", "Talking Head", "Metallica", "Green Day", "Oasis", "Rolling Stones"],
+      5: ["Earth Wind and Fire", "Boy II Man", "Little Feet", "Soft Machine", "Clash", "Notorious B.I.G", "Planet Waves", "Goo Goo Dolls", "Marilyn Manson", "Jumpin' Jack Flash", "Limp Bizkit", "Survivor", "Kiss", "Burning Down the House", "Scary Monsters", "Catch the Rainbow", "Cream Starter", "Mandom", "Ball Breaker", "Civil War", "20th Century Boy", "Tattoo You!", "Oh! Lonesome Me", "Hey Ya!", "Born This Way", "Paisley Park", "Speed King"],
+      6: ["Nut King Call", "King Nothing", "Fun Fun Fun", "Wired", "Sethan"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name an anime director",
+    answers: {
+      1: ["Hayao Miyazaki|Miyazaki", "Makoto Shinkai|Shinkai", "Satoshi Kon"],
+      2: ["Mamoru Hosoda|Hosoda", "Hideaki Anno|Anno", "Katsuhiro Otomo|Otomo", "Mamoru Oshii|Oshii", "Shinichiro Watanabe", "Isao Takahata|Takahata"],
+      3: ["Masaaki Yuasa|Yuasa", "Naoko Yamada", "Goro Miyazaki", "Hiroyuki Imaishi|Imaishi", "Tetsuro Araki", "Kunihiko Ikuhara|Ikuhara", "Yoshiyuki Tomino|Tomino", "Rintaro", "Kenji Kamiyama|Kamiyama", "Sunghoo Park", "Shota Goshozono|Goshozono", "Akiyuki Shinbo|Shinbo", "Osamu Tezuka|Tezuka", "Keiichiro Saito"],
+      4: ["Mitsuo Iso", "Kazuya Tsurumaki|Tsurumaki", "Yoshiaki Kawajiri|Kawajiri", "Osamu Dezaki|Dezaki", "Ryutaro Nakamura", "Takeshi Koike", "Kenji Nakamura", "Hiroyasu Ishida", "Tatsuyuki Nagai", "Rie Matsumoto", "Shingo Natsume", "Ayumu Watanabe", "Mari Okada", "Hiromasa Yonebayashi|Yonebayashi", "Keiichi Hara", "Sayo Yamamoto", "Hiroyuki Okiura|Okiura", "Shoji Kawamori|Kawamori"],
+      5: ["Yasuomi Umetsu|Umetsu", "Gisaburo Sugii", "Eiichi Yamamoto", "Koji Morimoto", "Takashi Nakamura", "Ryosuke Takahashi", "Kazuki Akane", "Shinji Aramaki", "Mamoru Kanbe", "Hiroko Utsumi", "Fuga Yamashiro"],
+      6: ["Yasuhiro Takemoto", "Toshio Hirata", "Hiroyuki Kitakubo", "Kitaro Kosaka"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a Gundam series or film",
+    answers: {
+      1: ["Mobile Suit Gundam|Gundam 0079|First Gundam", "Gundam Wing", "Gundam SEED"],
+      2: ["Zeta Gundam", "Iron-Blooded Orphans|IBO", "The Witch from Mercury|Witch from Mercury", "Gundam 00", "Gundam Unicorn", "G Gundam", "Char's Counterattack"],
+      3: ["Gundam ZZ", "Gundam 0080|War in the Pocket", "Gundam 0083|Stardust Memory", "The 08th MS Team|08th MS Team", "Victory Gundam|V Gundam", "Turn A Gundam", "Gundam X", "Gundam AGE", "Gundam SEED Destiny", "Gundam Build Fighters", "Gundam Thunderbolt", "Hathaway's Flash|Hathaway", "GQuuuuuuX", "Gundam F91", "Endless Waltz|Gundam Wing Endless Waltz"],
+      4: ["The Origin|Gundam The Origin", "Reconguista in G|G-Reco", "Gundam Build Divers", "Gundam Narrative|Gundam NT", "Cucuruz Doan's Island", "Gundam SEED Freedom|SEED Freedom"],
+      5: ["MS IGLOO", "Gundam Evolve", "Requiem for Vengeance", "SD Gundam", "Gundam Build Metaverse", "Gundam Breaker Battlogue"],
+      6: ["G-Saviour", "Mobile Suit Gundam: Silver Phantom|Silver Phantom", "Gundam Sousei"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a Servant from the Fate series",
+    answers: {
+      1: ["Saber|Artoria|Artoria Pendragon|King Arthur", "Gilgamesh", "Archer|EMIYA"],
+      2: ["Medusa|Rider", "Cu Chulainn|Lancer", "Iskandar", "Heracles|Berserker", "Medea|Caster", "Sasaki Kojiro|Assassin", "Jeanne d'Arc|Jeanne", "Mash Kyrielight|Mash", "Astolfo", "Nero|Nero Claudius"],
+      3: ["Mordred", "Lancelot", "Diarmuid", "Gilles de Rais", "Enkidu", "Merlin", "Tamamo no Mae|Tamamo", "Ishtar", "Ereshkigal", "Scathach", "Karna", "Arjuna", "Achilles", "Atalanta", "Okita Souji|Okita", "Oda Nobunaga|Nobunaga", "Miyamoto Musashi|Musashi", "Jack the Ripper", "Nursery Rhyme", "Semiramis", "Siegfried", "Vlad III|Vlad"],
+      4: ["Hassan-i-Sabbah|Hassan", "Frankenstein", "Spartacus", "Shakespeare", "Chiron", "Avicebron", "Amakusa Shirou|Shirou Kotomine", "Gawain", "Bedivere", "Tristan", "Ozymandias", "Nitocris", "Quetzalcoatl", "Kiyohime", "Mata Hari", "Medb", "Fionn mac Cumhaill", "Edmond Dantes", "Jeanne Alter", "Moriarty|James Moriarty", "Abigail Williams", "Katsushika Hokusai|Hokusai", "Sakata Kintoki|Kintoki", "Minamoto no Raikou|Raikou"],
+      5: ["Paracelsus", "Charles-Henri Sanson|Sanson", "Chevalier d'Eon|d'Eon", "Mephistopheles", "Hans Christian Andersen|Andersen", "Elizabeth Bathory", "Fuuma Kotarou", "Leonidas", "Darius III", "Arash", "Romulus", "Boudica", "Asterios"],
+      6: ["Paul Bunyan", "Xu Fu", "Kingprotea", "Charlotte Corday", "Hessian Lobo", "Jaguar Warrior"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a Japanese anime voice actor (seiyuu)",
+    answers: {
+      1: ["Masako Nozawa", "Yuki Kaji", "Mamoru Miyano", "Kana Hanazawa", "Junko Takeuchi"],
+      2: ["Hiroshi Kamiya", "Daisuke Ono", "Jun Fukuyama", "Takahiro Sakurai", "Rie Kugimiya", "Mayumi Tanaka", "Natsuki Hanae", "Yuichi Nakamura", "Tomokazu Sugita", "Saori Hayami", "Kenjiro Tsuda", "Junichi Suwabe", "Megumi Ogata", "Aoi Yuki"],
+      3: ["Kappei Yamaguchi", "Megumi Hayashibara", "Akio Otsuka", "Koichi Yamadera", "Ryo Horikawa", "Toshio Furukawa", "Hiro Shimono", "Tomokazu Seki", "Showtaro Morikubo", "Kaito Ishikawa", "Nobuhiko Okamoto", "Yoshitsugu Matsuoka", "Ayane Sakura", "Inori Minase", "Sora Amamiya", "Miyuki Sawashiro", "Yui Horie", "Maaya Sakamoto", "Romi Park", "Akira Ishida", "Koki Uchiyama", "Yuko Miyamura", "Kotono Mitsuishi", "Kazuya Nakai", "Hikaru Midorikawa", "Toru Furuya"],
+      4: ["Rica Matsumoto", "Chikao Otsuka", "Norio Wakamoto", "Unsho Ishizuka", "Kenyu Horiuchi", "Takehito Koyasu", "Ryotaro Okiayu", "Soichiro Hoshi", "Ai Kayano", "Atsumi Tanezaki", "Lynn", "Tomoyo Kurosawa", "Rie Takahashi", "Yoko Hikasa", "Shinichiro Miki", "Kenichi Suzumura", "Mitsuo Iwata", "Akemi Okamura", "Kazue Ikura", "Mie Sonozaki", "Daisuke Namikawa", "Sumire Morohoshi", "Kenta Miyake", "Minami Takayama", "Wakana Yamazaki"],
+      5: ["Kei Tomiyama", "Hideyuki Tanaka", "Banjo Ginga", "Joji Yanami", "Ichiro Nagai", "Takeshi Aono"],
+      6: ["Kaneta Kimotsuki", "Shozo Iizuka", "Junpei Takiguchi"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name an anime composer",
+    answers: {
+      1: ["Joe Hisaishi|Hisaishi", "Yoko Kanno|Kanno", "Hiroyuki Sawano|Sawano"],
+      2: ["Kenji Kawai", "Yuki Kajiura|Kajiura", "Shiro Sagisu|Sagisu", "Go Shiina", "RADWIMPS"],
+      3: ["Yasuharu Takanashi|Takanashi", "Kevin Penkin", "Kensuke Ushio|Ushio", "Taku Iwasaki", "Susumu Hirasawa", "Yugo Kanno", "Evan Call", "Masaru Yokoyama", "Nujabes"],
+      4: ["Yoshihiro Ike", "Shunsuke Kikuchi", "Hajime Mizoguchi", "Kow Otani", "Akira Senju", "Yoshihisa Hirano", "Michiru Oshima", "Tatsuya Kato", "Kaoru Wada", "Shiro Hamaguchi", "Toshihiko Sahashi", "Kenji Yamamoto", "Kohei Tanaka"],
+      5: ["Seiji Yokoyama"],
+      6: ["Michiaki Watanabe"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a Bleach Zanpakuto",
+    answers: {
+      1: ["Zangetsu|Tensa Zangetsu", "Senbonzakura|Senbonzakura Kageyoshi", "Hyorinmaru|Daiguren Hyorinmaru"],
+      2: ["Sode no Shirayuki", "Zabimaru|Hihio Zabimaru", "Kyoka Suigetsu", "Benihime", "Ryujin Jakka", "Shinso", "Katen Kyokotsu", "Haineko"],
+      3: ["Ashisogi Jizo|Konjiki Ashisogi Jizo", "Suzumebachi", "Minazuki", "Hozukimaru", "Ruri'iro Kujaku|Fuji Kujaku", "Tobiume", "Wabisuke", "Kazeshini", "Tenken", "Sogyo no Kotowari", "Suzumushi", "Sakanade", "Nozarashi", "Muramasa"],
+      4: ["Tachikaze", "Gegetsuburi", "Kinshara", "Kubikiri Orochi", "Nejibana"],
+      5: ["Gonryomaru", "Itegumo", "Haguro Tonbo", "Tengumaru", "Shinken Hakkyoken"],
+      6: ["Hisagomaru", "Sanpo Kenju"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name an anime OVA released before 2000",
+    answers: {
+      1: ["Bubblegum Crisis", "Legend of the Galactic Heroes|LOGH"],
+      2: ["Gunbuster|Aim for the Top", "Patlabor", "Gundam 0080|War in the Pocket", "Gundam 0083|Stardust Memory", "Tenchi Muyo", "Golden Boy", "Ah! My Goddess|Oh My Goddess"],
+      3: ["Giant Robo", "Macross Plus", "Record of Lodoss War", "The 08th MS Team|08th MS Team", "Megazone 23", "Riding Bean", "Devilman", "Bastard!!|Bastard", "Black Jack"],
+      4: ["Dominion Tank Police", "Cyber City Oedo 808", "Gall Force", "Iczer-One", "Detonator Orgun", "Hades Project Zeorymer|Zeorymer", "Appleseed", "Ruin Explorers", "Dirty Pair Flash"],
+      5: ["Genocyber", "Mad Bull 34", "Baoh", "Battle Angel|Gunnm", "Moldiver", "Kishin Corps"],
+      6: ["Dream Hunter Rem", "Leda: The Fantastic Adventure of Yohko|Leda", "Bio-Booster Armor Guyver|Guyver", "Psychic Wars"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a manga or anime by Osamu Tezuka",
+    answers: {
+      1: ["Astro Boy|Tetsuwan Atom", "Black Jack"],
+      2: ["Kimba the White Lion|Jungle Emperor|Jungle Taitei", "Phoenix|Hi no Tori", "Dororo"],
+      3: ["Princess Knight|Ribbon no Kishi", "Buddha", "Metropolis"],
+      4: ["Unico", "Message to Adolf|Adolf", "MW", "The Three-Eyed One|Mitsume ga Tooru"],
+      5: ["Ode to Kirihito", "Apollo's Song", "Ayako", "Marvelous Melmo|Fushigi na Melmo"],
+      6: ["Big X", "Vampires", "A Tree in the Sun|Hidamari no Ki", "The Book of Human Insects", "Microid S"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a manga or anime by CLAMP",
+    answers: {
+      1: ["Cardcaptor Sakura"],
+      2: ["xxxHolic", "Tsubasa: Reservoir Chronicle|Tsubasa", "Magic Knight Rayearth|Rayearth", "Chobits"],
+      3: ["X|X/1999", "Tokyo Babylon"],
+      4: ["Kobato", "Angelic Layer", "Clover", "RG Veda", "Blood-C"],
+      5: ["Gate 7", "Legal Drug|Lawful Drug", "Wish", "Drug & Drop", "Miyuki-chan in Wonderland"],
+      6: ["Man of Many Faces", "Duklyon", "Shirahime-Syo", "Suki"]
+    }
+  },
+  {
+    hard: true,
+    prompt: "Name a manga or anime by Rumiko Takahashi",
+    answers: {
+      1: ["Inuyasha", "Ranma 1/2|Ranma"],
+      2: ["Urusei Yatsura", "Maison Ikkoku"],
+      3: ["Rin-ne|Kyokai no Rinne"],
+      4: ["Mermaid Saga|Mermaid Forest", "Mao"],
+      5: ["One-Pound Gospel"],
+      6: ["Rumic Theater", "Fire Tripper"]
+    }
   }
 ];
 

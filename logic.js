@@ -132,16 +132,42 @@ function seededRandom(seed) {
   };
 }
 
+const NORMAL_QUESTIONS = QUESTIONS.filter((q) => !q.hard);
+const HARD_QUESTIONS = QUESTIONS.filter((q) => q.hard);
+const HARD_PER_DAY = 2; // the daily's last two prompts are hard
+
+function shuffle(list, rand = Math.random) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Daily: 5 normal prompts, then 2 hard ones — same for everyone that day
 function questionsFor(dateKey) {
   const rand = seededRandom(Number(dateKey.replace(/-/g, "")));
-  const order = QUESTIONS.map((_, i) => i);
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  return order.slice(0, PER_DAY).map((i) => QUESTIONS[i]);
+  const normal = shuffle(NORMAL_QUESTIONS, rand).slice(0, PER_DAY - HARD_PER_DAY);
+  const hard = shuffle(HARD_QUESTIONS, rand).slice(0, HARD_PER_DAY);
+  return [...normal, ...hard];
+}
+
+// Infinite / Party: an endless random stream, roughly 1 in 4 hard,
+// without repeats until the bank runs out
+function promptStream(hardEvery = 4) {
+  let normal = [], hard = [], n = 0;
+  return function next() {
+    n++;
+    if (n % hardEvery === 0) {
+      if (!hard.length) hard = shuffle(HARD_QUESTIONS);
+      return hard.pop();
+    }
+    if (!normal.length) normal = shuffle(NORMAL_QUESTIONS);
+    return normal.pop();
+  };
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { normalize, checkAnswer, questionsFor, dayNumber, todayKey };
+  module.exports = { normalize, checkAnswer, questionsFor, promptStream, dayNumber, todayKey };
 }

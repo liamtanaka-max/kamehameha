@@ -38,25 +38,26 @@ const Scene = (() => {
     "...###..........###.",
     "..####..........####"
   ];
+  // Low firing stance so the beam travels at monster height
   const FIRE = [
+    "....................",
+    "....................",
     "........####........",
     ".......######.......",
     ".......######.......",
     "........#####.......",
     ".........###........",
-    ".......#######......",
-    "......##########HH..",
-    "......#########.HH..",
-    ".......#####........",
-    ".......#####........",
-    ".......#####........",
-    ".......#####........",
     ".......######.......",
-    "......###..###......",
-    ".....###....###.....",
-    "....###......###....",
-    "...###........###...",
-    "..###..........###..",
+    "......########......",
+    ".....##########.....",
+    ".....###########HH..",
+    ".....##########.HH..",
+    "......######........",
+    "......#######.......",
+    ".....###...###......",
+    "....###.....###.....",
+    "...###.......###....",
+    "..###.........####..",
     ".####..........####."
   ];
   const GAUGE_SEGMENTS = 14; // 700 power / 50 per segment
@@ -159,9 +160,9 @@ const Scene = (() => {
     try { draw(); }
     catch (e) { console.warn("scene frame error", e); ctx.restore(); }
     // A finished beam must always report back, even if drawing failed
-    if (firing && !firing.done && performance.now() - firing.start > 1700) {
+    if (firing && !firing.done && performance.now() - firing.start > DROP_MS + BEAM_MS + END_MS + 400) {
       firing.done = true;
-      firing.onDone && firing.onDone();
+      firing.onDone && firing.onDone(firing.kills);
     }
     requestAnimationFrame(frame);
   }
@@ -307,7 +308,8 @@ const Scene = (() => {
       ctx.shadowColor = r.color;
       ctx.shadowBlur = 12;
       ctx.beginPath();
-      ctx.arc(x, y, r.max * (1 - Math.pow(1 - p, 3)), 0, Math.PI * 2);
+      const c = r.at || { x, y };
+      ctx.arc(c.x, c.y, r.max * (1 - Math.pow(1 - p, 3)), 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
       return true;
@@ -368,12 +370,130 @@ const Scene = (() => {
     });
   }
 
+  // ---------- Mobs ----------
+  // Original pixel monsters, one per tier. "#" body, "o" glowing eyes.
+  // Every answer summons a wave: tier t brings mob types t, t-1, ... 1.
+  const MOB_SPRITES = {
+    1: ["..####..", ".######.", "##o##o##", "########", "########", ".######."], // slime
+    2: ["#.........#", "##.#####.##", "####o#o####", ".#########.", "..#.###.#..", ".....#....."], // bat
+    3: ["..####..", ".#o##o#.", ".######.", "..####..", ".######.", "#.####.#", "#.####.#", "..#..#..", "..#..#..", ".##..##."], // goblin
+    4: ["...###...", "..#####..", "..#o#o#..", "..#####..", "...###...", ".#######.", "#.#####.#", "#.#####.#", "#.#####.#", "..##.##..", "..##.##..", ".###.###."], // knight
+    5: ["....####....", "...######...", "..##o##o##..", "..########..", "...######...", ".##########.", "############", "##.######.##", "##.######.##", "#..######..#", "...######...", "...##..##...", "...##..##...", "..###..###.."], // ogre
+    6: ["............###.", "...........##o##", "..#.......######", ".###.....###....", "#####...####....", "##############..", ".##############.", "..############..", "...##########...", "....##....##....", "....##....##....", "...###...###...."] // dragon
+  };
+  const MOB_COLORS = { 1: "#9aa4c4", 2: "#48d6ff", 3: "#5dff9b", 4: "#b86bff", 5: "#ffd23f", 6: "#ff4f8b" };
+  const DROP_MS = 900, BEAM_MS = 2600, END_MS = 600;
+  const MAX_MOBS = 60;
+  let mobs = [], debris = [];
+
+  function spawnMobs(tiers, startX) {
+    let list = [];
+    tiers.forEach((t, wave) => {
+      for (let k = t; k >= 1; k--) list.push({ type: k, wave });
+    });
+    // Very long Infinite runs: keep the biggest monsters
+    if (list.length > MAX_MOBS) {
+      list = list.map((m, i) => ({ ...m, i })).sort((a, b) => b.type - a.type).slice(0, MAX_MOBS).sort((a, b) => a.i - b.i);
+    }
+    const right = W - 12;
+    const mp = small ? 2 : 4;
+    const gap = small ? 3 : 8;
+    const widths = list.map((m) => MOB_SPRITES[m.type][0].length * mp);
+    const natural = widths.reduce((s, w) => s + w + gap, 0);
+    const room = right - startX;
+    // Few mobs: spread them out. Many mobs: squeeze into an overlapping horde.
+    const scale = natural > room ? room / natural : 1;
+    const extra = natural < room ? (room - natural) / Math.max(1, list.length) : 0;
+    let x = startX;
+    mobs = list.map((m, i) => {
+      const g = MOB_SPRITES[m.type];
+      const w = widths[i], h = g.length * mp;
+      const mob = { ...m, x, w, h, mp, y: horizon - h + 1, delay: i * Math.min(40, 600 / list.length), dead: false, bob: Math.random() * 6 };
+      x += (w + gap) * scale + extra;
+      return mob;
+    });
+    // draw big ones behind small ones when they overlap
+    mobs.sort((a, b) => b.type - a.type);
+  }
+
+  function drawMobs(now, time) {
+    const t = now - firing.start;
+    for (const m of mobs) {
+      if (m.dead) continue;
+      const drop = Math.min(1, Math.max(0, (t - m.delay) / 350));
+      if (drop <= 0) continue;
+      const g = MOB_SPRITES[m.type];
+      const c = MOB_COLORS[m.type];
+      const oy = m.y - (1 - drop * drop) * 160 + Math.round(Math.sin(time * 6 + m.bob) * (m.type === 2 ? 3 : 1));
+      ctx.save();
+      ctx.shadowColor = c;
+      ctx.shadowBlur = 6 + m.type * 2;
+      for (let gy = 0; gy < g.length; gy++) {
+        const row = g[gy];
+        for (let gx = 0; gx < row.length; gx++) {
+          const ch = row[row.length - 1 - gx]; // mirrored: monsters face the fighter
+          if (ch === ".") continue;
+          ctx.fillStyle = ch === "o" ? c : "#0b1024";
+          ctx.fillRect(m.x + gx * m.mp, oy + gy * m.mp, m.mp, m.mp);
+        }
+      }
+      ctx.restore();
+      // thin outline in the tier color so silhouettes read on the dark ground
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = c;
+      ctx.fillRect(m.x, oy + m.h, m.w, 1);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function explode(m) {
+    m.dead = true;
+    const c = MOB_COLORS[m.type];
+    const n = 8 + m.type * 6;
+    for (let i = 0; i < n; i++) {
+      debris.push({
+        x: m.x + Math.random() * m.w, y: m.y + Math.random() * m.h,
+        vx: (Math.random() - 0.2) * (2 + m.type), vy: -Math.random() * (2 + m.type),
+        life: 1, c: Math.random() < 0.3 ? "#ffffff" : c, s: Math.random() < 0.3 ? 3 : 2
+      });
+    }
+    rings.push({ start: performance.now(), tier: Math.min(3, m.type), color: c, dur: 350, max: 10 + m.type * 6, at: { x: m.x + m.w / 2, y: m.y + m.h / 2 } });
+    shake = Math.max(shake, 1 + m.type * 0.8);
+    firing.kills++;
+    firing.onKill && firing.onKill(firing.kills, m.type);
+  }
+
+  function drawDebris() {
+    debris = debris.filter((d) => {
+      d.x += d.vx; d.y += d.vy; d.vy += 0.15; d.life -= 0.02;
+      ctx.globalAlpha = Math.max(0, d.life);
+      ctx.fillStyle = d.c;
+      ctx.fillRect(Math.round(d.x), Math.round(d.y), d.s, d.s);
+      return d.life > 0 && d.y < H;
+    });
+    ctx.globalAlpha = 1;
+  }
+
   function drawBeam(x, y, time) {
-    const p = Math.min(1, (performance.now() - firing.start) / 1600);
-    const ease = 1 - Math.pow(1 - p, 3);
-    const reach = 40 + firing.pct * (W - x + 60);
-    const len = reach * ease;
+    const now = performance.now();
+    const t = now - firing.start;
+    drawMobs(now, time);
+    drawDebris();
+
+    // Mobs drop in first, then the beam sweeps across the whole field
+    const p = Math.min(1, Math.max(0, (t - DROP_MS) / BEAM_MS));
     const thick = 6 + firing.pct * (small ? 34 : 56) + Math.sin(time * 30) * 2;
+    if (t < DROP_MS) {
+      // charging the final shot
+      const r = 4 + firing.pct * (small ? 26 : 44) * (0.6 + 0.4 * t / DROP_MS) + Math.sin(time * 25) * 3;
+      glowCircle(x, y, r * 2, hexA(color, 0.3), hexA(color, 0));
+      glowCircle(x, y, r, color, hexA(color, 0));
+      shake = Math.max(shake, 1 + firing.pct * 2);
+      return;
+    }
+    const ease = p < 1 ? 1 - Math.pow(1 - p, 2) : 1;
+    const len = (W - x + 80) * ease;
+    const head = x + len;
 
     ctx.save();
     ctx.shadowColor = color;
@@ -383,11 +503,16 @@ const Scene = (() => {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(x, y - thick / 5, len, thick / 2.5);
     ctx.restore();
-    glowCircle(x + len, y, thick * 0.9, color, hexA(color, 0));
+    glowCircle(head, y, thick * 0.9, color, hexA(color, 0));
     glowCircle(x, y, thick * 0.8, color, hexA(color, 0));
 
-    if (p < 1) shake = Math.max(shake, 2 + firing.pct * 8);
-    if (p >= 1 && !firing.done) { firing.done = true; firing.onDone && firing.onDone(); }
+    for (const m of mobs) if (!m.dead && head >= m.x + m.w * 0.3) explode(m);
+
+    if (p < 1) shake = Math.max(shake, 2 + firing.pct * 6);
+    if (p >= 1 && t > DROP_MS + BEAM_MS + END_MS && !firing.done) {
+      firing.done = true;
+      firing.onDone && firing.onDone(firing.kills);
+    }
   }
 
   // ---------- Public ----------
@@ -427,9 +552,22 @@ const Scene = (() => {
       for (let i = 0; i < 10; i++) sparks.push(spark(o, 0.4 + Math.random(), "#4a5578"));
     },
 
-    fire(pct, onDone, instant) {
-      bursts = []; floaters = []; rings = [];
-      firing = { start: instant ? performance.now() - 5000 : performance.now(), pct, onDone, done: !!instant };
+    // tiers: one entry per answer (0 = no answer). Each summons a wave of mobs.
+    fire(pct, tiers, onDone, onKill, instant) {
+      bursts = []; floaters = []; rings = []; debris = [];
+      firing = {
+        start: instant ? performance.now() - 60000 : performance.now(),
+        pct, onDone, onKill, kills: 0, done: !!instant
+      };
+      const o = fighterOrigin(FIRE);
+      if (instant) mobs = [];
+      else spawnMobs(tiers || [], o.x + o.w + (small ? 30 : 70));
+    },
+
+    // Clear the field for a new run
+    reset() {
+      firing = null; mobs = []; debris = []; bursts = []; floaters = []; rings = [];
+      charge = 0; shown = 0; gauge = 0;
     }
   };
 })();

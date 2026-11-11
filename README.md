@@ -2,6 +2,14 @@
 
 A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer 7 open-ended anime questions — obvious answers charge a little power, obscure ones charge a lot. After the last question you fire, and the more niche you went, the farther the blast flies.
 
+## Modes
+
+- **Daily Charge** (main) — 7 prompts, the same for everyone each day. The last 2 are **HARD**. Progress is saved; come back tomorrow for a new set.
+- **Infinite ∞** — endless random prompts (about 1 in 4 is hard). A skip or time-out costs one of 3 lives. Your best run is saved.
+- **Party** — 2–6 players pass one device. Everyone answers the same prompt in turn, and an answer someone already gave that round is *taken* — so later players have to dig deeper. Leaderboard after each round; the winner fires the final blast.
+
+When the fighter fires, every answer summons a wave of pixel monsters for the beam to vaporize — a Common answer brings one slime, a Deep Cut brings a wave led by a dragon.
+
 ## How it works
 
 | Tier | Power | Example ("Name a Studio Ghibli film") |
@@ -13,7 +21,7 @@ A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer 7 
 | 🟡 Legendary | 80 | Pom Poko |
 | 🌈 Deep Cut | 100 | Ocean Waves |
 
-- Same 7 questions for everyone each day, picked by date from a bank of 32 prompts and 2,200+ answers spanning the 1980s to now.
+- Same 7 questions for everyone each day, picked by date from a bank of 44 prompts (12 hard) and 2,700+ answers spanning the 1980s to now.
 - 25 seconds per prompt. Wrong guesses cost nothing; running out of time scores 0.
 - Close typos get **"Did you mean …?"** — press Enter again to accept (`spirted away` → Spirited Away, `kibagami` → Jubei Kibagami).
 - Every answer charges the fighter at the bottom: rarer answers trigger a bigger energy pillar, shockwave and power-gauge jump.

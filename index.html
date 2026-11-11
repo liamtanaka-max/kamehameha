@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kamehame-Ha! · the daily charge</title>
-  <meta name="description" content="A daily anime trivia game. 7 prompts — rarer answers charge a bigger blast.">
+  <meta name="description" content="A daily anime trivia game. 7 prompts — rarer answers charge a bigger blast. Plus Infinite and Party modes.">
   <meta name="theme-color" content="#050a14">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -14,26 +14,70 @@
 
   <main class="wrap">
     <header class="top">
-      <div class="logo glitch">KAMEHAME-HA!</div>
+      <button class="logo glitch" id="logo" aria-label="Back to menu">KAMEHAME-HA!</button>
       <div class="top-right">
         <span class="tag" id="day-label">CHARGE #1</span>
         <button class="icon-btn" id="help-btn" aria-label="How to play">?</button>
       </div>
     </header>
 
-    <!-- START -->
+    <!-- MENU -->
     <section id="start" class="screen">
-      <h1 class="title glitch" data-text="KAMEHAME-HA!">KAMEHAME-HA!</h1>
+      <h1 class="title glitch">KAMEHAME-HA!</h1>
       <p class="subtitle">THE DAILY CHARGE</p>
       <p class="rules">7 prompts · 25 seconds each · rarer answers charge harder</p>
-      <button class="btn pink big" id="start-btn">BEGIN CHARGE</button>
+
+      <button class="btn pink big daily-btn" id="daily-btn">
+        <span id="daily-btn-label">BEGIN CHARGE</span>
+        <small id="daily-btn-sub">today's 7 prompts · last 2 are HARD</small>
+      </button>
+
+      <div class="modes">
+        <button class="mode-card" id="infinite-btn">
+          <span class="mode-name">INFINITE ∞</span>
+          <span class="mode-desc">Endless prompts. 3 lives.</span>
+          <span class="mode-best" id="infinite-best"></span>
+        </button>
+        <button class="mode-card" id="party-btn">
+          <span class="mode-name">PARTY MODE</span>
+          <span class="mode-desc">2–6 players, one device. No repeats.</span>
+        </button>
+      </div>
       <button class="link" id="start-help">how to play_</button>
+    </section>
+
+    <!-- PARTY SETUP -->
+    <section id="party-setup" class="screen" hidden>
+      <h2 class="screen-title">PARTY MODE</h2>
+      <p class="muted">Pass one device around. Everyone answers the same prompt — but once an answer is taken, nobody else can use it. Dig deep.</p>
+      <h3 class="section-label">PLAYERS</h3>
+      <div id="players" class="players"></div>
+      <button class="link" id="add-player">+ add player_</button>
+      <h3 class="section-label">ROUNDS</h3>
+      <div class="chips-row" id="rounds">
+        <button class="pick" data-rounds="3">3</button>
+        <button class="pick active" data-rounds="5">5</button>
+        <button class="pick" data-rounds="7">7</button>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="party-back">‹ BACK</button>
+        <button class="btn pink" id="party-start">START PARTY</button>
+      </div>
+    </section>
+
+    <!-- PASS THE DEVICE -->
+    <section id="pass" class="screen" hidden>
+      <div class="pass-round" id="pass-round">ROUND 1 / 5</div>
+      <div class="pass-label">PASS TO</div>
+      <div class="pass-name glitch" id="pass-name">PLAYER</div>
+      <p class="muted" id="pass-taken"></p>
+      <button class="btn cyan big" id="pass-ready">I'M READY</button>
     </section>
 
     <!-- PLAY -->
     <section id="play" class="screen" hidden>
       <div class="hud">
-        <div class="power-readout"><span id="power">0</span><small>POWER</small></div>
+        <div class="power-readout"><span id="power">0</span><small id="power-label">POWER</small></div>
         <div class="pips" id="pips"></div>
       </div>
 
@@ -42,6 +86,7 @@
         <span class="timer-num" id="timer-num">25</span>
       </div>
       <div class="timer"><div class="timer-fill" id="timer-fill"></div></div>
+      <div class="hard-badge" id="hard-badge" hidden>HARD</div>
       <h2 class="prompt" id="prompt">…</h2>
 
       <form id="form" class="answer-row" autocomplete="off">
@@ -49,6 +94,7 @@
         <button class="btn pink" type="submit">CHARGE</button>
       </form>
 
+      <div class="taken" id="taken" hidden></div>
       <div class="result-flash" id="flash" aria-live="polite"></div>
       <div class="reveal" id="reveal" hidden></div>
 
@@ -59,13 +105,27 @@
 
       <!-- Shown while the beam fires -->
       <div class="fire-hud" id="fire-hud" hidden>
-        <div class="fire-label glitch">FIRE!</div>
+        <div class="fire-label glitch" id="fire-label">FIRE!</div>
         <div class="fire-km" id="fire-km">0 km</div>
         <div class="fire-power"><span id="fire-power">0</span> POWER</div>
+        <div class="fire-ko"><span id="fire-ko">0</span> MOBS DEFEATED</div>
       </div>
     </section>
 
-    <!-- RESULTS -->
+    <!-- PARTY ROUND SUMMARY -->
+    <section id="round" class="screen" hidden>
+      <div class="complete-label" id="round-label">ROUND 1 RESULTS</div>
+      <h2 class="prompt small" id="round-prompt"></h2>
+      <ol class="log" id="round-log"></ol>
+      <div class="reveal" id="round-reveal"></div>
+      <h3 class="section-label">STANDINGS</h3>
+      <ol class="board" id="round-board"></ol>
+      <div class="actions end">
+        <button class="btn cyan" id="round-next">NEXT ROUND ›</button>
+      </div>
+    </section>
+
+    <!-- RESULTS (Daily + Infinite) -->
     <section id="results" class="screen" hidden>
       <div class="complete-label" id="complete-label">CHARGE #1 COMPLETE</div>
       <div class="score-row">
@@ -73,32 +133,54 @@
         <div class="km" id="final-km">0 km</div>
       </div>
       <p class="landmark" id="landmark"></p>
+      <p class="mobs-line" id="mobs-line"></p>
 
       <h3 class="section-label">POWER LOG <span>taller = rarer</span></h3>
       <div class="chart" id="chart"></div>
 
       <ol class="log" id="log"></ol>
 
-      <h3 class="section-label">THE POWER SCALE</h3>
-      <ul class="scale" id="scale"></ul>
+      <div id="scale-block">
+        <h3 class="section-label">THE POWER SCALE</h3>
+        <ul class="scale" id="scale"></ul>
+      </div>
 
       <div class="share-row">
         <button class="btn pink big" id="copy">COPY RESULT</button>
         <button class="btn ghost" id="share">SHARE_</button>
       </div>
+      <div class="share-row" id="again-row" hidden>
+        <button class="btn cyan big" id="again">PLAY AGAIN ∞</button>
+        <button class="btn ghost" id="to-menu">MENU</button>
+      </div>
       <p class="toast" id="toast" aria-live="polite"></p>
-      <p class="next-charge">NEXT CHARGE IN <span id="countdown">--:--:--</span></p>
+      <p class="next-charge" id="next-charge">NEXT CHARGE IN <span id="countdown">--:--:--</span></p>
+      <button class="link center" id="results-menu">other modes_</button>
+    </section>
+
+    <!-- PARTY RESULTS -->
+    <section id="party-results" class="screen" hidden>
+      <div class="complete-label">PARTY OVER</div>
+      <div class="winner glitch" id="winner"></div>
+      <p class="landmark" id="winner-line"></p>
+      <h3 class="section-label">LEADERBOARD</h3>
+      <ol class="board" id="final-board"></ol>
+      <div class="share-row">
+        <button class="btn pink big" id="party-again">PLAY AGAIN</button>
+        <button class="btn ghost" id="party-menu">MENU</button>
+      </div>
     </section>
   </main>
 
   <!-- HOW TO PLAY -->
   <dialog id="help">
     <h2>HOW TO PLAY</h2>
-    <p>Each day you get <b>7 anime prompts</b>, <b>25 seconds</b> each. Every prompt has lots of right answers.</p>
-    <p>Obvious answers charge a little. Obscure ones charge a lot. Wrong guesses cost nothing — keep trying until time runs out. Close typos get a "Did you mean…?" — press Enter again to accept.</p>
-    <p>After prompt 7 your fighter <b>fires</b>. The more niche you went, the bigger and farther the blast.</p>
+    <p>Every prompt has lots of right answers. <b>Obvious answers charge a little, obscure ones charge a lot.</b> You get 25 seconds per prompt; wrong guesses cost nothing. Close typos get a "Did you mean…?" — press Enter again to accept.</p>
+    <p>When you're done your fighter <b>fires</b>. Each answer summons a wave of monsters for the beam to wipe out — the rarer the answer, the bigger the wave.</p>
     <table class="tier-table" id="tier-table"></table>
-    <p class="muted">Everyone gets the same 7 prompts each day. Small typos are forgiven.</p>
+    <p><b>Daily Charge</b> — 7 prompts, same for everyone, last 2 are HARD.<br>
+       <b>Infinite</b> — endless prompts. A skip or time-out costs one of 3 lives.<br>
+       <b>Party</b> — pass one device around. Everyone answers the same prompt, and answers already taken that round don't count.</p>
     <button class="btn cyan" id="help-close">GOT IT</button>
   </dialog>
 
