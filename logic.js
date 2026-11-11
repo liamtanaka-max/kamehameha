@@ -5,6 +5,7 @@
 // =========================================================
 
 const PER_DAY = 7;
+const TIME_LIMIT = 25; // seconds per prompt
 const MAX_POWER = PER_DAY * TIERS[6].points; // 700
 const KM_PER_POWER = 10;
 const LAUNCH_DATE = "2026-11-11"; // Charge #1
@@ -63,25 +64,55 @@ function editDistance(a, b) {
   return dp[a.length][b.length];
 }
 
-// Returns { name, tier } or null if the answer isn't on the list
+// Checks an answer against the list.
+//   { type: "exact",   name, tier }  typed it right (caps/spaces/punctuation ignored)
+//   { type: "suggest", name, tier }  close enough to ask "Did you mean ...?"
+//   null                             not on the list
 function checkAnswer(question, input) {
   const guess = normalize(input);
   if (!guess) return null;
-  let best = null;
-  for (const [tier, list] of Object.entries(question.answers)) {
+
+  let best = null;            // closest suggestion
+  const wordHits = new Map(); // entries where the guess equals one word (e.g. a last name)
+
+  for (const [tierKey, list] of Object.entries(question.answers)) {
+    const tier = Number(tierKey);
     for (const entry of list) {
       const names = entry.split("|");
+      const display = names[0];
       for (const name of names) {
         const target = normalize(name);
+        if (guess === target) return { type: "exact", name: display, tier };
+
+        // Typos: allow more mistakes for longer names
+        const allowed = target.length >= 10 ? 3 : target.length >= 6 ? 2 : target.length >= 4 ? 1 : 0;
         const dist = editDistance(guess, target);
-        const allowed = target.length >= 9 ? 2 : target.length >= 5 ? 1 : 0;
-        if (dist <= allowed && (!best || dist < best.dist)) {
-          best = { name: names[0], tier: Number(tier), dist };
+        let score = dist <= allowed ? dist : Infinity;
+
+        // Started typing the full name ("escaf" -> Escaflowne)
+        if (guess.length >= 4 && target.startsWith(guess) && guess.length >= target.length * 0.5) {
+          score = Math.min(score, 1);
         }
+
+        // Matches one word of a longer name ("kibagami" -> Jubei Kibagami)
+        for (const word of name.split(/[^A-Za-z0-9]+/).map(normalize)) {
+          if (word.length < 4 || word === target) continue;
+          if (word === guess || (word.length >= 6 && editDistance(guess, word) <= 1)) {
+            wordHits.set(display, { name: display, tier, score: word === guess ? 0.5 : 1.5 });
+          }
+        }
+
+        if (score < Infinity && (!best || score < best.score)) best = { name: display, tier, score };
       }
     }
   }
-  return best;
+
+  // A word that fits several answers ("Uchiha") is too vague to guess from
+  if (wordHits.size === 1) {
+    const hit = [...wordHits.values()][0];
+    if (!best || hit.score < best.score) best = hit;
+  }
+  return best ? { type: "suggest", name: best.name, tier: best.tier } : null;
 }
 
 function todayKey(d = new Date()) {

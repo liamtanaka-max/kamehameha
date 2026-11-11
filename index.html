@@ -25,7 +25,7 @@
     <section id="start" class="screen">
       <h1 class="title glitch" data-text="KAMEHAME-HA!">KAMEHAME-HA!</h1>
       <p class="subtitle">THE DAILY CHARGE</p>
-      <p class="rules">7 prompts · any right answer works · rarer answers charge harder</p>
+      <p class="rules">7 prompts · 25 seconds each · rarer answers charge harder</p>
       <button class="btn pink big" id="start-btn">BEGIN CHARGE</button>
       <button class="link" id="start-help">how to play_</button>
     </section>
@@ -37,7 +37,11 @@
         <div class="pips" id="pips"></div>
       </div>
 
-      <div class="prompt-label" id="prompt-label">PROMPT 1 / 7</div>
+      <div class="prompt-head">
+        <span class="prompt-label" id="prompt-label">PROMPT 1 / 7</span>
+        <span class="timer-num" id="timer-num">25</span>
+      </div>
+      <div class="timer"><div class="timer-fill" id="timer-fill"></div></div>
       <h2 class="prompt" id="prompt">…</h2>
 
       <form id="form" class="answer-row" autocomplete="off">
@@ -51,6 +55,13 @@
       <div class="actions">
         <button class="btn ghost" id="skip" type="button">SKIP</button>
         <button class="btn cyan" id="next" type="button" hidden>NEXT ›</button>
+      </div>
+
+      <!-- Shown while the beam fires -->
+      <div class="fire-hud" id="fire-hud" hidden>
+        <div class="fire-label glitch">FIRE!</div>
+        <div class="fire-km" id="fire-km">0 km</div>
+        <div class="fire-power"><span id="fire-power">0</span> POWER</div>
       </div>
     </section>
 
@@ -83,8 +94,8 @@
   <!-- HOW TO PLAY -->
   <dialog id="help">
     <h2>HOW TO PLAY</h2>
-    <p>Each day you get <b>7 anime prompts</b>. Every prompt has lots of right answers.</p>
-    <p>Obvious answers charge a little. Obscure ones charge a lot. Wrong answers cost nothing — try again or skip.</p>
+    <p>Each day you get <b>7 anime prompts</b>, <b>25 seconds</b> each. Every prompt has lots of right answers.</p>
+    <p>Obvious answers charge a little. Obscure ones charge a lot. Wrong guesses cost nothing — keep trying until time runs out. Close typos get a "Did you mean…?" — press Enter again to accept.</p>
     <p>After prompt 7 your fighter <b>fires</b>. The more niche you went, the bigger and farther the blast.</p>
     <table class="tier-table" id="tier-table"></table>
     <p class="muted">Everyone gets the same 7 prompts each day. Small typos are forgiven.</p>

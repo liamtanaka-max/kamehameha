@@ -13,9 +13,10 @@ A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer 7 
 | 🟡 Legendary | 80 | Pom Poko |
 | 🌈 Deep Cut | 100 | Ocean Waves |
 
-- Same 7 questions for everyone each day (picked by date).
-- Wrong answers don't cost anything — try again or skip.
-- Small typos are forgiven (`spirted away` still counts).
+- Same 7 questions for everyone each day, picked by date from a bank of 32 prompts and 2,200+ answers spanning the 1980s to now.
+- 25 seconds per prompt. Wrong guesses cost nothing; running out of time scores 0.
+- Close typos get **"Did you mean …?"** — press Enter again to accept (`spirted away` → Spirited Away, `kibagami` → Jubei Kibagami).
+- Every answer charges the fighter at the bottom: rarer answers trigger a bigger energy pillar, shockwave and power-gauge jump.
 - Distance = total power × 10 km. Max is 7,000 km.
 
 ## Files
