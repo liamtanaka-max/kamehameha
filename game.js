@@ -1,108 +1,24 @@
 // =========================================================
-//  KAMEHAME-HA! game logic
-//  1. Pick today's 7 questions (same for everyone on the same day)
-//  2. Check each answer against the tiered list
-//  3. Add power, then "fire" at the end
+//  PAGE / UI
+//  Start screen -> 7 prompts -> fire -> results
 // =========================================================
 
-const PER_DAY = 7;
-const MAX_POWER = PER_DAY * TIERS[6].points; // 700
-const KM_PER_POWER = 10;
+const $ = (id) => document.getElementById(id);
+const dateKey = todayKey();
+const today = questionsFor(dateKey);
+const dayNum = dayNumber(dateKey);
+const SAVE_KEY = "kamehameha-progress";
 
-const LANDMARKS = [
-  [0, "Still on the training grounds"],
-  [500, "Over the mountains"],
-  [1500, "Across the ocean"],
-  [3000, "Through the clouds"],
-  [4500, "It hit the Moon!"],
-  [6000, "Beyond the solar system!!"]
-];
-
-// ---------- Matching ----------
-
-// "Howl's Moving Castle!" -> "howlsmovingcastle"
-function normalize(text) {
-  return text
-    .toLowerCase()
-    .normalize("NFD").replace(/[̀-ͯ]/g, "") // é -> e
-    .replace(/^the\s+/, "")
-    .replace(/[^a-z0-9]/g, "");
-}
-
-// How many single-letter edits to turn a into b (for typo forgiveness)
-function editDistance(a, b) {
-  const dp = Array.from({ length: a.length + 1 }, (_, i) => [i]);
-  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,
-        dp[i][j - 1] + 1,
-        dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
-      );
-    }
-  }
-  return dp[a.length][b.length];
-}
-
-// Returns { name, tier } or null if the answer isn't on the list
-function checkAnswer(question, input) {
-  const guess = normalize(input);
-  if (!guess) return null;
-
-  let best = null;
-  for (const [tier, list] of Object.entries(question.answers)) {
-    for (const entry of list) {
-      const names = entry.split("|");
-      for (const name of names) {
-        const target = normalize(name);
-        const dist = editDistance(guess, target);
-        // allow 1 typo for 5+ letters, 2 typos for 9+ letters
-        const allowed = target.length >= 9 ? 2 : target.length >= 5 ? 1 : 0;
-        if (dist <= allowed && (!best || dist < best.dist)) {
-          best = { name: names[0], tier: Number(tier), dist };
-        }
-      }
-    }
-  }
-  return best;
-}
-
-// ---------- Daily puzzle ----------
-
-function todayKey() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-// Simple seeded random so everyone gets the same order on the same day
-function seededRandom(seed) {
-  return function () {
-    seed = (seed * 1664525 + 1013904223) % 4294967296;
-    return seed / 4294967296;
-  };
-}
-
-function questionsFor(dateKey) {
-  const seed = Number(dateKey.replace(/-/g, ""));
-  const rand = seededRandom(seed);
-  const order = QUESTIONS.map((_, i) => i);
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  return order.slice(0, PER_DAY).map((i) => QUESTIONS[i]);
-}
+let state = loadState();
+let answered = false;
 
 // ---------- Save progress (survives refresh) ----------
 
-const SAVE_KEY = "kamehameha-progress";
-
-function loadState(dateKey) {
+function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
     if (saved && saved.date === dateKey) return saved;
-  } catch (e) { /* storage blocked — just start fresh */ }
+  } catch (e) { /* storage blocked — start fresh */ }
   return { date: dateKey, results: [] };
 }
 
@@ -110,53 +26,82 @@ function saveState() {
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
 }
 
-// ---------- UI ----------
-
-const $ = (id) => document.getElementById(id);
-const dateKey = todayKey();
-const today = questionsFor(dateKey);
-const state = loadState(dateKey);
-let answered = false; // has the current question been finished?
+// ---------- Helpers ----------
 
 function totalPower() {
   return state.results.reduce((sum, r) => sum + (r.tier ? TIERS[r.tier].points : 0), 0);
 }
 
+function bestTier() {
+  return state.results.reduce((m, r) => Math.max(m, r.tier || 0), 0);
+}
+
+function show(id) {
+  for (const s of ["start", "play", "results"]) $(s).hidden = s !== id;
+  document.body.dataset.screen = id;
+}
+
+function animateNumber(el, to, ms = 900, suffix = "") {
+  const from = Number(el.dataset.value || 0);
+  const start = performance.now();
+  const step = (t) => {
+    const p = Math.min(1, (t - start) / ms);
+    const v = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+    el.textContent = v.toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  };
+  el.dataset.value = to;
+  requestAnimationFrame(step);
+}
+
 function updateCharge() {
   const power = totalPower();
-  const pct = power / MAX_POWER;
-  $("score").textContent = power;
-  $("fill").style.width = pct * 100 + "%";
-  const size = 20 + pct * 40; // orb grows from 20px to 60px
-  $("orb").style.width = $("orb").style.height = size + "px";
-  $("orb").style.boxShadow = `0 0 ${8 + pct * 30}px var(--accent)`;
+  animateNumber($("power"), power, 600);
+  Scene.setCharge(power / MAX_POWER, TIER_COLORS[Math.max(2, bestTier())]);
+  renderPips();
 }
+
+function renderPips() {
+  const current = state.results.length;
+  $("pips").innerHTML = Array.from({ length: PER_DAY }, (_, i) => {
+    const r = state.results[i];
+    const cls = r ? (r.tier ? "done" : "skip") : i === current ? "now" : "";
+    const style = r && r.tier ? `style="--c:${TIER_COLORS[r.tier]}"` : "";
+    return `<span class="pip ${cls}" ${style}></span>`;
+  }).join("");
+}
+
+// ---------- Play ----------
 
 function showQuestion() {
   const i = state.results.length;
-  if (i >= PER_DAY) return showResults();
+  if (i >= PER_DAY) return fire();
 
   answered = false;
-  $("progress").textContent = `Question ${i + 1} / ${PER_DAY}`;
+  show("play");
+  $("prompt-label").textContent = `PROMPT ${i + 1} / ${PER_DAY}`;
   $("prompt").textContent = today[i].prompt;
+  $("prompt").classList.remove("enter"); void $("prompt").offsetWidth; $("prompt").classList.add("enter");
   $("answer").value = "";
   $("answer").disabled = false;
   $("form").querySelector("button").disabled = false;
-  $("feedback").textContent = "";
-  $("feedback").className = "feedback";
+  $("flash").innerHTML = "";
+  $("flash").className = "result-flash";
   $("reveal").hidden = true;
   $("skip").hidden = false;
   $("next").hidden = true;
+  updateCharge();
   $("answer").focus();
 }
 
-// After a question is done, show a few common answers and the deep cuts
 function revealAnswers(question) {
-  const first = (tier) => (question.answers[tier] || []).map((e) => e.split("|")[0]);
-  const common = first(1).slice(0, 3).join(", ");
-  const deep = [...first(6), ...first(5)].slice(0, 3).join(", ");
+  const names = (tier) => (question.answers[tier] || []).map((e) => e.split("|")[0]);
+  const common = names(1).slice(0, 3);
+  const deep = [...names(6), ...names(5)].slice(0, 3);
+  const chips = (list, tier) => list.map((n) => `<span class="chip" style="--c:${TIER_COLORS[tier]}">${n}</span>`).join("");
   $("reveal").innerHTML =
-    `Most common: <b>${common}</b>` + (deep ? `<br>Deepest cuts: <b>${deep}</b>` : "");
+    `<div><span class="reveal-label">MOST COMMON</span>${chips(common, 1)}</div>` +
+    (deep.length ? `<div><span class="reveal-label">DEEPEST CUTS</span>${chips(deep, 6)}</div>` : "");
   $("reveal").hidden = false;
 }
 
@@ -169,7 +114,8 @@ function finishQuestion(result) {
   $("form").querySelector("button").disabled = true;
   $("skip").hidden = true;
   $("next").hidden = false;
-  $("next").textContent = state.results.length >= PER_DAY ? "FIRE! 🔥" : "Next →";
+  $("next").textContent = state.results.length >= PER_DAY ? "FIRE! ›" : "NEXT ›";
+  $("next").classList.toggle("pink", state.results.length >= PER_DAY);
   revealAnswers(today[state.results.length - 1]);
   $("next").focus();
 }
@@ -179,58 +125,157 @@ $("form").addEventListener("submit", (e) => {
   if (answered) return;
   const question = today[state.results.length];
   const input = $("answer").value.trim();
+  if (!input) return;
   const match = checkAnswer(question, input);
 
   if (!match) {
-    $("feedback").textContent = `"${input}" isn't on our list — try another answer.`;
-    $("feedback").className = "feedback bad";
+    $("flash").className = "result-flash miss";
+    $("flash").textContent = `not on the list — try another`;
+    $("form").classList.remove("shake"); void $("form").offsetWidth; $("form").classList.add("shake");
     $("answer").select();
     return;
   }
 
   const tier = TIERS[match.tier];
-  $("feedback").textContent = `${tier.emoji} ${match.name} — ${tier.name}! +${tier.points} power`;
+  $("flash").className = "result-flash hit";
+  $("flash").style.setProperty("--c", TIER_COLORS[match.tier]);
+  $("flash").innerHTML = `<span class="tier-name">${tier.name.toUpperCase()}</span><span class="tier-pts">+${tier.points}</span><span class="tier-answer"></span>`;
+  $("flash").querySelector(".tier-answer").textContent = match.name;
   finishQuestion({ prompt: question.prompt, answer: match.name, tier: match.tier });
 });
 
 $("skip").addEventListener("click", () => {
-  const question = today[state.results.length];
-  $("feedback").textContent = "Skipped — no power this round.";
-  finishQuestion({ prompt: question.prompt, answer: null, tier: 0 });
+  $("flash").className = "result-flash miss";
+  $("flash").textContent = "skipped — no power this round";
+  finishQuestion({ prompt: today[state.results.length].prompt, answer: null, tier: 0 });
 });
 
 $("next").addEventListener("click", showQuestion);
 
-function showResults() {
-  $("play").hidden = true;
-  $("results").hidden = false;
+// ---------- Fire + results ----------
 
-  const power = totalPower();
-  const km = power * KM_PER_POWER;
-  const landmark = LANDMARKS.filter(([min]) => km >= min).pop()[1];
-
-  $("km").textContent = km.toLocaleString();
-  $("landmark").textContent = landmark;
-  // small delay so the beam animates outward
-  setTimeout(() => { $("beam").style.width = Math.max(2, (power / MAX_POWER) * 100) + "%"; }, 100);
-
-  $("summary").innerHTML = state.results.map((r) => {
-    const label = r.tier ? `${TIERS[r.tier].emoji} ${r.answer} (${TIERS[r.tier].name})` : "❌ Skipped";
-    return `<li><span class="q">${r.prompt}</span>${label}</li>`;
-  }).join("");
+function fire() {
+  show("play");
+  $("play").classList.add("firing");
+  Scene.fire(totalPower() / MAX_POWER, () => {
+    $("play").classList.remove("firing");
+    showResults(true);
+  });
 }
 
-$("share").addEventListener("click", async () => {
+function showResults(animate) {
+  show("results");
+  const power = totalPower();
+  const km = power * KM_PER_POWER;
+
+  $("complete-label").textContent = `CHARGE #${dayNum} COMPLETE`;
+  if (animate) {
+    animateNumber($("final-power"), power, 1200);
+    animateNumber($("final-km"), km, 1200, " km");
+  } else {
+    $("final-power").textContent = power;
+    $("final-km").textContent = km.toLocaleString() + " km";
+  }
+  $("landmark").textContent = LANDMARKS.filter(([min]) => km >= min).pop()[1];
+
+  // Power log bar chart
+  $("chart").innerHTML = state.results.map((r, i) => {
+    const h = r.tier ? (TIERS[r.tier].points / 100) * 100 : 3;
+    const label = r.tier ? `${r.answer} · ${TIERS[r.tier].name}` : "Skipped";
+    return `<div class="bar-col" title="${label.replace(/"/g, "&quot;")}">
+      <div class="bar" style="--h:${h}%;--c:${TIER_COLORS[r.tier]};--d:${i * 80}ms"></div>
+      <span>${i + 1}</span></div>`;
+  }).join("");
+
+  // Answer list
+  $("log").innerHTML = "";
+  state.results.forEach((r) => {
+    const li = document.createElement("li");
+    li.style.setProperty("--c", TIER_COLORS[r.tier]);
+    li.innerHTML = `<span class="log-q"></span><span class="log-a"></span><span class="log-t"></span>`;
+    li.querySelector(".log-q").textContent = r.prompt;
+    li.querySelector(".log-a").textContent = r.answer || "—";
+    li.querySelector(".log-t").textContent = r.tier ? `${TIERS[r.tier].name} +${TIERS[r.tier].points}` : "Skipped";
+    $("log").appendChild(li);
+  });
+
+  // Power scale with your row highlighted
+  $("scale").innerHTML = SCALE.map(([lo, hi, name, text], i) => {
+    const you = power >= lo && power <= hi ? " you" : "";
+    const c = TIER_COLORS[Math.min(6, i + 2)];
+    return `<li class="${you.trim()}" style="--c:${c}"><span class="range">${lo}–${hi}</span><span class="rank">${name}</span><span class="desc">${text}</span></li>`;
+  }).join("");
+
+  startCountdown();
+}
+
+function shareText() {
   const emojis = state.results.map((r) => (r.tier ? TIERS[r.tier].emoji : "❌")).join("");
   const km = (totalPower() * KM_PER_POWER).toLocaleString();
-  const text = `KAMEHAME-HA! ${dateKey}\n${emojis}\n💥 ${km} km`;
-  try {
-    await navigator.clipboard.writeText(text);
-    $("copied").textContent = "Copied! Paste it anywhere.";
-  } catch (e) {
-    $("copied").textContent = text; // fallback: show it so they can copy by hand
+  return `KAMEHAME-HA! #${dayNum}\n${emojis}\n⚡ ${totalPower()} power · 💥 ${km} km\n${location.href.split("?")[0]}`;
+}
+
+function toast(msg) {
+  $("toast").textContent = msg;
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => ($("toast").textContent = ""), 2500);
+}
+
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(shareText()); toast("copied — paste it anywhere"); }
+  catch (e) { toast(shareText()); }
+});
+
+$("share").addEventListener("click", async () => {
+  if (navigator.share) {
+    try { await navigator.share({ text: shareText() }); } catch (e) {}
+  } else {
+    $("copy").click();
   }
 });
 
-updateCharge();
-showQuestion();
+function startCountdown() {
+  const tick = () => {
+    const now = new Date();
+    const midnight = new Date(now); midnight.setHours(24, 0, 0, 0);
+    const s = Math.max(0, Math.floor((midnight - now) / 1000));
+    const pad = (n) => String(n).padStart(2, "0");
+    $("countdown").textContent = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+    if (s === 0) location.reload();
+  };
+  tick();
+  clearInterval(startCountdown.t);
+  startCountdown.t = setInterval(tick, 1000);
+}
+
+// ---------- Help dialog ----------
+
+$("tier-table").innerHTML = Object.entries(TIERS).map(([t, v]) =>
+  `<tr style="--c:${TIER_COLORS[t]}"><td><span class="dot"></span>${v.name}</td><td>+${v.points}</td></tr>`
+).join("");
+
+function openHelp() { $("help").showModal(); }
+$("help-btn").addEventListener("click", openHelp);
+$("start-help").addEventListener("click", openHelp);
+$("help-close").addEventListener("click", () => $("help").close());
+$("help").addEventListener("click", (e) => { if (e.target === $("help")) $("help").close(); });
+
+// ---------- Boot ----------
+
+Scene.init($("scene"));
+$("day-label").textContent = `CHARGE #${dayNum}`;
+
+if (state.results.length >= PER_DAY) {
+  // Already played today: show the blast frozen in place
+  Scene.setCharge(totalPower() / MAX_POWER, TIER_COLORS[Math.max(2, bestTier())]);
+  Scene.fire(totalPower() / MAX_POWER, null, true);
+  showResults(false);
+} else if (state.results.length > 0) {
+  $("start-btn").textContent = "RESUME CHARGE";
+  show("start");
+  updateCharge();
+} else {
+  show("start");
+}
+
+$("start-btn").addEventListener("click", showQuestion);

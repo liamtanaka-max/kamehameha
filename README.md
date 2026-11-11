@@ -21,10 +21,13 @@ A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer 7 
 ## Files
 
 ```
-index.html     the page
-style.css      the look
+index.html     the page (start, prompts, results)
+style.css      retro pixel look
 questions.js   all questions + tiered answers  <-- edit this to add content
-game.js        game logic (matching, daily pick, scoring)
+logic.js       answer matching, daily pick, scoring tables
+scene.js       pixel background: fighter, charging orb, beam
+game.js        connects the page to the logic
+fonts/         VT323 + Press Start 2P (free, Open Font License)
 ```
 
 No build step, no backend, no dependencies. Just open `index.html`.
