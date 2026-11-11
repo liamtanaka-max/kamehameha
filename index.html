@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kamehame-Ha! — Daily Anime Trivia</title>
+  <meta name="description" content="A daily anime trivia game. Niche answers charge a bigger blast.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>KAMEHAME-HA!</h1>
+      <p class="sub">7 anime questions a day. The more niche your answer, the more power you charge.</p>
+    </header>
+
+    <!-- Charge meter: the only "graphic" -->
+    <section class="charge" aria-label="Power level">
+      <div class="orb" id="orb"></div>
+      <div class="meter"><div class="fill" id="fill"></div></div>
+      <div class="power"><span id="score">0</span> power</div>
+    </section>
+
+    <!-- Question screen -->
+    <section id="play">
+      <div class="progress" id="progress">Question 1 / 7</div>
+      <h2 class="prompt" id="prompt">Loading…</h2>
+      <form id="form" autocomplete="off">
+        <input id="answer" type="text" placeholder="Type your answer" aria-label="Your answer" required>
+        <button type="submit">Charge</button>
+      </form>
+      <p class="feedback" id="feedback" aria-live="polite"></p>
+      <div class="reveal" id="reveal" hidden></div>
+      <div class="row">
+        <button class="ghost" id="skip" type="button">Skip</button>
+        <button id="next" type="button" hidden>Next →</button>
+      </div>
+    </section>
+
+    <!-- Results screen -->
+    <section id="results" hidden>
+      <h2>FIRE!</h2>
+      <div class="beam-track"><div class="beam" id="beam"></div></div>
+      <p class="distance"><span id="km">0</span> km — <span id="landmark"></span></p>
+      <ol class="summary" id="summary"></ol>
+      <button id="share" type="button">Copy results</button>
+      <p class="small" id="copied" aria-live="polite"></p>
+      <p class="small">New questions tomorrow.</p>
+    </section>
+
+    <details class="how">
+      <summary>How to play</summary>
+      <p>Each question has many right answers. Obvious answers score a little; obscure ones score a lot.
+      If your answer isn't on the list, try again or skip. After 7 questions, your power fires — the more niche you went, the farther it flies.</p>
+      <table>
+        <tr><th>Tier</th><th>Power</th></tr>
+        <tr><td>⚪ Common</td><td>10</td></tr>
+        <tr><td>🔵 Uncommon</td><td>25</td></tr>
+        <tr><td>🟢 Rare</td><td>40</td></tr>
+        <tr><td>🟣 Epic</td><td>60</td></tr>
+        <tr><td>🟡 Legendary</td><td>80</td></tr>
+        <tr><td>🌈 Deep Cut</td><td>100</td></tr>
+      </table>
+    </details>
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
