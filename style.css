@@ -140,6 +140,9 @@ body[data-screen="start"] .top .logo { visibility: hidden; }
   background: none; border: 0; border-bottom: 2px dashed var(--gold); padding: 0 2px; cursor: pointer;
 }
 .suggest-yes:hover { color: #fff; border-color: #fff; }
+.suggest-alts { font-size: 19px; color: var(--muted); }
+.suggest-alt { font-family: var(--mono); font-size: 20px; color: var(--cyan); background: none; border: 0; border-bottom: 1px dashed var(--cyan); padding: 0 2px; cursor: pointer; }
+.suggest-alt:hover { color: #fff; border-color: #fff; }
 .suggest-hint { color: var(--muted); font-size: 18px; letter-spacing: 1px; }
 .suggest-no { font-family: var(--mono); font-size: 18px; color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; }
 .suggest-no:hover { color: var(--pink); }

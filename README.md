@@ -1,49 +1,55 @@
 # KAMEHAME-HA!
 
-A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer 7 open-ended anime questions — obvious answers charge a little power, obscure ones charge a lot. After the last question you fire, and the more niche you went, the farther the blast flies.
+A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer open-ended anime prompts — obvious answers charge a little power, obscure ones charge a lot. When you're done you fire, and the more niche you went, the farther the blast flies.
+
+**Play:** https://liamtanaka-max.github.io/kamehameha/
 
 ## Modes
 
-- **Daily Charge** (main) — 7 prompts, the same for everyone each day. The last 2 are **HARD**. Progress is saved; come back tomorrow for a new set.
-- **Infinite ∞** — endless random prompts (about 1 in 4 is hard). A skip or time-out costs one of 3 lives. Your best run is saved.
+- **Daily Charge** (main) — 7 prompts, the same for everyone each day. The last 2 are **HARD**. Progress is saved; come back tomorrow for a new set. Days don't repeat a prompt until the whole bank has been used (~26 days).
+- **Infinite ∞** — endless prompts (about 1 in 4 is hard). A skip or time-out costs one of 3 lives. Your best run is saved. The game remembers which prompts you've seen and serves new ones first.
 - **Party** — 2–6 players pass one device. Everyone answers the same prompt in turn, and an answer someone already gave that round is *taken* — so later players have to dig deeper. Leaderboard after each round; the winner fires the final blast.
 
 When the fighter fires, every answer summons a wave of pixel monsters for the beam to vaporize — a Common answer brings one slime, a Deep Cut brings a wave led by a dragon.
 
 ## How it works
 
-| Tier | Power | Example ("Name a Studio Ghibli film") |
+| Tier | Power | Example ("Name an anime made by MAPPA") |
 |---|---|---|
-| ⚪ Common | 10 | Spirited Away |
-| 🔵 Uncommon | 25 | Ponyo |
-| 🟢 Rare | 40 | Porco Rosso |
-| 🟣 Epic | 60 | Whisper of the Heart |
-| 🟡 Legendary | 80 | Pom Poko |
-| 🌈 Deep Cut | 100 | Ocean Waves |
+| ⚪ Common | 10 | Jujutsu Kaisen |
+| 🔵 Uncommon | 25 | Vinland Saga |
+| 🟢 Rare | 40 | Banana Fish |
+| 🟣 Epic | 60 | Kids on the Slope |
+| 🟡 Legendary | 80 | In This Corner of the World |
+| 🌈 Deep Cut | 100 | Oblivion Battery |
 
-- Same 7 questions for everyone each day, picked by date from a bank of 44 prompts (12 hard) and 2,700+ answers spanning the 1980s to now.
+- **188 prompts** (53 hard). Two kinds:
+  - **Title prompts** ("a 2010s anime", "a sports anime", "made by Kyoto Animation", "title starts with K") are answered from a catalog of **~7,000 anime from the 1960s to 2026**. Any anime that fits counts, and rarity comes from real popularity (how many people have it on their list).
+  - **Hand-written prompts** for things a catalog can't answer: characters, attacks, powers ("a character fast enough to race the Flash", "an attack that could destroy a planet"), plus character prompts for One Piece, JJK, Chainsaw Man, Frieren, Blue Lock, Solo Leveling and more.
 - 25 seconds per prompt. Wrong guesses cost nothing; running out of time scores 0.
-- Close typos get **"Did you mean …?"** — press Enter again to accept (`spirted away` → Spirited Away, `kibagami` → Jubei Kibagami).
-- Every answer charges the fighter at the bottom: rarer answers trigger a bigger energy pillar, shockwave and power-gauge jump.
-- Distance = total power × 10 km. Max is 7,000 km.
+- **Forgiving answers:** word order doesn't matter (`satoru gojo` = Gojo Satoru), common romanization differences are ignored (`gojou`, `ruffy`), and close misspellings get **"Did you mean …?"** with up to 3 options — press Enter to take the first.
+- If you name a real anime that doesn't fit a title prompt, the game tells you ("Death Note (2006) is an anime we know — but it doesn't fit this prompt").
+- Distance = total power × 10 km. Max is 7,000 km in the Daily.
 
 ## Files
 
 ```
-index.html     the page (start, prompts, results)
-style.css      retro pixel look
-questions.js   all questions + tiered answers  <-- edit this to add content
-logic.js       answer matching, daily pick, scoring tables
-scene.js       pixel background: fighter, charging orb, beam
-game.js        connects the page to the logic
-fonts/         VT323 + Press Start 2P (free, Open Font License)
+index.html          the page (menu, prompts, results)
+style.css           retro pixel look
+catalog.js          ~7,000 anime (generated — see below)
+questions.js        hand-written prompts + CATALOG_PROMPTS (title prompt definitions)
+logic.js            answer matching, catalog prompts, daily/infinite prompt picking
+scene.js            pixel background: fighter, charge-ups, mobs, beam
+game.js             the three modes and all screens
+tools/build_catalog.py   rebuilds catalog.js from the open datasets
+fonts/              VT323 + Press Start 2P (free, Open Font License)
 ```
 
-No build step, no backend, no dependencies. Just open `index.html`.
+No build step to play, no backend. Just open `index.html`.
 
-## Adding a question
+## Adding prompts
 
-Copy a block in `questions.js`:
+**A hand-written prompt** — copy a block in `QUESTIONS` in `questions.js`. `|` separates alternate names for the same answer:
 
 ```js
 {
@@ -59,15 +65,36 @@ Copy a block in `questions.js`:
 },
 ```
 
-`|` separates alternate names that all count as the same answer.
+**A title prompt** — add a line to `CATALOG_PROMPTS` (same file). Rarity tiers are worked out automatically:
+
+```js
+{ prompt: "Name an anime made by Madhouse", where: { studio: 11 } },
+{ prompt: "Name a horror anime from the 2000s", where: { genre: 14, years: [2000, 2009] } },
+{ prompt: "Name an anime whose title starts with R", nameTest: startsWith("R") },
+```
+
+Add `hard: true` to put it in the hard pool. Genre and studio ids are listed in `catalog.js` (`CATALOG.genres`, `CATALOG.studios`).
+
+## Updating the anime catalog
+
+New anime come out every season. To refresh:
+
+1. Download into one folder:
+   - `anime.csv`, `genres.csv`, `studios.csv` from [meesvandongen/anime-dataset](https://github.com/meesvandongen/anime-dataset) (`data/`)
+   - `anime-offline-database-minified.json` from the latest [manami-project/anime-offline-database](https://github.com/manami-project/anime-offline-database/releases) release, saved as `db.json`
+2. Run `python3 tools/build_catalog.py path/to/that/folder`
+
+## Data credits
+
+- Anime titles, dates, genres, studios and popularity: MyAnimeList data via [meesvandongen/anime-dataset](https://github.com/meesvandongen/anime-dataset).
+- Alternate titles: [manami-project/anime-offline-database](https://github.com/manami-project/anime-offline-database), made available under the [Open Database License (ODbL) v1.0](https://opendatacommons.org/licenses/odbl/1-0/).
 
 ## Host it free
 
-Repo **Settings → Pages → Deploy from branch → `main` / root**. Your site will be at
-`https://<username>.github.io/kamehameha/`.
+Repo **Settings → Pages → Deploy from branch → `main` / root**.
 
 ## Ideas for later
 
-- Track what real players submit (e.g. Supabase) and set rarity from actual answer frequency instead of a hand-made list.
+- Track what real players submit and set rarity from actual answer frequency.
 - Streaks and a stats page.
 - Use an AI judge for valid answers that aren't on the list.

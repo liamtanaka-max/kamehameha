@@ -226,6 +226,8 @@ function beginTurn() {
   $("fire-hud").hidden = true;
 
   const q = curPrompt();
+  markSeen(q);
+  setTimeout(() => { warmUp(q); if (q.catalog) warmUp(ANY_ANIME); }, 30);
   if (run.mode === "daily") {
     $("prompt-label").textContent = `PROMPT ${run.results.length + 1} / ${PER_DAY}`;
   } else if (run.mode === "infinite") {
@@ -315,7 +317,8 @@ function timeUp() {
 // ---------- Answering ----------
 
 function revealHtml(q) {
-  const names = (tier) => (q.answers[tier] || []).map((e) => e.split("|")[0]);
+  const answers = answersOf(q);
+  const names = (tier) => (answers[tier] || []).map((e) => e.split("|")[0]);
   const chips = (list, tier) => list.map((n) => `<span class="chip" style="--c:${TIER_COLORS[tier]}">${escapeHtml(n)}</span>`).join("");
   const common = names(1).slice(0, 3);
   const deep = [...names(6), ...names(5)].slice(0, 3);
@@ -387,11 +390,15 @@ function miss(message, label) {
 
 function showSuggestion(match, input) {
   suggestion = { ...match, input };
+  const alts = match.alts || [];
   $("flash").className = "result-flash suggest";
   $("flash").innerHTML =
     `<span>Did you mean <button type="button" class="suggest-yes" id="suggest-yes">${escapeHtml(match.name)}</button>?</span>` +
+    (alts.length ? `<span class="suggest-alts">or ${alts.map((a, i) => `<button type="button" class="suggest-alt" data-i="${i}">${escapeHtml(a.name)}</button>`).join(" · ")}</span>` : "") +
     `<span class="suggest-hint">press Enter to accept · <button type="button" class="suggest-no" id="suggest-no">no</button></span>`;
   $("suggest-yes").addEventListener("click", () => accept(suggestion));
+  $("flash").querySelectorAll(".suggest-alt").forEach((b) =>
+    b.addEventListener("click", () => accept(alts[Number(b.dataset.i)])));
   $("suggest-no").addEventListener("click", () => {
     suggestion = null;
     $("flash").innerHTML = "";
@@ -420,10 +427,19 @@ $("form").addEventListener("submit", (e) => {
   if (match && match.type === "suggest") return showSuggestion(match, input);
 
   $("flash").className = "result-flash miss";
-  $("flash").textContent = "not on the list — try another";
+  $("flash").textContent = notFoundMessage(curPrompt(), input);
   $("form").classList.remove("shake"); void $("form").offsetWidth; $("form").classList.add("shake");
   $("answer").select();
 });
+
+// For title prompts, say when it's a real anime that just doesn't fit
+function notFoundMessage(q, input) {
+  if (q.catalog) {
+    const found = findInCatalog(input);
+    if (found) return `${found.name}${found.year ? ` (${found.year})` : ""} is an anime we know — but it doesn't fit this prompt`;
+  }
+  return "not on the list — try another";
+}
 
 $("skip").addEventListener("click", () => {
   if (answered || !run) return;
