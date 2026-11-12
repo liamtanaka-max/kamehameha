@@ -110,7 +110,7 @@ function startDaily() {
 }
 
 function startInfinite() {
-  run = { mode: "infinite", next: promptStream(4), results: [], lives: LIVES };
+  run = { mode: "infinite", next: promptStream(), results: [], lives: LIVES };
   run.prompt = run.next();
   Scene.reset();
   beginTurn();
@@ -121,7 +121,7 @@ let lastPartyNames = null;
 function startParty(names, rounds) {
   lastPartyNames = names;
   run = {
-    mode: "party", rounds, round: 0, next: promptStream(4),
+    mode: "party", rounds, round: 0, next: promptStream(),
     players: names.map((name) => ({ name, results: [] })), names
   };
   Scene.reset();

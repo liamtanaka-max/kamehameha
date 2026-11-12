@@ -6,8 +6,8 @@ A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer op
 
 ## Modes
 
-- **Daily Charge** (main) — 7 prompts, the same for everyone each day. The last 2 are **HARD**. Progress is saved; come back tomorrow for a new set. Days don't repeat a prompt until the whole bank has been used (~26 days).
-- **Infinite ∞** — endless prompts (about 1 in 4 is hard). A skip or time-out costs one of 3 lives. Your best run is saved. The game remembers which prompts you've seen and serves new ones first.
+- **Daily Charge** (main) — 7 prompts, the same for everyone each day: 3 about characters, 2 about anime titles, then 2 **HARD** ones. Progress is saved; come back tomorrow for a new set. Days don't repeat a prompt for ~26 days.
+- **Infinite ∞** — endless prompts, mostly about characters (5 character : 2 title : 1 hard). A skip or time-out costs one of 3 lives. Your best run is saved. The game remembers which prompts you've seen and serves new ones first.
 - **Party** — 2–6 players pass one device. Everyone answers the same prompt in turn, and an answer someone already gave that round is *taken* — so later players have to dig deeper. Leaderboard after each round; the winner fires the final blast.
 
 When the fighter fires, every answer summons a wave of pixel monsters for the beam to vaporize — a Common answer brings one slime, a Deep Cut brings a wave led by a dragon.
@@ -23,9 +23,9 @@ When the fighter fires, every answer summons a wave of pixel monsters for the be
 | 🟡 Legendary | 80 | In This Corner of the World |
 | 🌈 Deep Cut | 100 | Oblivion Battery |
 
-- **188 prompts** (53 hard). Two kinds:
+- **216 prompts** (53 hard). Two kinds:
   - **Title prompts** ("a 2010s anime", "a sports anime", "made by Kyoto Animation", "title starts with K") are answered from a catalog of **~7,000 anime from the 1960s to 2026**. Any anime that fits counts, and rarity comes from real popularity (how many people have it on their list).
-  - **Hand-written prompts** for things a catalog can't answer: characters, attacks, powers ("a character fast enough to race the Flash", "an attack that could destroy a planet"), plus character prompts for One Piece, JJK, Chainsaw Man, Frieren, Blue Lock, Solo Leveling and more.
+  - **Character prompts** (hand-written) about who characters are and what they can do: "a fighter who refuses to kill", "a character who works as a teacher", "an orphan", "royalty", "way older than they look", "can turn into an animal", "sacrificed themselves for others", "a character fast enough to race the Flash", "an attack that could destroy a planet" — plus character prompts for One Piece, JJK, Chainsaw Man, Frieren, Blue Lock, Solo Leveling and more.
 - 25 seconds per prompt. Wrong guesses cost nothing; running out of time scores 0.
 - **Forgiving answers:** word order doesn't matter (`satoru gojo` = Gojo Satoru), common romanization differences are ignored (`gojou`, `ruffy`), and close misspellings get **"Did you mean …?"** with up to 3 options — press Enter to take the first.
 - If you name a real anime that doesn't fit a title prompt, the game tells you ("Death Note (2006) is an anime we know — but it doesn't fit this prompt").

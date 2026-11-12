@@ -270,9 +270,21 @@ function catalogQuestions() {
 // ---------------------------------------------------------
 
 const ALL_QUESTIONS = QUESTIONS.concat(catalogQuestions());
-ALL_QUESTIONS.forEach((q) => { if (!q.id) q.id = slug(q.prompt); });
+// Hand-written prompts that are really about titles, not characters
+const TITLE_STYLE = new Set([
+  "Name an anime studio", "Name a Shonen Jump series that started before 2000", "Name an anime OVA released before 2000",
+  "Name a Gundam series or film", "Name a manga or anime by Osamu Tezuka", "Name a manga or anime by CLAMP",
+  "Name a manga or anime by Rumiko Takahashi"
+]);
+ALL_QUESTIONS.forEach((q) => {
+  if (!q.id) q.id = slug(q.prompt);
+  q.kind = q.catalog || TITLE_STYLE.has(q.prompt) ? "title" : "character";
+});
 const NORMAL_QUESTIONS = ALL_QUESTIONS.filter((q) => !q.hard);
 const HARD_QUESTIONS = ALL_QUESTIONS.filter((q) => q.hard);
+// Character prompts get the bigger share; "name an anime that..." prompts mix in
+const CHARACTER_QUESTIONS = NORMAL_QUESTIONS.filter((q) => q.kind === "character");
+const TITLE_QUESTIONS = NORMAL_QUESTIONS.filter((q) => q.kind === "title");
 
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
@@ -301,16 +313,19 @@ function shuffle(list, rand = Math.random) {
   return a;
 }
 
-// Daily: walk one fixed shuffled order, a few prompts per day, so days
-// never repeat a prompt until the whole bank has been used.
+// Daily: 3 character prompts + 2 title prompts + 2 hard ones.
+// Each pool walks one fixed shuffled order, so days never repeat a prompt
+// until that pool has been used up.
 const DAILY_SEED = 20261111;
 function questionsFor(dateKey) {
   const d = dayNumber(dateKey) - 1;
-  const normal = shuffle(NORMAL_QUESTIONS, seededRandom(DAILY_SEED));
-  const hard = shuffle(HARD_QUESTIONS, seededRandom(DAILY_SEED + 1));
-  const n = PER_DAY - HARD_PER_DAY;
-  const pick = (list, per) => Array.from({ length: per }, (_, i) => list[(d * per + i) % list.length]);
-  return [...pick(normal, n), ...pick(hard, HARD_PER_DAY)];
+  const pick = (list, per, seed) => {
+    const order = shuffle(list, seededRandom(seed));
+    return Array.from({ length: per }, (_, i) => order[(d * per + i) % order.length]);
+  };
+  const [c1, c2, c3] = pick(CHARACTER_QUESTIONS, 3, DAILY_SEED);
+  const [t1, t2] = pick(TITLE_QUESTIONS, 2, DAILY_SEED + 2);
+  return [c1, t1, c2, t2, c3, ...pick(HARD_QUESTIONS, HARD_PER_DAY, DAILY_SEED + 1)];
 }
 
 // Prompts this browser has already seen (any mode), oldest first
@@ -326,10 +341,12 @@ function markSeen(q) {
   } catch (e) {}
 }
 
-// Infinite / Party: about 1 in 4 is hard. Never repeats within a run, and
-// prefers prompts this browser hasn't seen; when everything has been seen,
-// it brings back the ones seen longest ago.
-function promptStream(hardEvery = 4) {
+// Infinite / Party: mostly character prompts, some title prompts, and a hard
+// one every so often. Never repeats within a run, and prefers prompts this
+// browser hasn't seen; when everything has been seen, it brings back the
+// ones seen longest ago.
+const STREAM_PATTERN = ["c", "t", "c", "c", "h", "c", "t", "c"]; // 5 character : 2 title : 1 hard
+function promptStream() {
   const used = new Set();
   let n = 0;
   function pickFrom(pool) {
@@ -348,8 +365,8 @@ function promptStream(hardEvery = 4) {
     return q;
   }
   return function next() {
-    n++;
-    return pickFrom(n % hardEvery === 0 ? HARD_QUESTIONS : NORMAL_QUESTIONS);
+    const slot = STREAM_PATTERN[n++ % STREAM_PATTERN.length];
+    return pickFrom(slot === "h" ? HARD_QUESTIONS : slot === "t" ? TITLE_QUESTIONS : CHARACTER_QUESTIONS);
   };
 }
 

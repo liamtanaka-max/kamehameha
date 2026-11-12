@@ -618,6 +618,317 @@ const QUESTIONS = [
     }
   },
 
+
+  // ================= CHARACTER TRAITS =================
+  {
+    prompt: "Name a fighter who refuses to kill",
+    answers: {
+      1: ["Luffy|Monkey D. Luffy","Deku|Izuku Midoriya","Kenshin|Himura Kenshin","Vash|Vash the Stampede"],
+      2: ["Mob|Shigeo Kageyama","Naruto|Naruto Uzumaki","Sailor Moon|Usagi Tsukino","Asta"],
+      3: ["Natsu|Natsu Dragneel","Yugi|Yugi Muto","Ash Ketchum|Ash","Mumen Rider"],
+      4: ["Kaoru Kamiya|Kaoru"],
+      5: ["Yahiko|Yahiko Myojin"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who works as a teacher",
+    answers: {
+      1: ["Koro-sensei","Onizuka|Eikichi Onizuka","Aizawa|Shota Aizawa|Eraser Head","Gojo|Satoru Gojo","Kakashi|Kakashi Hatake","Iruka"],
+      2: ["All Might","Might Guy|Guy","Kurenai","Asuma","Karasuma|Tadaomi Karasuma","Irina|Irina Jelavic","Present Mic","Midnight","Yaga|Masamichi Yaga","Utahime|Utahime Iori"],
+      3: ["Sawako|Sawako Yamanaka","Takeda|Ittetsu Takeda","Negi|Negi Springfield","Reborn","Ectoplasm","Cementoss","Vlad King","Ginpachi|Ginpachi-sensei"],
+      4: ["Yukari|Yukari Tanizaki","Hiratsuka|Shizuka Hiratsuka","Professor Kukui|Kukui","Snipe","Power Loader","Thirteen","Gakuganji"],
+      5: ["Nyamo|Minamo Kurosawa","Chabashira|Sae Chabashira","Kusakabe|Atsuya Kusakabe"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who's a doctor or nurse",
+    answers: {
+      1: ["Chopper|Tony Tony Chopper","Black Jack","Nurse Joy","Law|Trafalgar Law"],
+      2: ["Tsunade","Maomao","Dr. Tenma|Kenzo Tenma|Tenma","Recovery Girl","Shoko Ieiri|Shoko","Unohana|Retsu Unohana","Leorio","White Blood Cell|U-1146","Red Blood Cell|AE3803","Platelet"],
+      3: ["Sakura Haruno|Sakura","Shizune","Tamayo","Isshin Kurosaki|Isshin","Hatori Sohma|Hatori","Dr. Kureha|Kureha","Hiluluk|Dr. Hiluluk","Stein|Franken Stein","Kabuto"],
+      4: ["Ryuken Ishida|Ryuken","Megumi Takani","Hanataro|Hanataro Yamada","Isane|Isane Kotetsu","Marcoh|Tim Marcoh","Grisha Yeager|Grisha"],
+      5: ["Dr. Knox|Knox"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who is royalty",
+    answers: {
+      1: ["Vegeta|Prince Vegeta","Lelouch|Lelouch vi Britannia"],
+      2: ["Vivi|Nefertari Vivi","Bojji","Yona","Historia|Historia Reiss","Saber|Artoria","Gilgamesh","Meruem","Nausicaa","Princess Serenity|Serenity","San|Princess Mononoke"],
+      3: ["Shirahoshi","Ling|Ling Yao","Euphemia|Euphemia li Britannia","Nunnally","Elizabeth Liones|Elizabeth","Meliodas","King|Harlequin","Iskandar","Boa Hancock|Hancock","Malty|Malty Melromarc","Momonosuke"],
+      4: ["Mei Chang","Cornelia","Schneizel","Rebecca","Cobra|Nefertari Cobra","Neptune|King Neptune","Wapol","Melty|Melty Melromarc","Daida","Soo-won","King Vegeta","Trunks","Ainz|Ainz Ooal Gown","Charles zi Britannia|Charles"],
+      5: ["Fukaboshi","Viola","Rod Reiss","Crusch|Crusch Karsten","Priscilla|Priscilla Barielle"],
+      6: ["Tarble"]
+    }
+  },
+  {
+    prompt: "Name an anime character who's an orphan",
+    answers: {
+      1: ["Naruto|Naruto Uzumaki","Eren|Eren Yeager","Tanjiro|Tanjiro Kamado","Sasuke|Sasuke Uchiha","Denji"],
+      2: ["Mikasa|Mikasa Ackerman","Armin|Armin Arlert","Ace|Portgas D. Ace","L|L Lawliet","Kurapika","Emma","Norman","Ray","Asta","Yuno","Ciel|Ciel Phantomhive"],
+      3: ["Near","Mello","Kenshin|Himura Kenshin","Nami","Nico Robin|Robin","Natsu|Natsu Dragneel","Gray|Gray Fullbuster","Erza|Erza Scarlet","Tohru Honda|Tohru","Violet Evergarden|Violet","Kaneki|Ken Kaneki","Megumi Fushiguro|Megumi","Aki|Aki Hayakawa","Genos","Obito|Obito Uchiha","Nagato","Rukia|Rukia Kuchiki","Renji|Renji Abarai","Levi|Levi Ackerman"],
+      4: ["Allen Walker","Vash","Konan","Yahiko","Haku","Kirito"],
+      5: ["Nojiko"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character with pink hair",
+    answers: {
+      1: ["Sakura|Sakura Haruno","Natsu|Natsu Dragneel","Zero Two","Anya|Anya Forger","Mitsuri|Mitsuri Kanroji"],
+      2: ["Madoka|Madoka Kaname","Yuji Itadori|Yuji","Sukuna","Ram","Bocchi|Hitori Gotoh","Chibiusa","Yuno Gasai|Yuno","Chika Fujiwara|Chika"],
+      3: ["Lacus Clyne|Lacus","Euphemia","Mina Ashido|Mina","Ichigo Momomiya"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character with red or orange hair",
+    answers: {
+      1: ["Shanks","Erza|Erza Scarlet","Gaara","Ichigo|Ichigo Kurosaki"],
+      2: ["Kenshin|Himura Kenshin","Kurama","Kushina","Asuka|Asuka Langley","Kirishima|Eijiro Kirishima","Hinata|Shoyo Hinata","Renji|Renji Abarai","Nami","Todoroki|Shoto Todoroki"],
+      3: ["Nagato","Karin","Lina Inverse|Lina","Kyo Sohma|Kyo","Eustass Kid|Kid","Kagami|Taiga Kagami","Akashi|Seijuro Akashi","Makima","Ranma|Ranma Saotome","Orihime|Orihime Inoue","Hisoka"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character with blue hair",
+    answers: {
+      1: ["Rem","Bulma","Rimuru|Rimuru Tempest","Aqua"],
+      2: ["Rei Ayanami|Rei","Grimmjow","Kuroko|Tetsuya Kuroko","Juvia","Franky","Hinata Hyuga|Hinata","Ami Mizuno|Sailor Mercury","Sayaka|Sayaka Miki","Esdeath"],
+      3: ["Konan","Jellal","Iida|Tenya Iida","Trunks"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who's always hungry",
+    answers: {
+      1: ["Luffy|Monkey D. Luffy","Goku|Son Goku","Sasha|Sasha Blouse"],
+      2: ["Saber","Choji|Choji Akimichi","Naruto|Naruto Uzumaki","Mitsuri|Mitsuri Kanroji","Rengoku|Kyojuro Rengoku","Majin Buu|Buu","Toriko","L|L Lawliet"],
+      3: ["Gluttony","Snorlax","Kagura","Index","Natsu|Natsu Dragneel","Beerus","Anya|Anya Forger","Laios","Gojo|Satoru Gojo","Gohan"],
+      4: ["Milim|Milim Nava"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character with a famous catchphrase",
+    answers: {
+      1: ["Naruto|Naruto Uzumaki","Jotaro|Jotaro Kujo","Dio|Dio Brando","Luffy|Monkey D. Luffy","All Might"],
+      2: ["Rengoku|Kyojuro Rengoku","Sailor Moon|Usagi","Okabe|Rintaro Okabe","Kenshin|Himura Kenshin","Shikamaru|Shikamaru Nara","Anya|Anya Forger","Eren|Eren Yeager","Megumin","Joseph|Joseph Joestar","Kamina","Vegeta","Ash Ketchum|Ash","Pikachu","Team Rocket","Yugi|Yugi Muto","Gojo|Satoru Gojo","Aizen|Sosuke Aizen","Natsu|Natsu Dragneel","Happy","Franky"],
+      3: ["Rock Lee","Might Guy|Guy","Kakyoin|Noriaki Kakyoin","Giorno|Giorno Giovanna","Saitama","Lelouch","Light Yagami|Light","Kaguya|Kaguya Shinomiya","Bokuto|Kotaro Bokuto","Sukuna","Deku|Izuku Midoriya","Bakugo|Katsuki Bakugo","Asta","Escanor","Kira|Yoshikage Kira","Josuke|Josuke Higashikata","Rohan|Rohan Kishibe","Whitebeard","Kaiba|Seto Kaiba"],
+      4: ["Nanami|Kento Nanami","Speedwagon","Polnareff","Usopp","Itachi|Itachi Uchiha","Zoro|Roronoa Zoro","Hinata|Shoyo Hinata"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who lost an arm, leg, or hand",
+    answers: {
+      1: ["Edward Elric|Edward|Ed","Shanks","Guts"],
+      2: ["Erwin|Erwin Smith","Naruto|Naruto Uzumaki","Sasuke|Sasuke Uchiha","Tengen|Tengen Uzui","Violet Evergarden|Violet"],
+      3: ["Eren|Eren Yeager","Denji","Zeff","Eustass Kid|Kid","Lan Fan","Obito|Obito Uchiha","Netero|Isaac Netero","Vash","Genos","Tetsuo|Tetsuo Shima","Hyakkimaru"],
+      4: ["Yamamoto|Genryusai Yamamoto","Kirito"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who has a twin",
+    answers: {
+      1: ["Rem","Ram","Maki Zenin|Maki","Mai Zenin|Mai"],
+      2: ["Atsumu|Atsumu Miya","Osamu|Osamu Miya","Hikaru Hitachiin|Hikaru","Kaoru Hitachiin|Kaoru","Rin Okumura|Rin","Yukio Okumura|Yukio"],
+      3: ["Ichika Nakano|Ichika","Nino Nakano|Nino","Miku Nakano|Miku","Yotsuba Nakano|Yotsuba","Itsuki Nakano|Itsuki"],
+      4: ["Sakon","Ukon","Saga|Gemini Saga","Kanon","Ciel Phantomhive|Ciel","Ami Futami","Mami Futami"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime cat (or a character who turns into one)",
+    answers: {
+      1: ["Luna","Happy","Jiji","Meowth","Catbus"],
+      2: ["Artemis","Kirara","Nyanko-sensei|Madara","Yoruichi|Yoruichi Shihoin","Kyo Sohma|Kyo","Doraemon","Neferpitou|Pitou"],
+      3: ["Blair","Felix|Ferris","Chi","Baron|The Baron","Carla","Pantherlily|Lily","Ichigo Momomiya","Black Hanekawa|Tsubasa Hanekawa","Shampoo"],
+      4: ["Muta","Lector","Nyanta","Chomusuke"],
+      5: ["Haru (The Cat Returns)|Haru","Tama"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime dad",
+    answers: {
+      1: ["Goku|Son Goku","Vegeta","Loid Forger|Loid|Twilight","Endeavor"],
+      2: ["Minato|Minato Namikaze","Hohenheim|Van Hohenheim","Isshin Kurosaki|Isshin","Ging|Ging Freecss","Whitebeard","Monkey D. Dragon|Dragon","Maes Hughes|Hughes","Bardock","Grisha Yeager|Grisha","Toji Fushiguro|Toji","Joseph Joestar|Joseph","Jotaro|Jotaro Kujo","Kohei Inuzuka|Kohei","Gendo Ikari|Gendo","Naruto|Naruto Uzumaki"],
+      3: ["Kiritsugu|Kiritsugu Emiya","Shou Tucker","Silva Zoldyck|Silva","Gol D. Roger|Roger","Soichiro Yagami|Soichiro","Joichiro Yukihira|Joichiro","Shinjuro Rengoku|Shinjuro","Fugaku Uchiha|Fugaku","Sasuke|Sasuke Uchiha","Mr. Satan|Hercule","Gohan","Dio|Dio Brando","Kogoro Mouri|Kogoro","Daikichi"],
+      4: ["Tanjuro|Tanjuro Kamado","Hiashi Hyuga|Hiashi","Shikaku Nara|Shikaku","Sakumo Hatake|Sakumo","Ox-King","Ryuken Ishida|Ryuken","King Vegeta","Paragus"],
+      5: ["Inoichi|Inoichi Yamanaka"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime mom",
+    answers: {
+      1: ["Chi-Chi","Yor Forger|Yor","Inko Midoriya|Inko"],
+      2: ["Bulma","Kushina|Kushina Uzumaki","Trisha Elric|Trisha","Carla Yeager|Carla","Hinata|Hinata Hyuga","Isabella|Mama Isabella","Bellemere","Big Mom|Charlotte Linlin","Mitsuki Bakugo|Mitsuki"],
+      3: ["Sakura|Sakura Haruno","Holly Kujo|Holly","Lisa Lisa","Yui Ikari|Yui","Izumi Curtis|Izumi","Kyoko Honda|Kyoko","Portgas D. Rouge|Rouge","Videl","Kikyo Zoldyck|Kikyo","Mito Freecss|Mito","Rei Todoroki","Ragyo|Ragyo Kiryuin"],
+      4: ["Kurenai","Erina Pendleton|Erina","Junko Kaname|Junko","Gracia Hughes|Gracia","Nico Olvia|Olvia","Ikuko Tsukino|Ikuko","Kie Kamado|Kie","Ruka Rengoku|Ruka"],
+      5: ["Kokiri"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime idol, singer, or band member",
+    answers: {
+      1: ["Ai Hoshino|Ai","Bocchi|Hitori Gotoh","Yui Hirasawa|Yui"],
+      2: ["Ruby Hoshino|Ruby","Kana Arima|Kana","Nijika Ijichi|Nijika","Ikuyo Kita|Kita","Ryo Yamada|Ryo","Mio Akiyama|Mio","Ritsu Tainaka|Ritsu","Mugi|Tsumugi Kotobuki","Azusa Nakano|Azusa","Nana Osaki|Nana","Uta","Brook","Kaori Miyazono|Kaori","Kousei Arima|Kousei","Honoka Kosaka|Honoka"],
+      3: ["MEM-cho|Memcho","Lacus Clyne|Lacus","Ranka Lee|Ranka","Sheryl Nome|Sheryl","Kumiko Oumae|Kumiko","Reina Kousaka|Reina","Kyoka Jiro|Jiro","Sakura Minamoto","Chika Takami|Chika"],
+      4: ["Lynn Minmay|Minmay","Lily Hoshikawa|Lily"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character with an alter ego or second personality",
+    answers: {
+      1: ["Yugi|Yugi Muto|Pharaoh|Yami Yugi","Lelouch|Zero"],
+      2: ["Diavolo","Doppio|Vinegar Doppio","Hollow Ichigo|Ichigo","Yami Bakura|Bakura","Marik|Yami Marik","Sailor Moon|Usagi","Conan|Shinichi Kudo","Great Saiyaman|Gohan"],
+      3: ["Mob|Shigeo Kageyama","Sogeking|Usopp","Haise Sasaki|Kaneki","Black Hanekawa","Kaito Kid|Kaito Kuroba","Tuxedo Mask|Mamoru"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who sacrificed themselves for others",
+    answers: {
+      1: ["Rengoku|Kyojuro Rengoku","Jiraiya","Ace|Portgas D. Ace","Kamina","Goku|Son Goku","Vegeta"],
+      2: ["Itachi|Itachi Uchiha","Maes Hughes|Hughes","Neji|Neji Hyuga","Minato|Minato Namikaze","Kushina","Erwin|Erwin Smith","Hange|Hange Zoe","Piccolo","Nanami|Kento Nanami","Power","Himeno","Netero|Isaac Netero","Lelouch","Pain|Nagato","Whitebeard","Bellemere","Oden|Kozuki Oden","Shinobu|Shinobu Kocho"],
+      3: ["Haku","Android 16","Obito|Obito Uchiha","Gaara","Chiyo","Hinata Hyuga|Hinata","Gyomei|Gyomei Himejima","Muichiro|Muichiro Tokito","Genya|Genya Shinazugawa","Kagaya Ubuyashiki|Kagaya","Rem","Ur","Hiluluk","Going Merry|Merry","Greed|Ling","Alphonse|Al","Hohenheim","Kaworu","Misato","Kaji|Ryoji Kaji","Wolfwood|Nicholas D. Wolfwood","Armin|Armin Arlert","Genos"],
+      4: ["Tamayo","Mechamaru","Ultear","Igneel","Pell"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime butler or maid",
+    answers: {
+      1: ["Sebastian|Sebastian Michaelis","Rem","Ram","Tohru (Dragon Maid)|Tohru"],
+      2: ["Misaki Ayuzawa|Misaki","Hayate Ayasaki|Hayate","Ai Hayasaka|Hayasaka"],
+      3: ["Mey-Rin","Roberta","Mayuri Shiina|Mayuri","Faris NyanNyan|Faris","Watari","Walter|Walter C. Dornez"],
+      4: ["Tanaka (Black Butler)|Tanaka","Finnian","Baldroy","Gotoh","Canary","Frederica|Frederica Baumann","Petra Leyte|Petra","Siesta"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character on a student council",
+    answers: {
+      1: ["Miyuki Shirogane|Shirogane","Kaguya|Kaguya Shinomiya","Misaki Ayuzawa|Misaki"],
+      2: ["Chika Fujiwara|Chika","Yu Ishigami|Ishigami","Satsuki Kiryuin|Satsuki"],
+      3: ["Miko Iino|Iino","Iroha Isshiki|Iroha","Medaka Kurokami|Medaka","Yusaku Kitamura|Kitamura"],
+      4: ["Meguri Shiromeguri|Meguri","Zenkichi Hitoyoshi|Zenkichi","Sumire Kano|Sumire"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who can turn into an animal",
+    answers: {
+      1: ["Yoruichi|Yoruichi Shihoin","Chopper|Tony Tony Chopper","Kyo Sohma|Kyo"],
+      2: ["Marco|Marco the Phoenix","Kaido","Holo","Shippo","Haku","Rob Lucci|Lucci","Yuki Sohma|Yuki","Shigure Sohma|Shigure","Momiji Sohma|Momiji","Genma Saotome|Genma","Ryoga|Ryoga Hibiki|P-chan"],
+      3: ["Kaku","Pell","X Drake|Drake","Yamato","Kurama","Shampoo","Momonosuke"],
+      4: ["Elfman|Elfman Strauss","Chaka","King|Alber","Queen","Jabra","Mousse"],
+      5: ["Page One","Ulti","Who's-Who"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who uses water",
+    answers: {
+      1: ["Tanjiro|Tanjiro Kamado","Giyu|Giyu Tomioka","Squirtle"],
+      2: ["Juvia|Juvia Lockser","Aqua","Urokodaki|Sakonji Urokodaki","Blastoise","Kisame|Kisame Hoshigaki"],
+      3: ["Tobirama|Tobirama Senju","Sabito","Makomo","Sailor Mercury|Ami Mizuno","Dagon","Zabuza","Jinbe","Suigetsu|Suigetsu Hozuki","Harribel|Tier Harribel","Gyarados"],
+      4: ["Kaien Shiba|Kaien"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime scientist or inventor",
+    answers: {
+      1: ["Senku|Senku Ishigami","Bulma","Okabe|Rintaro Okabe","Kurisu|Kurisu Makise"],
+      2: ["Dr. Gero","Vegapunk","Mayuri|Mayuri Kurotsuchi","Professor Oak|Oak","Urahara|Kisuke Urahara","Franky","Mei Hatsume|Hatsume","Orochimaru","Chrome","Hange|Hange Zoe","Edward Elric|Edward"],
+      3: ["Senbei Norimaki|Senbei","Usopp","Caesar Clown|Caesar","Kabuto","Shou Tucker","Ritsuko Akagi|Ritsuko","Xeno","Byakuya Ishigami","Kaseki","Daru|Itaru Hashida","Stein|Franken Stein","Lloyd Asplund|Lloyd","Marcoh|Tim Marcoh"],
+      4: ["Power Loader","Naoko Akagi","Nina Einstein","Rakshata"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime character who's way older than they look",
+    answers: {
+      1: ["Frieren","Tsunade","Bisky|Biscuit Krueger"],
+      2: ["Shinobu Oshino|Shinobu","Tamayo","Holo","Mavis|Mavis Vermillion","Koenma","Rukia|Rukia Kuchiki","Toshiro|Hitsugaya","Muzan|Muzan Kibutsuji"],
+      3: ["Yoruichi","Urahara|Kisuke Urahara","Beatrice","Emilia","Hestia","Milim|Milim Nava","Kanna|Kanna Kamui","Tohru (Dragon Maid)|Tohru","Lucoa","Zeref","Vash","Alucard","Dio|Dio Brando","Kars","Inuyasha","Sesshomaru","Byakuya Kuchiki|Byakuya","Renji|Renji Abarai","Serie","Aura","Douma","Akaza","Kokushibo"],
+      4: ["Echidna","Roswaal","Shalltear","Knives","Esidisi","Wamuu","Shippo","Unohana","Kyubey","Flamme","Kaguya Otsutsuki","Yushiro"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime detective",
+    answers: {
+      1: ["Conan|Conan Edogawa|Shinichi Kudo","L|L Lawliet|Ryuzaki"],
+      2: ["Near","Kogoro Mouri|Kogoro","Heiji Hattori|Heiji","Kindaichi|Hajime Kindaichi","Ranpo|Ranpo Edogawa","Houtarou Oreki|Oreki","Dazai|Osamu Dazai","Atsushi|Atsushi Nakajima","Akane Tsunemori|Akane","Shinya Kogami|Kogami"],
+      3: ["Mello","Victorique","Eru Chitanda|Chitanda","Sherlock Holmes|Sherlock","Kunikida|Doppo Kunikida","Naomi Misora|Naomi","Soichiro Yagami|Soichiro","Ai Haibara|Haibara","Shuichi Akai|Akai","Amuro Toru|Rei Furuya|Bourbon","Ginoza|Nobuchika Ginoza"],
+      4: ["Matsuda|Touta Matsuda","Kazuya Kujo|Kazuya","Hakuba|Saguru Hakuba","Megure|Inspector Megure","Takagi|Wataru Takagi","Sato|Miwako Sato","Mitsuhiko","Ayumi","Genta"],
+      5: ["Jodie|Jodie Starling"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime delinquent or gang member",
+    answers: {
+      1: ["Mikey|Manjiro Sano","Yusuke|Yusuke Urameshi","Jotaro|Jotaro Kujo"],
+      2: ["Draken|Ken Ryuguji","Takemichi|Takemichi Hanagaki","Baji|Keisuke Baji","Onizuka|Eikichi Onizuka","Kuwabara|Kazuma Kuwabara","Josuke|Josuke Higashikata","Hanamichi Sakuragi|Sakuragi","Kaneda|Shotaro Kaneda","Tatsu|Immortal Dragon","Haruka Sakura|Sakura"],
+      3: ["Chifuyu|Chifuyu Matsuno","Kazutora|Kazutora Hanemiya","Mitsuya|Takashi Mitsuya","Izana|Izana Kurokawa","Kakucho","Hanma|Shuji Hanma","Kisaki|Tetta Kisaki","Okuyasu|Okuyasu Nijimura","Mitsui|Hisashi Mitsui","Tetsuo|Tetsuo Shima","Gokudera|Hayato Gokudera","Umemiya|Hajime Umemiya","Suo|Hayato Suo"],
+      4: ["Hakkai|Hakkai Shiba","Smiley|Nahoya Kawata","Angry|Souya Kawata","Ryota Miyagi|Miyagi","Kenji Harima|Harima"],
+      5: ["Taison Maeda|Maeda"],
+      6: []
+    }
+  },
+  {
+    prompt: "Name an anime ghost, spirit, or god",
+    answers: {
+      1: ["Menma|Meiko Honma","Hanako-kun|Hanako","Dimple|Ekubo","Yato","Ryuk"],
+      2: ["Yusuke|Yusuke Urameshi","Rem (Death Note)|Rem","Ichigo|Ichigo Kurosaki","Rukia|Rukia Kuchiki","Sai|Fujiwara no Sai","Brook","No-Face|Kaonashi","Haku","Totoro","Nyanko-sensei|Madara","Tomoe","Yukine","Hestia","Aqua"],
+      3: ["Botan","Koenma","Mayoi Hachikuji|Hachikuji","Sidoh","Yuko Kanoe|Yuko","Perona","Tsukasa (Hanako)|Tsukasa","Calcifer","Kodama","Forest Spirit|Deer God","Kikyo","Hiyori Iki|Hiyori","Bishamon","Beerus","Whis"],
+      4: ["Sayo Aisaka|Sayo","Nora","Ebisu","Kazuma (Noragami)|Kazuma"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a famously lazy anime character",
+    answers: {
+      1: ["Shikamaru|Shikamaru Nara","Gintoki|Gintoki Sakata","Nagi|Seishiro Nagi","Umaru|Umaru Doma"],
+      2: ["Saitama","Houtarou Oreki|Oreki","Tanaka (Tanaka-kun Is Always Listless)|Tanaka","Aizawa|Shota Aizawa","Aokiji|Kuzan","Snorlax"],
+      3: ["Kakashi|Kakashi Hatake","Hachiman|Hachiman Hikigaya","Aqua","Kazuma|Kazuma Sato","Shiro","Ryo Yamada|Ryo","Konata|Konata Izumi","Kenma|Kenma Kozume","Shunsui|Shunsui Kyoraku","Starrk|Coyote Starrk","Zoro|Roronoa Zoro","Yui Hirasawa|Yui"],
+      4: ["Saiki|Saiki Kusuo"],
+      5: [],
+      6: []
+    }
+  },
+
   // ================= HARD PROMPTS =================
   {
     hard: true,
