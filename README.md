@@ -10,6 +10,8 @@ A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer op
 - **Infinite ∞** — endless prompts, mostly about characters (5 character : 2 title : 1 hard). A skip or time-out costs one of 3 lives. Your best run is saved. The game remembers which prompts you've seen and serves new ones first.
 - **Party** — 2–6 players pass one device. Everyone answers the same prompt in turn, and an answer someone already gave that round is *taken* — so later players have to dig deeper. Leaderboard after each round; the winner fires the final blast.
 
+**Prompts never repeat.** Every prompt you see — Daily, Infinite or Party — is saved to Supabase under a random player ID for your browser, and you're never shown it again. The Daily set is picked by the database from prompts no earlier Daily has used. If the database can't be reached, the game still works and catches up later.
+
 When the fighter fires, every answer summons a wave of pixel monsters for the beam to vaporize — a Common answer brings one slime, a Deep Cut brings a wave led by a dragon.
 
 ## How it works
@@ -23,8 +25,9 @@ When the fighter fires, every answer summons a wave of pixel monsters for the be
 | 🟡 Legendary | 80 | In This Corner of the World |
 | 🌈 Deep Cut | 100 | Oblivion Battery |
 
-- **216 prompts** (53 hard). Two kinds:
+- **434 prompts** (202 hard). Three kinds:
   - **Title prompts** ("a 2010s anime", "a sports anime", "made by Kyoto Animation", "title starts with K") are answered from a catalog of **~7,000 anime from the 1960s to 2026**. Any anime that fits counts, and rarity comes from real popularity (how many people have it on their list).
+  - **Combo prompts** made automatically from the catalog — "a 1990s sports anime", "a 2010s anime made by MAPPA", "a horror anime movie" (only combos with enough real answers).
   - **Character prompts** (hand-written) about who characters are and what they can do: "a fighter who refuses to kill", "a character who works as a teacher", "an orphan", "royalty", "way older than they look", "can turn into an animal", "sacrificed themselves for others", "a character fast enough to race the Flash", "an attack that could destroy a planet" — plus character prompts for One Piece, JJK, Chainsaw Man, Frieren, Blue Lock, Solo Leveling and more.
 - 25 seconds per prompt. Wrong guesses cost nothing; running out of time scores 0.
 - **Forgiving answers:** word order doesn't matter (`satoru gojo` = Gojo Satoru), common romanization differences are ignored (`gojou`, `ruffy`), and close misspellings get **"Did you mean …?"** with up to 3 options — press Enter to take the first.
@@ -41,6 +44,8 @@ questions.js        hand-written prompts + CATALOG_PROMPTS (title prompt definit
 logic.js            answer matching, catalog prompts, daily/infinite prompt picking
 scene.js            pixel background: fighter, charge-ups, mobs, beam
 game.js             the three modes and all screens
+db.js               Supabase sync (seen prompts + the Daily)
+supabase/schema.sql database tables and functions
 tools/build_catalog.py   rebuilds catalog.js from the open datasets
 fonts/              VT323 + Press Start 2P (free, Open Font License)
 ```
@@ -83,6 +88,16 @@ New anime come out every season. To refresh:
    - `anime.csv`, `genres.csv`, `studios.csv` from [meesvandongen/anime-dataset](https://github.com/meesvandongen/anime-dataset) (`data/`)
    - `anime-offline-database-minified.json` from the latest [manami-project/anime-offline-database](https://github.com/manami-project/anime-offline-database/releases) release, saved as `db.json`
 2. Run `python3 tools/build_catalog.py path/to/that/folder`
+
+## Database (Supabase)
+
+`supabase/schema.sql` creates two tables and three functions:
+
+- `kh_player_seen` — which prompts each player has seen
+- `kh_daily` — the official prompts for each day
+- `kh_get_daily`, `kh_mark_seen`, `kh_get_seen` — the only things the page can call
+
+The tables have row-level security with no policies, so the public key in `db.js` can't read or change them directly. To use a different Supabase project, run `schema.sql` in its SQL editor and change `SUPABASE_URL` / `SUPABASE_KEY` in `db.js`.
 
 ## Data credits
 

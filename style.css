@@ -301,6 +301,9 @@ button.logo:hover { filter: brightness(1.2); }
   .board .sq { width: 8px; height: 8px; }
 }
 
+.sync-status { color: var(--muted); font-size: 17px; letter-spacing: 1px; margin: 10px 0 0; min-height: 20px; }
+.sync-status.ok { color: var(--cyan); }
+
 /* ---------- Help dialog ---------- */
 dialog {
   max-width: 440px; width: calc(100% - 32px);

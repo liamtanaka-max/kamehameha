@@ -259,10 +259,43 @@ function findInCatalog(input) {
   return { ...m, year: item ? item.year : null };
 }
 
-// Turn the compact specs in questions.js into question objects
+// Turn the compact specs in questions.js into question objects, plus
+// automatic combos ("Name a 1990s sports anime", "Name a horror anime movie")
+// so the bank is deep enough to never repeat.
+const COMBO_ERAS = [[1980, 1989, "1980s"], [1990, 1999, "1990s"], [2000, 2009, "2000s"], [2010, 2019, "2010s"], [2020, 2100, "2020s"]];
+const COMBO_MIN = 25;        // a decade combo needs at least this many fitting anime
+const COMBO_MOVIE_MIN = 15;  // a genre-movie combo needs at least this many
+const COMBO_HARD_BELOW = 60; // smaller sets go in the hard pool
+
+function countFits(where) {
+  let n = 0;
+  for (const item of catalogItems()) if (matchesWhere(item, where)) n++;
+  return n;
+}
+
+function comboQuestions(specs) {
+  const out = [];
+  for (const spec of specs) {
+    const w = spec.where;
+    if (!w || spec.nameTest || w.years || w.type != null || (w.genre == null && w.studio == null)) continue;
+    const rest = spec.prompt.replace(/^Name an? /, "");
+    for (const [from, to, label] of COMBO_ERAS) {
+      const where = { ...w, years: [from, to] };
+      const n = countFits(where);
+      if (n >= COMBO_MIN) out.push({ prompt: `Name a ${label} ${rest}`, where, combo: true, hard: spec.hard || n < COMBO_HARD_BELOW });
+    }
+    if (w.genre != null && w.studio == null) {
+      const where = { ...w, type: 1 };
+      const n = countFits(where);
+      if (n >= COMBO_MOVIE_MIN) out.push({ prompt: spec.prompt.replace(/\banime\b/, "anime movie"), where, combo: true, hard: true });
+    }
+  }
+  return out;
+}
+
 function catalogQuestions() {
   if (typeof CATALOG_PROMPTS === "undefined" || !catalogItems().length) return [];
-  return CATALOG_PROMPTS.map((spec) => ({ ...spec, catalog: true }));
+  return CATALOG_PROMPTS.concat(comboQuestions(CATALOG_PROMPTS)).map((spec) => ({ ...spec, catalog: true }));
 }
 
 // ---------------------------------------------------------
@@ -328,48 +361,87 @@ function questionsFor(dateKey) {
   return [c1, t1, c2, t2, c3, ...pick(HARD_QUESTIONS, HARD_PER_DAY, DAILY_SEED + 1)];
 }
 
-// Prompts this browser has already seen (any mode), oldest first
+// Prompts this player has already seen (any mode), oldest first.
+// Kept in this browser and synced to Supabase (db.js) so it survives forever.
 const SEEN_KEY = "kamehameha-seen";
-const SEEN_MAX = 400;
+const SEEN_MAX = 5000;
 function loadSeen() { try { return JSON.parse(localStorage.getItem(SEEN_KEY)) || []; } catch (e) { return []; } }
+function saveSeen(list) { try { localStorage.setItem(SEEN_KEY, JSON.stringify(list.slice(-SEEN_MAX))); } catch (e) {} }
 function markSeen(q) {
   if (!q) return;
-  try {
-    const seen = loadSeen().filter((id) => id !== q.id);
-    seen.push(q.id);
-    localStorage.setItem(SEEN_KEY, JSON.stringify(seen.slice(-SEEN_MAX)));
-  } catch (e) {}
+  const seen = loadSeen().filter((id) => id !== q.id);
+  seen.push(q.id);
+  saveSeen(seen);
+  if (typeof DB !== "undefined") DB.queueSeen(q.id);
+}
+// Combine the database's history (oldest first) with anything only this browser knows
+function mergeRemoteSeen(remote) {
+  const remoteSet = new Set(remote);
+  saveSeen([...remote, ...loadSeen().filter((id) => !remoteSet.has(id))]);
+}
+
+const QUESTION_BY_ID = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
+function poolFor(q) { return q.hard ? HARD_QUESTIONS : q.kind === "title" ? TITLE_QUESTIONS : CHARACTER_QUESTIONS; }
+const FALLBACK = {
+  c: [CHARACTER_QUESTIONS, TITLE_QUESTIONS, HARD_QUESTIONS],
+  t: [TITLE_QUESTIONS, CHARACTER_QUESTIONS, HARD_QUESTIONS],
+  h: [HARD_QUESTIONS, TITLE_QUESTIONS, CHARACTER_QUESTIONS]
+};
+
+// The Daily is shared by everyone, but if this player already met one of
+// today's prompts in Infinite or Party, swap it for a fresh one of the same kind.
+function personalizeDaily(qs) {
+  const seen = new Set(loadSeen());
+  const taken = new Set(qs.map((q) => q.id));
+  return qs.map((q) => {
+    if (!seen.has(q.id)) return q;
+    const slot = q.hard ? "h" : q.kind === "title" ? "t" : "c";
+    for (const pool of FALLBACK[slot]) {
+      const fresh = pool.filter((x) => !seen.has(x.id) && !taken.has(x.id));
+      if (fresh.length) {
+        const pick = fresh[Math.floor(Math.random() * fresh.length)];
+        taken.add(pick.id);
+        return pick;
+      }
+    }
+    return q;
+  });
 }
 
 // Infinite / Party: mostly character prompts, some title prompts, and a hard
-// one every so often. Never repeats within a run, and prefers prompts this
-// browser hasn't seen; when everything has been seen, it brings back the
-// ones seen longest ago.
+// one every so often. Never shows a prompt this player has seen before: if a
+// pool runs dry it borrows from the others, and only when every single prompt
+// has been seen does it bring back the ones seen longest ago.
 const STREAM_PATTERN = ["c", "t", "c", "c", "h", "c", "t", "c"]; // 5 character : 2 title : 1 hard
 function promptStream() {
   const used = new Set();
   let n = 0;
-  function pickFrom(pool) {
+  function pick(slot) {
     const seen = loadSeen();
-    const fresh = pool.filter((q) => !used.has(q.id) && !seen.includes(q.id));
-    let q;
-    if (fresh.length) q = fresh[Math.floor(Math.random() * fresh.length)];
-    else {
-      const notUsed = pool.filter((q2) => !used.has(q2.id));
-      const candidates = notUsed.length ? notUsed : pool;
-      if (!notUsed.length) used.clear();
-      candidates.sort((a, b) => seen.indexOf(a.id) - seen.indexOf(b.id)); // oldest first
-      q = candidates[Math.floor(Math.random() * Math.min(5, candidates.length))];
+    const seenSet = new Set(seen);
+    for (const pool of FALLBACK[slot]) {
+      const fresh = pool.filter((q) => !used.has(q.id) && !seenSet.has(q.id));
+      if (fresh.length) {
+        const q = fresh[Math.floor(Math.random() * fresh.length)];
+        used.add(q.id);
+        return q;
+      }
     }
+    // Everything has been seen: oldest first
+    const pool = FALLBACK[slot][0];
+    let candidates = pool.filter((q) => !used.has(q.id));
+    if (!candidates.length) { used.clear(); candidates = pool.slice(); }
+    const age = new Map(seen.map((id, i) => [id, i]));
+    candidates.sort((a, b) => (age.get(a.id) ?? -1) - (age.get(b.id) ?? -1));
+    const q = candidates[Math.floor(Math.random() * Math.min(5, candidates.length))];
     used.add(q.id);
     return q;
   }
   return function next() {
-    const slot = STREAM_PATTERN[n++ % STREAM_PATTERN.length];
-    return pickFrom(slot === "h" ? HARD_QUESTIONS : slot === "t" ? TITLE_QUESTIONS : CHARACTER_QUESTIONS);
+    return pick(STREAM_PATTERN[n++ % STREAM_PATTERN.length]);
   };
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { normalize, checkAnswer, findInCatalog, questionsFor, promptStream, dayNumber, todayKey, answersOf, ALL_QUESTIONS, NORMAL_QUESTIONS, HARD_QUESTIONS, similarity, prep };
+  module.exports = { normalize, checkAnswer, findInCatalog, questionsFor, promptStream, personalizeDaily, mergeRemoteSeen, loadSeen, markSeen, QUESTION_BY_ID, CHARACTER_QUESTIONS, TITLE_QUESTIONS, dayNumber, todayKey, answersOf, ALL_QUESTIONS, NORMAL_QUESTIONS, HARD_QUESTIONS, similarity, prep };
 }

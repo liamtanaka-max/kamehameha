@@ -97,9 +97,39 @@ function goMenu() {
 
 // ---------- Starting modes ----------
 
-function startDaily() {
+// Today's 7 prompts: from Supabase (never used in any earlier Daily), with a
+// local fallback if the database can't be reached. Saved once per day.
+async function dailyPrompts() {
+  if (daily.ids) {
+    const qs = daily.ids.map((id) => QUESTION_BY_ID.get(id));
+    if (qs.every(Boolean)) return qs;
+  }
+  if (daily.results.length) return questionsFor(dateKey); // started before the database existed
+  const local = questionsFor(dateKey);
+  let qs = local;
+  try {
+    const ids = await DB.getDaily(dateKey, {
+      character: CHARACTER_QUESTIONS.map((q) => q.id),
+      title: TITLE_QUESTIONS.map((q) => q.id),
+      hard: HARD_QUESTIONS.map((q) => q.id)
+    });
+    if (ids && ids.length === PER_DAY) qs = ids.map((id, i) => QUESTION_BY_ID.get(id) || local[i]);
+  } catch (e) { /* offline: use the local schedule */ }
+  qs = personalizeDaily(qs);
+  daily.ids = qs.map((q) => q.id);
+  saveDaily();
+  return qs;
+}
+
+let dailyLoading = false;
+async function startDaily() {
+  if (dailyLoading) return;
   daily = loadDaily();
-  run = { mode: "daily", prompts: questionsFor(dateKey), results: daily.results };
+  dailyLoading = true;
+  $("daily-btn-label").textContent = "LOADING…";
+  const prompts = await dailyPrompts();
+  dailyLoading = false;
+  run = { mode: "daily", prompts, results: daily.results };
   Scene.reset();
   if (run.results.length >= PER_DAY) {
     Scene.setCharge(powerOf(run.results) / MAX_POWER, auraColor(run.results));
@@ -672,3 +702,19 @@ $("help").addEventListener("click", (e) => { if (e.target === $("help")) $("help
 Scene.init($("scene"));
 $("day-label").textContent = `CHARGE #${dayNum}`;
 goMenu();
+
+// Pull this player's full history from Supabase so nothing they've seen comes back
+function setSync(text, ok) {
+  const el = $("sync-status");
+  if (!el) return;
+  el.textContent = text;
+  el.classList.toggle("ok", !!ok);
+}
+setSync("syncing…");
+DB.pullSeen(loadSeen())
+  .then((remote) => {
+    mergeRemoteSeen(remote);
+    const n = loadSeen().length;
+    setSync(`☁ ${n} prompt${n === 1 ? "" : "s"} played · none will repeat`, true);
+  })
+  .catch(() => setSync("offline — history saved on this device"));
