@@ -306,8 +306,7 @@ const ALL_QUESTIONS = QUESTIONS.concat(catalogQuestions());
 // Hand-written prompts that are really about titles, not characters
 const TITLE_STYLE = new Set([
   "Name an anime studio", "Name a Shonen Jump series that started before 2000", "Name an anime OVA released before 2000",
-  "Name a Gundam series or film", "Name a manga or anime by Osamu Tezuka", "Name a manga or anime by CLAMP",
-  "Name a manga or anime by Rumiko Takahashi"
+  "Name a Gundam series or film"
 ]);
 ALL_QUESTIONS.forEach((q) => {
   if (!q.id) q.id = slug(q.prompt);

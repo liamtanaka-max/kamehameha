@@ -956,18 +956,6 @@ const QUESTIONS = [
   },
   {
     hard: true,
-    prompt: "Name an anime director",
-    answers: {
-      1: ["Hayao Miyazaki|Miyazaki","Makoto Shinkai|Shinkai","Satoshi Kon"],
-      2: ["Mamoru Hosoda|Hosoda","Hideaki Anno|Anno","Katsuhiro Otomo|Otomo","Mamoru Oshii|Oshii","Shinichiro Watanabe","Isao Takahata|Takahata"],
-      3: ["Masaaki Yuasa|Yuasa","Naoko Yamada","Goro Miyazaki","Hiroyuki Imaishi|Imaishi","Tetsuro Araki","Kunihiko Ikuhara|Ikuhara","Yoshiyuki Tomino|Tomino","Rintaro","Kenji Kamiyama|Kamiyama","Sunghoo Park","Shota Goshozono|Goshozono","Akiyuki Shinbo|Shinbo","Osamu Tezuka|Tezuka","Keiichiro Saito"],
-      4: ["Mitsuo Iso","Kazuya Tsurumaki|Tsurumaki","Yoshiaki Kawajiri|Kawajiri","Osamu Dezaki|Dezaki","Ryutaro Nakamura","Takeshi Koike","Kenji Nakamura","Hiroyasu Ishida","Tatsuyuki Nagai","Rie Matsumoto","Shingo Natsume","Ayumu Watanabe","Mari Okada","Hiromasa Yonebayashi|Yonebayashi","Keiichi Hara","Sayo Yamamoto","Hiroyuki Okiura|Okiura","Shoji Kawamori|Kawamori"],
-      5: ["Yasuomi Umetsu|Umetsu","Gisaburo Sugii","Eiichi Yamamoto","Koji Morimoto","Takashi Nakamura","Ryosuke Takahashi","Kazuki Akane","Shinji Aramaki","Mamoru Kanbe","Hiroko Utsumi","Fuga Yamashiro"],
-      6: ["Yasuhiro Takemoto","Toshio Hirata","Hiroyuki Kitakubo","Kitaro Kosaka"]
-    }
-  },
-  {
-    hard: true,
     prompt: "Name a Gundam series or film",
     answers: {
       1: ["Mobile Suit Gundam|Gundam 0079|First Gundam","Gundam Wing","Gundam SEED"],
@@ -992,30 +980,6 @@ const QUESTIONS = [
   },
   {
     hard: true,
-    prompt: "Name a Japanese anime voice actor (seiyuu)",
-    answers: {
-      1: ["Masako Nozawa","Yuki Kaji","Mamoru Miyano","Kana Hanazawa","Junko Takeuchi"],
-      2: ["Hiroshi Kamiya","Daisuke Ono","Jun Fukuyama","Takahiro Sakurai","Rie Kugimiya","Mayumi Tanaka","Natsuki Hanae","Yuichi Nakamura","Tomokazu Sugita","Saori Hayami","Kenjiro Tsuda","Junichi Suwabe","Megumi Ogata","Aoi Yuki"],
-      3: ["Kappei Yamaguchi","Megumi Hayashibara","Akio Otsuka","Koichi Yamadera","Ryo Horikawa","Toshio Furukawa","Hiro Shimono","Tomokazu Seki","Showtaro Morikubo","Kaito Ishikawa","Nobuhiko Okamoto","Yoshitsugu Matsuoka","Ayane Sakura","Inori Minase","Sora Amamiya","Miyuki Sawashiro","Yui Horie","Maaya Sakamoto","Romi Park","Akira Ishida","Koki Uchiyama","Yuko Miyamura","Kotono Mitsuishi","Kazuya Nakai","Hikaru Midorikawa","Toru Furuya"],
-      4: ["Rica Matsumoto","Chikao Otsuka","Norio Wakamoto","Unsho Ishizuka","Kenyu Horiuchi","Takehito Koyasu","Ryotaro Okiayu","Soichiro Hoshi","Ai Kayano","Atsumi Tanezaki","Lynn","Tomoyo Kurosawa","Rie Takahashi","Yoko Hikasa","Shinichiro Miki","Kenichi Suzumura","Mitsuo Iwata","Akemi Okamura","Kazue Ikura","Mie Sonozaki","Daisuke Namikawa","Sumire Morohoshi","Kenta Miyake","Minami Takayama","Wakana Yamazaki"],
-      5: ["Kei Tomiyama","Hideyuki Tanaka","Banjo Ginga","Joji Yanami","Ichiro Nagai","Takeshi Aono"],
-      6: ["Kaneta Kimotsuki","Shozo Iizuka","Junpei Takiguchi"]
-    }
-  },
-  {
-    hard: true,
-    prompt: "Name an anime composer",
-    answers: {
-      1: ["Joe Hisaishi|Hisaishi","Yoko Kanno|Kanno","Hiroyuki Sawano|Sawano"],
-      2: ["Kenji Kawai","Yuki Kajiura|Kajiura","Shiro Sagisu|Sagisu","Go Shiina","RADWIMPS"],
-      3: ["Yasuharu Takanashi|Takanashi","Kevin Penkin","Kensuke Ushio|Ushio","Taku Iwasaki","Susumu Hirasawa","Yugo Kanno","Evan Call","Masaru Yokoyama","Nujabes"],
-      4: ["Yoshihiro Ike","Shunsuke Kikuchi","Hajime Mizoguchi","Kow Otani","Akira Senju","Yoshihisa Hirano","Michiru Oshima","Tatsuya Kato","Kaoru Wada","Shiro Hamaguchi","Toshihiko Sahashi","Kenji Yamamoto","Kohei Tanaka"],
-      5: ["Seiji Yokoyama"],
-      6: ["Michiaki Watanabe"]
-    }
-  },
-  {
-    hard: true,
     prompt: "Name a Bleach Zanpakuto",
     answers: {
       1: ["Zangetsu|Tensa Zangetsu","Senbonzakura|Senbonzakura Kageyoshi","Hyorinmaru|Daiguren Hyorinmaru"],
@@ -1036,42 +1000,6 @@ const QUESTIONS = [
       4: ["Dominion Tank Police","Cyber City Oedo 808","Gall Force","Iczer-One","Detonator Orgun","Hades Project Zeorymer|Zeorymer","Appleseed","Ruin Explorers","Dirty Pair Flash"],
       5: ["Genocyber","Mad Bull 34","Baoh","Battle Angel|Gunnm","Moldiver","Kishin Corps"],
       6: ["Dream Hunter Rem","Leda: The Fantastic Adventure of Yohko|Leda","Bio-Booster Armor Guyver|Guyver","Psychic Wars"]
-    }
-  },
-  {
-    hard: true,
-    prompt: "Name a manga or anime by Osamu Tezuka",
-    answers: {
-      1: ["Astro Boy|Tetsuwan Atom","Black Jack"],
-      2: ["Kimba the White Lion|Jungle Emperor|Jungle Taitei","Phoenix|Hi no Tori","Dororo"],
-      3: ["Princess Knight|Ribbon no Kishi","Buddha","Metropolis"],
-      4: ["Unico","Message to Adolf|Adolf","MW","The Three-Eyed One|Mitsume ga Tooru"],
-      5: ["Ode to Kirihito","Apollo's Song","Ayako","Marvelous Melmo|Fushigi na Melmo"],
-      6: ["Big X","Vampires","A Tree in the Sun|Hidamari no Ki","The Book of Human Insects","Microid S"]
-    }
-  },
-  {
-    hard: true,
-    prompt: "Name a manga or anime by CLAMP",
-    answers: {
-      1: ["Cardcaptor Sakura"],
-      2: ["xxxHolic","Tsubasa: Reservoir Chronicle|Tsubasa","Magic Knight Rayearth|Rayearth","Chobits"],
-      3: ["X|X/1999","Tokyo Babylon"],
-      4: ["Kobato","Angelic Layer","Clover","RG Veda","Blood-C"],
-      5: ["Gate 7","Legal Drug|Lawful Drug","Wish","Drug & Drop","Miyuki-chan in Wonderland"],
-      6: ["Man of Many Faces","Duklyon","Shirahime-Syo","Suki"]
-    }
-  },
-  {
-    hard: true,
-    prompt: "Name a manga or anime by Rumiko Takahashi",
-    answers: {
-      1: ["Inuyasha","Ranma 1/2|Ranma"],
-      2: ["Urusei Yatsura","Maison Ikkoku"],
-      3: ["Rin-ne|Kyokai no Rinne"],
-      4: ["Mermaid Saga|Mermaid Forest","Mao"],
-      5: ["One-Pound Gospel"],
-      6: ["Rumic Theater","Fire Tripper"]
     }
   }
 ];

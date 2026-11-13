@@ -25,7 +25,7 @@ When the fighter fires, every answer summons a wave of pixel monsters for the be
 | 🟡 Legendary | 80 | In This Corner of the World |
 | 🌈 Deep Cut | 100 | Oblivion Battery |
 
-- **434 prompts** (202 hard). Three kinds:
+- **428 prompts** (196 hard), all about anime itself — no voice actors, directors or other real people. Three kinds:
   - **Title prompts** ("a 2010s anime", "a sports anime", "made by Kyoto Animation", "title starts with K") are answered from a catalog of **~7,000 anime from the 1960s to 2026**. Any anime that fits counts, and rarity comes from real popularity (how many people have it on their list).
   - **Combo prompts** made automatically from the catalog — "a 1990s sports anime", "a 2010s anime made by MAPPA", "a horror anime movie" (only combos with enough real answers).
   - **Character prompts** (hand-written) about who characters are and what they can do: "a fighter who refuses to kill", "a character who works as a teacher", "an orphan", "royalty", "way older than they look", "can turn into an animal", "sacrificed themselves for others", "a character fast enough to race the Flash", "an attack that could destroy a planet" — plus character prompts for One Piece, JJK, Chainsaw Man, Frieren, Blue Lock, Solo Leveling and more.
