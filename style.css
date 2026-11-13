@@ -286,6 +286,8 @@ button.logo:hover { filter: brightness(1.2); }
 .board li.lead { border-color: var(--gold); box-shadow: 0 0 14px rgba(255,210,63,.3); }
 .board .rank { font-family: var(--pixel); font-size: 12px; color: var(--muted); }
 .board li.lead .rank { color: var(--gold); }
+.board .pname em { font-style: normal; font-family: var(--pixel); font-size: 9px; margin-left: 6px; }
+.mobs-line b { font-family: var(--pixel); font-size: 13px; font-weight: 400; }
 .board .pname { color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .board .squares { display: flex; gap: 3px; }
 .board .sq { width: 10px; height: 10px; background: var(--c); box-shadow: 0 0 5px var(--c); }

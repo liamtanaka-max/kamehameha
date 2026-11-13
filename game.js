@@ -36,7 +36,6 @@ function setBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch (
 
 const powerOf = (results) => results.reduce((s, r) => s + (r.tier ? TIERS[r.tier].points : 0), 0);
 const bestTierOf = (results) => results.reduce((m, r) => Math.max(m, r.tier || 0), 0);
-const auraColor = (results) => TIER_COLORS[Math.max(2, bestTierOf(results))];
 const mobCount = (results) => Math.min(60, results.reduce((s, r) => s + (r.tier || 0), 0));
 
 function show(id) {
@@ -77,6 +76,8 @@ function maxPower() {
   if (run.mode === "party") return run.rounds * TIERS[6].points;
   return MAX_POWER;
 }
+// Which fighter on screen belongs to whoever is answering
+function fighterIndex() { return run && run.mode === "party" ? run.order[run.turn] : 0; }
 function chargePct() { return Math.min(1, powerOf(curResults()) / maxPower()); }
 
 // ---------- Menu ----------
@@ -91,7 +92,7 @@ function goMenu() {
   $("daily-btn-sub").textContent = done ? `${powerOf(daily.results)} power · next charge at midnight` : "today's 7 prompts · last 2 are HARD";
   const best = getBest();
   $("infinite-best").textContent = best ? `BEST: ${best} power` : "";
-  if (done) Scene.setCharge(powerOf(daily.results) / MAX_POWER, auraColor(daily.results));
+  if (done) Scene.setCharge(0, powerOf(daily.results) / MAX_POWER);
   show("start");
 }
 
@@ -132,8 +133,8 @@ async function startDaily() {
   run = { mode: "daily", prompts, results: daily.results };
   Scene.reset();
   if (run.results.length >= PER_DAY) {
-    Scene.setCharge(powerOf(run.results) / MAX_POWER, auraColor(run.results));
-    Scene.fire(powerOf(run.results) / MAX_POWER, [], null, null, true);
+    Scene.setCharge(0, powerOf(run.results) / MAX_POWER);
+    Scene.finale(0, [], null, null, true);
     return showResults(false);
   }
   beginTurn();
@@ -155,6 +156,7 @@ function startParty(names, rounds) {
     players: names.map((name) => ({ name, results: [] })), names
   };
   Scene.reset();
+  Scene.setPlayers(names); // everyone gets their own fighter
   startRound();
 }
 
@@ -176,7 +178,7 @@ function showPass() {
   $("pass-round").textContent = `ROUND ${run.round + 1} / ${run.rounds}`;
   $("pass-name").textContent = p.name.toUpperCase();
   $("pass-taken").textContent = run.taken.size ? `${run.taken.size} answer${run.taken.size > 1 ? "s" : ""} already taken this round` : "you go first this round";
-  Scene.setCharge(chargePct(), auraColor(p.results));
+  Scene.setActive(run.order[run.turn]);
   $("pass-ready").focus();
 }
 
@@ -197,7 +199,7 @@ function showRoundSummary() {
   $("round-reveal").innerHTML = revealHtml(run.prompt);
   renderBoard($("round-board"));
   const last = run.round >= run.rounds - 1;
-  $("round-next").textContent = last ? "FINAL BLAST ›" : "NEXT ROUND ›";
+  $("round-next").textContent = last ? "FINAL POWER-UP ›" : "NEXT ROUND ›";
   $("round-next").classList.toggle("pink", last);
   $("round-next").focus();
 }
@@ -211,7 +213,8 @@ function renderBoard(el) {
   const rows = standings();
   el.innerHTML = rows.map((p, i) => {
     const squares = p.results.map((r) => `<span class="sq" style="--c:${TIER_COLORS[r.tier || 0]}"></span>`).join("");
-    return `<li class="${i === 0 ? "lead" : ""}"><span class="rank">${i + 1}</span><span class="pname">${escapeHtml(p.name)}</span><span class="squares">${squares}</span><span class="ppow">${p.power}</span></li>`;
+    const form = Scene.formOf(p.power / maxPower());
+    return `<li class="${i === 0 ? "lead" : ""}"><span class="rank">${i + 1}</span><span class="pname">${escapeHtml(p.name)} <em style="color:${form.color}">${form.name}</em></span><span class="squares">${squares}</span><span class="ppow">${p.power}</span></li>`;
   }).join("");
 }
 
@@ -221,10 +224,10 @@ function partyFinale() {
   show("play");
   $("play").classList.add("firing");
   $("fire-hud").hidden = false;
-  $("fire-label").textContent = `${winner.name.toUpperCase()} FIRES!`;
-  Scene.setCharge(Math.min(1, winner.power / maxPower()), auraColor(winner.results));
+  $("fire-label").textContent = `${winner.name.toUpperCase()} POWERS UP!`;
   startFireCounters(winner.power);
-  Scene.fire(Math.min(1, winner.power / maxPower()), tiers, () => {
+  const who = run.players.findIndex((p) => p.name === winner.name);
+  Scene.finale(who, tiers, () => {
     setTimeout(() => { endFire(); showPartyResults(winner); }, 500);
   }, onKill);
 }
@@ -279,7 +282,8 @@ function beginTurn() {
   $("next").hidden = true;
   renderTaken();
   refreshHud(false);
-  Scene.setCharge(chargePct(), auraColor(curResults()));
+  Scene.setActive(fighterIndex());
+  Scene.setCharge(fighterIndex(), chargePct());
   startTimer();
   $("answer").focus();
 }
@@ -378,8 +382,8 @@ function record(result) {
   }
 
   let label = "NEXT ›", fire = false;
-  if (run.mode === "daily" && run.results.length >= PER_DAY) { label = "FIRE! ›"; fire = true; }
-  if (run.mode === "infinite" && run.lives <= 0) { label = "OUT OF LIVES — FIRE! ›"; fire = true; }
+  if (run.mode === "daily" && run.results.length >= PER_DAY) { label = "FINAL POWER-UP ›"; fire = true; }
+  if (run.mode === "infinite" && run.lives <= 0) { label = "OUT OF LIVES — POWER UP ›"; fire = true; }
   if (run.mode === "party") {
     label = run.turn < run.players.length - 1
       ? `PASS TO ${run.players[run.order[run.turn + 1]].name.toUpperCase()} ›`
@@ -408,13 +412,13 @@ function accept(match) {
   $("flash").style.setProperty("--c", color);
   $("flash").innerHTML = `<span class="tier-name">${tier.name.toUpperCase()}</span><span class="tier-pts">+${tier.points}</span><span class="tier-answer">${escapeHtml(match.name)}</span>`;
   record({ prompt: q.prompt, answer: match.name, tier: match.tier });
-  Scene.burst(match.tier, tier.points, chargePct(), color, tier.name.toUpperCase(), auraColor(curResults()));
+  Scene.burst(fighterIndex(), match.tier, tier.points, chargePct(), tier.name.toUpperCase());
 }
 
 function miss(message, label) {
   $("flash").className = "result-flash miss";
   $("flash").textContent = message;
-  Scene.fizzle(label);
+  Scene.fizzle(fighterIndex(), label);
   record({ prompt: curPrompt().prompt, answer: null, tier: 0 });
 }
 
@@ -512,10 +516,10 @@ function fireRun() {
   show("play");
   $("play").classList.add("firing");
   $("fire-hud").hidden = false;
-  $("fire-label").textContent = "FIRE!";
+  $("fire-label").textContent = "FINAL POWER-UP!";
   const power = powerOf(run.results);
   startFireCounters(power);
-  Scene.fire(Math.min(1, power / MAX_POWER), run.results.map((r) => r.tier || 0), (kills) => {
+  Scene.finale(0, run.results.map((r) => r.tier || 0), (kills) => {
     setTimeout(() => { endFire(); showResults(true, kills); }, 500);
   }, onKill);
 }
@@ -545,7 +549,8 @@ function showResults(animate, kills) {
     setNumber($("final-km"), km, " km");
   }
   $("landmark").textContent = LANDMARKS.filter(([min]) => km >= min).pop()[1];
-  $("mobs-line").textContent = `💀 ${mobs} mob${mobs === 1 ? "" : "s"} vaporized`;
+  const form = Scene.formOf(power / MAX_POWER);
+  $("mobs-line").innerHTML = `Final form: <b style="color:${form.color}">${form.name}</b> · 💀 ${mobs} mob${mobs === 1 ? "" : "s"} vaporized`;
 
   const shown = results.slice(-30);
   $("chart").innerHTML = shown.map((r, i) => {

@@ -8,11 +8,11 @@ A daily anime trivia game inspired by [Krillion](https://krillion.io). Answer op
 
 - **Daily Charge** (main) — 7 prompts, the same for everyone each day: 3 about characters, 2 about anime titles, then 2 **HARD** ones. Progress is saved; come back tomorrow for a new set. Days don't repeat a prompt for ~26 days.
 - **Infinite ∞** — endless prompts, mostly about characters (5 character : 2 title : 1 hard). A skip or time-out costs one of 3 lives. Your best run is saved. The game remembers which prompts you've seen and serves new ones first.
-- **Party** — 2–6 players pass one device. Everyone answers the same prompt in turn, and an answer someone already gave that round is *taken* — so later players have to dig deeper. Leaderboard after each round; the winner fires the final blast.
+- **Party** — 2–6 players pass one device. Everyone answers the same prompt in turn, and an answer someone already gave that round is *taken* — so later players have to dig deeper. Every player gets their own fighter on screen that grows with their answers. Leaderboard after each round; the winner leads the final power-up.
 
 **Prompts never repeat.** Every prompt you see — Daily, Infinite or Party — is saved to Supabase under a random player ID for your browser, and you're never shown it again. The Daily set is picked by the database from prompts no earlier Daily has used. If the database can't be reached, the game still works and catches up later.
 
-When the fighter fires, every answer summons a wave of pixel monsters for the beam to vaporize — a Common answer brings one slime, a Deep Cut brings a wave led by a dragon.
+Every answer powers up your fighter: rarer answers make him grow more, and as his total climbs he transforms through original forms — SPARK, SURGE, OVERDRIVE, STORM, ASCENDED, ZENITH, and a secret VOID form for near-perfect runs. At the end his aura explodes into a shockwave that wipes out a wave of pixel monsters for every answer — a Common answer brings one slime, a Deep Cut brings a wave led by a dragon.
 
 ## How it works
 
@@ -25,7 +25,7 @@ When the fighter fires, every answer summons a wave of pixel monsters for the be
 | 🟡 Legendary | 80 | In This Corner of the World |
 | 🌈 Deep Cut | 100 | Oblivion Battery |
 
-- **428 prompts** (196 hard), all about anime itself — no voice actors, directors or other real people. Three kinds:
+- **440 prompts**, all about anime itself — no voice actors, directors or other real people. Three kinds:
   - **Title prompts** ("a 2010s anime", "a sports anime", "made by Kyoto Animation", "title starts with K") are answered from a catalog of **~7,000 anime from the 1960s to 2026**. Any anime that fits counts, and rarity comes from real popularity (how many people have it on their list).
   - **Combo prompts** made automatically from the catalog — "a 1990s sports anime", "a 2010s anime made by MAPPA", "a horror anime movie" (only combos with enough real answers).
   - **Character prompts** (hand-written) about who characters are and what they can do: "a fighter who refuses to kill", "a character who works as a teacher", "an orphan", "royalty", "way older than they look", "can turn into an animal", "sacrificed themselves for others", "a character fast enough to race the Flash", "an attack that could destroy a planet" — plus character prompts for One Piece, JJK, Chainsaw Man, Frieren, Blue Lock, Solo Leveling and more.
@@ -42,7 +42,7 @@ style.css           retro pixel look
 catalog.js          ~7,000 anime (generated — see below)
 questions.js        hand-written prompts + CATALOG_PROMPTS (title prompt definitions)
 logic.js            answer matching, catalog prompts, daily/infinite prompt picking
-scene.js            pixel background: fighter, charge-ups, mobs, beam
+scene.js            pixel background: fighter, forms, mobs, finale shockwave
 game.js             the three modes and all screens
 db.js               Supabase sync (seen prompts + the Daily)
 supabase/schema.sql database tables and functions

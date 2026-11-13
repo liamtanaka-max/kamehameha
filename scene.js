@@ -1,74 +1,109 @@
 // =========================================================
 //  PIXEL SCENE — background canvas
-//  Night sky, mountains, and an (original) pixel fighter.
+//  Night sky, mountains, and original pixel fighters.
 //
-//  Every answer triggers a charge-up sized by how niche it was:
-//    Common   -> small pulse, gauge ticks up a little
-//    Deep Cut -> energy pillar, shockwave, big shake, gauge jumps
-//  At the end he fires the beam across the screen.
+//  Every answer powers a fighter up, sized by how niche it was:
+//  he visibly grows, and as his total climbs he transforms through
+//  eight forms (BASE -> SPARK -> SURGE -> OVERDRIVE -> STORM ->
+//  ASCENDED -> ZENITH -> the secret VOID form).
+//  At the end his aura explodes into a shockwave that wipes out
+//  a wave of monsters for every answer.
 //
 //  Public API:
 //    Scene.init(canvas)
-//    Scene.setCharge(pct, color)      set total power (0..1) silently
-//    Scene.burst(tier, points, pct, color)  play a charge-up for one answer
-//    Scene.fizzle(label)              play a dud (skip / time out)
-//    Scene.fire(pct, onDone, instant)
+//    Scene.setPlayers(names)            one fighter per name ("" = solo, no label)
+//    Scene.setActive(i)                 whose turn it is (Party)
+//    Scene.setCharge(i, pct)            set a fighter's power (0..1) silently
+//    Scene.burst(i, tier, points, pct, label)   power-up for one answer
+//    Scene.fizzle(i, label)             a dud (skip / time out)
+//    Scene.finale(i, tiers, onDone, onKill, instant)
+//    Scene.reset()
+//    Scene.FORMS, Scene.formOf(pct)
 // =========================================================
 
 const Scene = (() => {
-  // Fighter sprites. "#" = body, "H" = hands (where the orb sits)
-  const CHARGE = [
-    "........####........",
-    ".......######.......",
-    ".......######.......",
-    ".......#####........",
-    "........###.........",
-    "......#######.......",
-    ".....#########......",
-    "....###.#####.##....",
-    "...###..#####..##...",
-    "..###...#####...#...",
-    ".HH#....#####.......",
-    ".HH.....#####.......",
-    "........######......",
-    ".......###..###.....",
-    "......###....###....",
-    ".....###......###...",
-    "....###........###..",
-    "...###..........###.",
-    "..####..........####"
+  // ---------- Forms ----------
+  // "at" = share of the maximum possible power needed to reach the form
+  const FORMS = [
+    { name: "BASE",      at: 0,    color: "#7d88ad" },
+    { name: "SPARK",     at: 0.06, color: "#9aa4c4" },
+    { name: "SURGE",     at: 0.15, color: "#48d6ff" },
+    { name: "OVERDRIVE", at: 0.27, color: "#5dff9b" },
+    { name: "STORM",     at: 0.42, color: "#b86bff" },
+    { name: "ASCENDED",  at: 0.60, color: "#ffd23f" },
+    { name: "ZENITH",    at: 0.80, color: "#ff4f8b" },
+    { name: "VOID",      at: 0.95, color: "#ffffff" }
   ];
-  // Low firing stance so the beam travels at monster height
-  const FIRE = [
-    "....................",
-    "....................",
+  function levelOf(pct) {
+    let l = 0;
+    FORMS.forEach((f, i) => { if (pct >= f.at) l = i; });
+    return l;
+  }
+  const SCALE_MAX = 1.9; // fighters grow up to this size at full power
+
+  // ---------- Sprites (original designs) ----------
+  const IDLE = [
     "........####........",
     ".......######.......",
     ".......######.......",
-    "........#####.......",
-    ".........###........",
-    ".......######.......",
+    "........####........",
+    ".........##.........",
     "......########......",
     ".....##########.....",
-    ".....###########HH..",
-    ".....##########.HH..",
-    "......######........",
-    "......#######.......",
-    ".....###...###......",
-    "....###.....###.....",
-    "...###.......###....",
-    "..###.........####..",
-    ".####..........####."
+    "....###.####.###....",
+    "...##...####...##...",
+    "..##....####....##..",
+    "..###...####...###..",
+    "........#####.......",
+    ".......#######......",
+    "......###...###.....",
+    ".....###.....###....",
+    "....###.......###...",
+    "...###.........###..",
+    "..###...........###.",
+    ".####...........####"
   ];
-  const GAUGE_SEGMENTS = 14; // 700 power / 50 per segment
+  const POWER = [
+    "........####........",
+    ".......######.......",
+    ".......######.......",
+    "........####........",
+    ".........##.........",
+    "....############....",
+    "...##############...",
+    "..###.########.###..",
+    "..##..########..##..",
+    "..##...######...##..",
+    "..###..######..###..",
+    "..###..######..###..",
+    ".......#######......",
+    "......###...###.....",
+    ".....###.....###....",
+    "....###.......###...",
+    "...###.........###..",
+    "..###...........###.",
+    ".####...........####"
+  ];
+  const COLS = 20, ROWS = 19;
 
-  let canvas, ctx, W, H, px, horizon, small;
-  let stars = [], ridgeFar = [], ridgeNear = [], rocks = [], sparks = [];
-  let charge = 0, shown = 0, gauge = 0, color = "#48d6ff";
-  let bursts = [], floaters = [], rings = [];
-  let dimUntil = 0;
-  let firing = null;
-  let shake = 0;
+  // Original pixel monsters, one per tier. "#" body, "o" glowing eyes.
+  const MOB_SPRITES = {
+    1: ["..####..", ".######.", "##o##o##", "########", "########", ".######."],
+    2: ["#.........#", "##.#####.##", "####o#o####", ".#########.", "..#.###.#..", ".....#....."],
+    3: ["..####..", ".#o##o#.", ".######.", "..####..", ".######.", "#.####.#", "#.####.#", "..#..#..", "..#..#..", ".##..##."],
+    4: ["...###...", "..#####..", "..#o#o#..", "..#####..", "...###...", ".#######.", "#.#####.#", "#.#####.#", "#.#####.#", "..##.##..", "..##.##..", ".###.###."],
+    5: ["....####....", "...######...", "..##o##o##..", "..########..", "...######...", ".##########.", "############", "##.######.##", "##.######.##", "#..######..#", "...######...", "...##..##...", "...##..##...", "..###..###.."],
+    6: ["............###.", "...........##o##", "..#.......######", ".###.....###....", "#####...####....", "##############..", ".##############.", "..############..", "...##########...", "....##....##....", "....##....##....", "...###...###...."]
+  };
+  const MOB_COLORS = { 1: "#9aa4c4", 2: "#48d6ff", 3: "#5dff9b", 4: "#b86bff", 5: "#ffd23f", 6: "#ff4f8b" };
+  const DROP_MS = 1000, WAVE_MS = 2600, END_MS = 600;
+  const MAX_MOBS = 60;
+
+  let canvas, ctx, W, H, horizon, small;
+  let stars = [], ridgeFar = [], ridgeNear = [], rocks = [];
+  let fighters = [], active = 0;
+  let sparks = [], floaters = [], rings = [], pillars = [], mobs = [], debris = [];
+  let firing = null, shake = 0, flash = 0, zoneEnd = 0;
 
   // ---------- Layout ----------
 
@@ -79,11 +114,8 @@ const Scene = (() => {
     canvas.style.width = W + "px"; canvas.style.height = H + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = false;
-
     small = W < 600;
-    px = small ? 4 : 7;
     horizon = Math.round(H * (small ? 0.86 : 0.8));
-
     stars = Array.from({ length: Math.round(W * H / 6000) }, () => ({
       x: Math.random() * W, y: Math.random() * horizon * 0.85,
       s: Math.random() < 0.15 ? 2 : 1, t: Math.random() * 6
@@ -94,6 +126,7 @@ const Scene = (() => {
       x: Math.random() * W, y: horizon + 6 + Math.random() * (H - horizon - 10),
       w: (1 + Math.floor(Math.random() * 3)) * 2
     }));
+    layoutFighters();
   }
 
   function makeRidge(heightRatio, step) {
@@ -107,27 +140,32 @@ const Scene = (() => {
     return pts;
   }
 
-  // ---------- Helpers ----------
-
-  function handsPos(sprite) {
-    for (let y = 0; y < sprite.length; y++) {
-      const x = sprite[y].indexOf("H");
-      if (x >= 0) return { x: x + 1, y: y + 1 };
+  function layoutFighters() {
+    const n = fighters.length;
+    if (!n) return;
+    if (n === 1) {
+      const px = small ? 4 : 7;
+      const f = fighters[0];
+      f.px = px;
+      f.cx = 16 + (COLS * px * SCALE_MAX) / 2;
+      zoneEnd = f.cx + (COLS * px * SCALE_MAX) / 2;
+    } else {
+      const left = 10, right = W * (small ? 0.72 : 0.6);
+      const slot = (right - left) / n;
+      const px = Math.min(small ? 4 : 6, Math.max(1, (slot * 0.95) / (COLS * SCALE_MAX)));
+      fighters.forEach((f, i) => { f.px = px; f.cx = left + slot * (i + 0.5); });
+      zoneEnd = right;
     }
+    fighters.forEach((f) => {
+      f.cracks = Array.from({ length: 6 }, () => ({ a: Math.PI + Math.random() * Math.PI, len: 0.5 + Math.random() }));
+    });
   }
 
-  function fighterOrigin(sprite) {
-    const w = sprite[0].length * px, h = sprite.length * px;
-    const x = Math.max(12, Math.min(W * 0.1, W - w - 12));
-    return { x, y: horizon - h + px, w, h };
+  function newFighter(name) {
+    return { name, pct: 0, shown: 0, level: 0, scale: 1, flexUntil: 0, dimUntil: 0, particles: [], bolts: [], cracks: [], px: 4, cx: 0 };
   }
 
-  function drawSprite(sprite, ox, oy, fill) {
-    ctx.fillStyle = fill;
-    for (let y = 0; y < sprite.length; y++)
-      for (let x = 0; x < sprite[y].length; x++)
-        if (sprite[y][x] !== ".") ctx.fillRect(ox + x * px, oy + y * px, px, px);
-  }
+  // ---------- Helpers ----------
 
   function hexA(hex, a) {
     const n = parseInt(hex.slice(1), 16);
@@ -146,124 +184,188 @@ const Scene = (() => {
     ctx.fill();
   }
 
-  function segColor(i) {
-    const t = i / (GAUGE_SEGMENTS - 1);
-    if (t < 0.45) return "#48d6ff";
-    if (t < 0.75) return "#ffd23f";
-    return "#ff4f8b";
+  // Where a fighter's sprite sits right now
+  function geom(f) {
+    const s = f.px * f.scale;
+    const w = COLS * s, h = ROWS * s;
+    return { s, w, h, x: f.cx - w / 2, y: horizon - h + s, top: horizon - h + s, mid: horizon - h * 0.55 };
   }
 
-  // ---------- Main loop ----------
-
-  // Keep animating even if one frame throws, so the game can never freeze
-  function frame() {
-    try { draw(); }
-    catch (e) { console.warn("scene frame error", e); ctx.restore(); }
-    // A finished beam must always report back, even if drawing failed
-    if (firing && !firing.done && performance.now() - firing.start > DROP_MS + BEAM_MS + END_MS + 400) {
-      firing.done = true;
-      firing.onDone && firing.onDone(firing.kills);
+  function drawSprite(sprite, x0, y0, s, fill) {
+    ctx.fillStyle = fill;
+    for (let y = 0; y < sprite.length; y++) {
+      const row = sprite[y];
+      let x = 0;
+      while (x < row.length) {
+        if (row[x] === ".") { x++; continue; }
+        let run = 1;
+        while (x + run < row.length && row[x + run] !== ".") run++;
+        ctx.fillRect(x0 + x * s, y0 + y * s, run * s + 0.5, s + 0.5);
+        x += run;
+      }
     }
-    requestAnimationFrame(frame);
   }
 
-  function draw() {
-    const now = performance.now();
-    const time = now / 1000;
-    shown += (charge - shown) * 0.05;
-    gauge += (charge - gauge) * 0.04; // gauge climbs visibly after each answer
+  function formColor(level, time) {
+    if (level === 7) return `hsl(${(time * 90) % 360}, 100%, 70%)`;
+    return FORMS[level].color;
+  }
+
+  // ---------- Fighters ----------
+
+  function drawFighter(f, i, now, time) {
+    f.shown += (f.pct - f.shown) * 0.06;
+    const target = 1 + (SCALE_MAX - 1) * Math.min(1, f.shown);
+    f.scale += (target - f.scale) * 0.12;
+    const g = geom(f);
+    const L = f.level;
+    const c = formColor(L, time);
+    const solo = fighters.length === 1;
+    const isActive = solo || i === active || (firing && i === firing.who);
+    const dim = now < f.dimUntil;
+    const sprite = now < f.flexUntil || (firing && i === firing.who) ? POWER : IDLE;
 
     ctx.save();
-    if (shake > 0) {
-      ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
-      shake *= 0.9;
-      if (shake < 0.3) shake = 0;
+    if (!isActive && !firing) ctx.globalAlpha = 0.55;
+
+    // Ground cracks (ZENITH and up)
+    if (L >= 6 && !dim) {
+      ctx.strokeStyle = hexA("#ff4f8b", 0.5);
+      if (L === 7) ctx.strokeStyle = "rgba(255,255,255,0.5)";
+      ctx.lineWidth = 2;
+      for (const k of f.cracks) {
+        const len = g.w * 0.6 * k.len;
+        ctx.beginPath();
+        ctx.moveTo(f.cx, horizon + 2);
+        ctx.lineTo(f.cx + Math.cos(k.a) * len, horizon + 2 + Math.abs(Math.sin(k.a)) * 10 + 4);
+        ctx.stroke();
+      }
     }
 
-    drawBackground(time);
-
-    const sprite = firing ? FIRE : CHARGE;
-    const o = fighterOrigin(sprite);
-    const hp = handsPos(sprite);
-    const hx = o.x + hp.x * px, hy = o.y + hp.y * px;
-    const power = firing ? firing.pct : shown;
-    const dimmed = now < dimUntil;
-
-    // Active charge-up bursts
-    let swell = 0, flare = 0;
-    bursts = bursts.filter((b) => {
-      const p = (now - b.start) / b.dur;
-      if (p >= 1) return false;
-      const wave = Math.sin(Math.PI * p);
-      swell = Math.max(swell, wave * b.tier * (small ? 4 : 7));
-      flare = Math.max(flare, wave * b.tier / 6);
-      if (b.tier >= 3) drawPillar(o, b, p);
-      return true;
-    });
-
-    // Aura behind the fighter (stronger during a burst)
-    const aura = Math.min(1, power + flare * 0.8);
-    if (aura > 0.02 && !dimmed) {
+    // Halo (ASCENDED and up)
+    if (L >= 5 && !dim) {
       ctx.save();
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 10 + aura * 50 + Math.sin(time * 12) * 4;
-      ctx.globalAlpha = 0.3 + aura * 0.6;
-      drawSprite(sprite, o.x, o.y, color);
+      ctx.strokeStyle = c;
+      ctx.shadowColor = c;
+      ctx.shadowBlur = 14;
+      ctx.lineWidth = Math.max(2, g.s * 0.8);
+      ctx.beginPath();
+      ctx.ellipse(f.cx, g.top - g.s * 2.5, g.w * 0.22, g.s * 1.6, 0, 0, Math.PI * 2);
+      ctx.stroke();
       ctx.restore();
     }
-    drawSprite(sprite, o.x - 1, o.y - 1, "#2a3a6b");
-    drawSprite(sprite, o.x, o.y, "#02040a");
 
-    // Ambient sparks rise from the ground when charged
-    if (!dimmed && power > 0.05 && Math.random() < power * 0.8) {
-      sparks.push(spark(o, 0.5 + Math.random() * 2 * power, color));
+    // Aura glow (SPARK and up): a glowing copy of the silhouette, flickering from SURGE
+    if (L >= 1 && !dim) {
+      ctx.save();
+      ctx.shadowColor = c;
+      ctx.shadowBlur = 8 + L * 7 + Math.sin(time * 14 + i) * (L >= 2 ? 5 : 1);
+      ctx.globalAlpha *= 0.3 + L * 0.08;
+      const j = L >= 2 ? (Math.random() - 0.5) * g.s * 0.6 : 0;
+      drawSprite(sprite, g.x + j, g.y - (L >= 3 ? g.s * 0.5 : 0), g.s, c);
+      if (L >= 4) drawSprite(sprite, g.x - j, g.y - g.s, g.s * 1.0, hexA(L === 7 ? "#ffffff" : FORMS[L].color, 0.5));
+      ctx.restore();
     }
-    drawSparks();
-    drawRings(hx, hy, now);
 
-    if (firing) drawBeam(hx, hy, time);
-    else drawOrb(hx, hy, power, swell, time, dimmed);
+    // Flame particles rising off the body (OVERDRIVE and up)
+    if (L >= 3 && !dim && Math.random() < 0.25 + L * 0.1) {
+      f.particles.push({
+        x: g.x + g.w * (0.2 + Math.random() * 0.6), y: g.y + g.h * (0.2 + Math.random() * 0.7),
+        vy: -(0.6 + Math.random() * (0.6 + L * 0.25)), life: 1, s: Math.max(2, g.s * (0.4 + Math.random() * 0.5)),
+        c: Math.random() < 0.3 ? "#ffffff" : (L === 7 ? `hsl(${Math.random() * 360},100%,70%)` : FORMS[L].color)
+      });
+    }
+    f.particles = f.particles.filter((p) => {
+      p.y += p.vy; p.x += Math.sin(p.y * 0.1) * 0.4; p.life -= 0.02;
+      ctx.globalAlpha = Math.max(0, p.life) * (isActive || firing ? 1 : 0.55);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(Math.round(p.x), Math.round(p.y), p.s, p.s);
+      return p.life > 0;
+    });
+    ctx.globalAlpha = isActive || firing ? 1 : 0.55;
 
-    if (!firing) drawGauge(o, time);
-    drawFloaters(o, now);
+    // Body: dark silhouette with a rim light; VOID turns it white
+    drawSprite(sprite, g.x - 1, g.y - 1, g.s, L === 7 ? "#b8c7ff" : "#2a3a6b");
+    drawSprite(sprite, g.x, g.y, g.s, L === 7 ? "#ffffff" : "#02040a");
 
+    // Lightning arcs (STORM and up)
+    if (L >= 4 && !dim) {
+      if (Math.random() < 0.18 + (L - 4) * 0.1) {
+        const pts = [];
+        let x = g.x + Math.random() * g.w, y = g.y + Math.random() * g.h * 0.4;
+        for (let k = 0; k < 5; k++) {
+          pts.push([x, y]);
+          x += (Math.random() - 0.5) * g.w * 0.5;
+          y += g.h * 0.15 * Math.random() + 4;
+        }
+        f.bolts.push({ pts, until: now + 120 });
+      }
+      f.bolts = f.bolts.filter((b) => {
+        if (now > b.until) return false;
+        ctx.save();
+        ctx.strokeStyle = "#ffffff";
+        ctx.shadowColor = c;
+        ctx.shadowBlur = 10;
+        ctx.lineWidth = Math.max(1.5, g.s * 0.35);
+        ctx.beginPath();
+        b.pts.forEach(([x, y], k) => (k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+        ctx.stroke();
+        ctx.restore();
+        return true;
+      });
+    }
+
+    // Orbiting runes (ZENITH and up)
+    if (L >= 6 && !dim) {
+      const n = L === 7 ? 8 : 6;
+      for (let k = 0; k < n; k++) {
+        const a = time * (L === 7 ? 2.2 : 1.6) + (k / n) * Math.PI * 2;
+        const rx = g.w * 0.62, ry = g.h * 0.18;
+        const x = f.cx + Math.cos(a) * rx, y = g.mid + Math.sin(a) * ry;
+        ctx.save();
+        ctx.fillStyle = L === 7 ? `hsl(${(time * 90 + k * 45) % 360},100%,70%)` : c;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 10;
+        const sz = Math.max(3, g.s * 0.9);
+        ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
+        ctx.restore();
+      }
+    }
+    ctx.restore();
+
+    // Labels: form name above, player name below, turn marker
+    const labelSize = solo ? (small ? 9 : 11) : Math.max(7, Math.min(10, f.px * 2.4));
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.font = `${labelSize}px "Press Start 2P", monospace`;
+    // Hide the head label while this fighter's "+points" text is floating, so they don't overlap.
+    const busy = floaters.some((fl) => fl.who === fighters.indexOf(f));
+    if (L >= 1 && !busy) {
+      ctx.fillStyle = c;
+      ctx.shadowColor = c;
+      ctx.shadowBlur = 8;
+      ctx.globalAlpha = isActive || firing ? 1 : 0.6;
+      ctx.fillText(FORMS[L].name, f.cx, g.top - (L >= 5 ? g.s * 5 : g.s * 1.5) - 4);
+    }
+    ctx.shadowBlur = 0;
+    if (f.name) {
+      ctx.globalAlpha = isActive ? 1 : 0.6;
+      ctx.fillStyle = isActive ? "#48d6ff" : "#7d88ad";
+      ctx.fillText(f.name.toUpperCase().slice(0, 10), f.cx, horizon + labelSize + 10);
+      if (isActive && !firing && fighters.length > 1) {
+        const bob = Math.sin(time * 6) * 3;
+        ctx.fillStyle = "#48d6ff";
+        ctx.fillText("▼", f.cx, horizon + labelSize * 2 + 20 + bob);
+      }
+    }
     ctx.restore();
   }
 
-  function drawBackground(time) {
-    const sky = ctx.createLinearGradient(0, 0, 0, horizon);
-    sky.addColorStop(0, "#050a14");
-    sky.addColorStop(1, "#121a33");
-    ctx.fillStyle = sky;
-    ctx.fillRect(-20, -20, W + 40, H + 40);
+  // ---------- Effects ----------
 
-    for (const s of stars) {
-      const a = 0.35 + 0.65 * Math.abs(Math.sin(time * 0.8 + s.t));
-      ctx.fillStyle = `rgba(200,220,255,${a})`;
-      ctx.fillRect(Math.round(s.x), Math.round(s.y), s.s, s.s);
-    }
-
-    drawRidge(ridgeFar, "#0d1428");
-    drawRidge(ridgeNear, "#0a1020");
-
-    ctx.fillStyle = "#070b17";
-    ctx.fillRect(-20, horizon, W + 40, H - horizon + 20);
-    ctx.fillStyle = "#1a2445";
-    ctx.fillRect(-20, horizon, W + 40, 2);
-    ctx.fillStyle = "#111933";
-    for (const r of rocks) ctx.fillRect(Math.round(r.x), Math.round(r.y), r.w, 2);
-  }
-
-  function drawRidge(pts, fill) {
-    ctx.fillStyle = fill;
-    for (let i = 0; i < pts.length - 1; i++) {
-      const [x, y] = pts[i];
-      ctx.fillRect(x, y, pts[i + 1][0] - x + 1, horizon - y + 1);
-    }
-  }
-
-  function spark(o, v, c) {
-    return { x: o.x + Math.random() * o.w, y: horizon, v, life: 1, c };
+  function spark(f, v, c) {
+    const g = geom(f);
+    return { x: g.x + Math.random() * g.w, y: horizon, v, life: 1, c };
   }
 
   function drawSparks() {
@@ -277,30 +379,35 @@ const Scene = (() => {
     ctx.globalAlpha = 1;
   }
 
-  // Column of light shooting up from the fighter (Rare and above)
-  function drawPillar(o, b, p) {
-    // On phones the text sits above the fighter, so keep the pillar shorter
-    const maxH = horizon * (small ? 0.12 + (b.tier - 3) * 0.08 : 0.25 + (b.tier - 3) * 0.22);
-    const h = maxH * Math.min(1, p * 3);
-    const w = o.w * (0.4 + b.tier * 0.12) * (1 - p * 0.5);
-    const cx = o.x + o.w / 2;
-    ctx.save();
-    ctx.globalAlpha = 0.55 * (1 - p);
-    ctx.shadowColor = b.color;
-    ctx.shadowBlur = 30;
-    ctx.fillStyle = b.color;
-    ctx.fillRect(cx - w / 2, horizon - h, w, h);
-    ctx.globalAlpha = 0.8 * (1 - p);
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(cx - w / 8, horizon - h, w / 4, h);
-    ctx.restore();
+  function drawPillars(now) {
+    pillars = pillars.filter((p) => {
+      const t = (now - p.start) / p.dur;
+      if (t >= 1) return false;
+      const f = fighters[p.who];
+      if (!f) return false;
+      const g = geom(f);
+      const maxH = horizon * (small ? 0.12 + (p.tier - 3) * 0.08 : 0.25 + (p.tier - 3) * 0.22);
+      const h = maxH * Math.min(1, t * 3);
+      const w = g.w * (0.4 + p.tier * 0.12) * (1 - t * 0.5);
+      ctx.save();
+      ctx.globalAlpha = 0.55 * (1 - t);
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 30;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(f.cx - w / 2, horizon - h, w, h);
+      ctx.globalAlpha = 0.8 * (1 - t);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(f.cx - w / 8, horizon - h, w / 4, h);
+      ctx.restore();
+      return true;
+    });
   }
 
-  function drawRings(x, y, now) {
+  function drawRings(now) {
     rings = rings.filter((r) => {
       const p = (now - r.start) / r.dur;
       if (p >= 1) return false;
-      if (p < 0) return true; // delayed ring hasn't started yet
+      if (p < 0) return true;
       ctx.save();
       ctx.globalAlpha = 1 - p;
       ctx.strokeStyle = r.color;
@@ -308,90 +415,45 @@ const Scene = (() => {
       ctx.shadowColor = r.color;
       ctx.shadowBlur = 12;
       ctx.beginPath();
-      const c = r.at || { x, y };
-      ctx.arc(c.x, c.y, r.max * (1 - Math.pow(1 - p, 3)), 0, Math.PI * 2);
+      ctx.arc(r.x, r.y, r.max * (1 - Math.pow(1 - p, 3)), 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
       return true;
     });
   }
 
-  function drawOrb(x, y, power, swell, time, dimmed) {
-    const base = 3 + power * (small ? 26 : 44);
-    const r = base + swell + Math.sin(time * 15) * (1 + power * 2);
-    const c = dimmed ? "#4a5578" : color;
-    glowCircle(x, y, r * 2.2, hexA(c, 0.25), hexA(c, 0));
-    glowCircle(x, y, r, c, hexA(c, 0));
-  }
-
-  // Segmented power gauge standing next to the fighter
-  function drawGauge(o, time) {
-    const segH = small ? 6 : 9, gap = 2;
-    const w = small ? 10 : 14;
-    const x = o.x + o.w + (small ? 8 : 14);
-    const filled = gauge * GAUGE_SEGMENTS;
-    for (let i = 0; i < GAUGE_SEGMENTS; i++) {
-      const y = horizon - (i + 1) * (segH + gap);
-      ctx.fillStyle = "#121a33";
-      ctx.fillRect(x, y, w, segH);
-      const f = Math.max(0, Math.min(1, filled - i));
-      if (f > 0) {
-        const c = segColor(i);
-        ctx.save();
-        ctx.shadowColor = c;
-        ctx.shadowBlur = 8;
-        ctx.globalAlpha = 0.6 + 0.4 * f;
-        ctx.fillStyle = c;
-        ctx.fillRect(x, y + segH * (1 - f), w, segH * f);
-        ctx.restore();
-      }
-    }
-  }
-
-  function drawFloaters(o, now) {
-    floaters = floaters.filter((f) => {
-      const p = (now - f.start) / f.dur;
+  function drawFloaters(now) {
+    floaters = floaters.filter((fl) => {
+      const p = (now - fl.start) / fl.dur;
       if (p >= 1) return false;
-      const y = o.y - 14 - p * 70;
+      const f = fighters[fl.who];
+      if (!f) return false;
+      const g = geom(f);
+      // Points float just above the form label; a new-form banner sits higher so they never overlap.
+      const y = Math.max(fl.big ? 40 : 70, fl.big ? g.top - (small ? 95 : 140) - p * 25 : g.top - (small ? 42 : 62) - p * 40);
       ctx.save();
-      ctx.globalAlpha = p < 0.15 ? p / 0.15 : 1 - Math.max(0, (p - 0.6) / 0.4);
-      ctx.textAlign = "left";
-      ctx.fillStyle = f.color;
-      ctx.shadowColor = f.color;
+      ctx.globalAlpha = p < 0.12 ? p / 0.12 : 1 - Math.max(0, (p - 0.6) / 0.4);
+      ctx.textAlign = fighters.length === 1 && !fl.big ? "left" : "center";
+      const x = fighters.length === 1 && !fl.big ? g.x : Math.min(W - 80, Math.max(80, f.cx));
+      ctx.fillStyle = fl.color;
+      ctx.shadowColor = fl.color;
       ctx.shadowBlur = 10;
-      ctx.font = `${f.size}px "Press Start 2P", monospace`;
-      ctx.fillText(f.text, o.x, y);
-      if (f.sub) {
-        ctx.font = `${Math.round(f.size * 0.55)}px "Press Start 2P", monospace`;
-        ctx.fillText(f.sub, o.x, y + f.size * 0.9);
+      ctx.font = `${fl.size}px "Press Start 2P", monospace`;
+      ctx.fillText(fl.text, x, y);
+      if (fl.sub) {
+        ctx.font = `${Math.round(fl.size * 0.55)}px "Press Start 2P", monospace`;
+        ctx.fillText(fl.sub, x, y + fl.size * 0.9);
       }
       ctx.restore();
       return true;
     });
   }
 
-  // ---------- Mobs ----------
-  // Original pixel monsters, one per tier. "#" body, "o" glowing eyes.
-  // Every answer summons a wave: tier t brings mob types t, t-1, ... 1.
-  const MOB_SPRITES = {
-    1: ["..####..", ".######.", "##o##o##", "########", "########", ".######."], // slime
-    2: ["#.........#", "##.#####.##", "####o#o####", ".#########.", "..#.###.#..", ".....#....."], // bat
-    3: ["..####..", ".#o##o#.", ".######.", "..####..", ".######.", "#.####.#", "#.####.#", "..#..#..", "..#..#..", ".##..##."], // goblin
-    4: ["...###...", "..#####..", "..#o#o#..", "..#####..", "...###...", ".#######.", "#.#####.#", "#.#####.#", "#.#####.#", "..##.##..", "..##.##..", ".###.###."], // knight
-    5: ["....####....", "...######...", "..##o##o##..", "..########..", "...######...", ".##########.", "############", "##.######.##", "##.######.##", "#..######..#", "...######...", "...##..##...", "...##..##...", "..###..###.."], // ogre
-    6: ["............###.", "...........##o##", "..#.......######", ".###.....###....", "#####...####....", "##############..", ".##############.", "..############..", "...##########...", "....##....##....", "....##....##....", "...###...###...."] // dragon
-  };
-  const MOB_COLORS = { 1: "#9aa4c4", 2: "#48d6ff", 3: "#5dff9b", 4: "#b86bff", 5: "#ffd23f", 6: "#ff4f8b" };
-  const DROP_MS = 900, BEAM_MS = 2600, END_MS = 600;
-  const MAX_MOBS = 60;
-  let mobs = [], debris = [];
+  // ---------- Mobs + finale ----------
 
   function spawnMobs(tiers, startX) {
     let list = [];
-    tiers.forEach((t, wave) => {
-      for (let k = t; k >= 1; k--) list.push({ type: k, wave });
-    });
-    // Very long Infinite runs: keep the biggest monsters
+    tiers.forEach((t, wave) => { for (let k = t; k >= 1; k--) list.push({ type: k, wave }); });
     if (list.length > MAX_MOBS) {
       list = list.map((m, i) => ({ ...m, i })).sort((a, b) => b.type - a.type).slice(0, MAX_MOBS).sort((a, b) => a.i - b.i);
     }
@@ -400,19 +462,17 @@ const Scene = (() => {
     const gap = small ? 3 : 8;
     const widths = list.map((m) => MOB_SPRITES[m.type][0].length * mp);
     const natural = widths.reduce((s, w) => s + w + gap, 0);
-    const room = right - startX;
-    // Few mobs: spread them out. Many mobs: squeeze into an overlapping horde.
+    const room = Math.max(60, right - startX);
     const scale = natural > room ? room / natural : 1;
     const extra = natural < room ? (room - natural) / Math.max(1, list.length) : 0;
     let x = startX;
     mobs = list.map((m, i) => {
       const g = MOB_SPRITES[m.type];
       const w = widths[i], h = g.length * mp;
-      const mob = { ...m, x, w, h, mp, y: horizon - h + 1, delay: i * Math.min(40, 600 / list.length), dead: false, bob: Math.random() * 6 };
+      const mob = { ...m, x, w, h, mp, y: horizon - h + 1, delay: i * Math.min(40, 600 / Math.max(1, list.length)), dead: false, bob: Math.random() * 6 };
       x += (w + gap) * scale + extra;
       return mob;
     });
-    // draw big ones behind small ones when they overlap
     mobs.sort((a, b) => b.type - a.type);
   }
 
@@ -431,14 +491,13 @@ const Scene = (() => {
       for (let gy = 0; gy < g.length; gy++) {
         const row = g[gy];
         for (let gx = 0; gx < row.length; gx++) {
-          const ch = row[row.length - 1 - gx]; // mirrored: monsters face the fighter
+          const ch = row[row.length - 1 - gx]; // mirrored: monsters face the fighters
           if (ch === ".") continue;
           ctx.fillStyle = ch === "o" ? c : "#0b1024";
           ctx.fillRect(m.x + gx * m.mp, oy + gy * m.mp, m.mp, m.mp);
         }
       }
       ctx.restore();
-      // thin outline in the tier color so silhouettes read on the dark ground
       ctx.globalAlpha = 0.5;
       ctx.fillStyle = c;
       ctx.fillRect(m.x, oy + m.h, m.w, 1);
@@ -449,15 +508,14 @@ const Scene = (() => {
   function explode(m) {
     m.dead = true;
     const c = MOB_COLORS[m.type];
-    const n = 8 + m.type * 6;
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < 8 + m.type * 6; i++) {
       debris.push({
         x: m.x + Math.random() * m.w, y: m.y + Math.random() * m.h,
         vx: (Math.random() - 0.2) * (2 + m.type), vy: -Math.random() * (2 + m.type),
         life: 1, c: Math.random() < 0.3 ? "#ffffff" : c, s: Math.random() < 0.3 ? 3 : 2
       });
     }
-    rings.push({ start: performance.now(), tier: Math.min(3, m.type), color: c, dur: 350, max: 10 + m.type * 6, at: { x: m.x + m.w / 2, y: m.y + m.h / 2 } });
+    rings.push({ start: performance.now(), tier: Math.min(3, m.type), color: c, dur: 350, max: 10 + m.type * 6, x: m.x + m.w / 2, y: m.y + m.h / 2 });
     shake = Math.max(shake, 1 + m.type * 0.8);
     firing.kills++;
     firing.onKill && firing.onKill(firing.kills, m.type);
@@ -474,100 +532,205 @@ const Scene = (() => {
     ctx.globalAlpha = 1;
   }
 
-  function drawBeam(x, y, time) {
-    const now = performance.now();
+  // The leader's aura explodes into a wall of energy that sweeps the field
+  function drawWave(now, time) {
     const t = now - firing.start;
-    drawMobs(now, time);
-    drawDebris();
-
-    // Mobs drop in first, then the beam sweeps across the whole field
-    const p = Math.min(1, Math.max(0, (t - DROP_MS) / BEAM_MS));
-    const thick = 6 + firing.pct * (small ? 34 : 56) + Math.sin(time * 30) * 2;
+    const f = fighters[firing.who];
+    if (!f) return;
+    const g = geom(f);
+    const c = formColor(f.level, time);
     if (t < DROP_MS) {
-      // charging the final shot
-      const r = 4 + firing.pct * (small ? 26 : 44) * (0.6 + 0.4 * t / DROP_MS) + Math.sin(time * 25) * 3;
-      glowCircle(x, y, r * 2, hexA(color, 0.3), hexA(color, 0));
-      glowCircle(x, y, r, color, hexA(color, 0));
       shake = Math.max(shake, 1 + firing.pct * 2);
+      if (Math.random() < 0.6) sparks.push(spark(f, 1 + Math.random() * 4, f.level === 7 ? "#ffffff" : FORMS[f.level].color));
       return;
     }
-    const ease = p < 1 ? 1 - Math.pow(1 - p, 2) : 1;
-    const len = (W - x + 80) * ease;
-    const head = x + len;
-
+    if (!firing.burst) {
+      firing.burst = true;
+      flash = 0.5 + firing.pct * 0.4;
+      rings.push({ start: now, tier: 6, color: f.level === 7 ? "#ffffff" : FORMS[f.level].color, dur: 900, max: W * 0.5, x: f.cx, y: g.mid });
+    }
+    const p = Math.min(1, (t - DROP_MS) / WAVE_MS);
+    const ease = 1 - Math.pow(1 - p, 2);
+    const startX = f.cx;
+    const x = startX + (W - startX + 80) * ease;
+    const hgt = 40 + firing.pct * horizon * 0.65;
+    const wid = 14 + firing.pct * 30;
     ctx.save();
-    ctx.shadowColor = color;
+    const grad = ctx.createLinearGradient(x - wid * 3, 0, x + wid, 0);
+    grad.addColorStop(0, "rgba(0,0,0,0)");
+    grad.addColorStop(0.7, hexA(f.level === 7 ? "#ffffff" : FORMS[f.level].color, 0.55));
+    grad.addColorStop(1, "#ffffff");
+    ctx.fillStyle = grad;
+    ctx.shadowColor = c;
     ctx.shadowBlur = 30;
-    ctx.fillStyle = hexA(color, 0.55);
-    ctx.fillRect(x, y - thick / 2, len, thick);
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(x, y - thick / 5, len, thick / 2.5);
+    ctx.beginPath();
+    ctx.moveTo(x - wid * 3, horizon);
+    ctx.quadraticCurveTo(x + wid, horizon - hgt * 0.5, x - wid, horizon - hgt);
+    ctx.lineTo(x + wid * 0.6, horizon - hgt);
+    ctx.quadraticCurveTo(x + wid * 2, horizon - hgt * 0.5, x + wid, horizon);
+    ctx.closePath();
+    ctx.fill();
     ctx.restore();
-    glowCircle(head, y, thick * 0.9, color, hexA(color, 0));
-    glowCircle(x, y, thick * 0.8, color, hexA(color, 0));
+    if (Math.random() < 0.8) debris.push({ x, y: horizon - Math.random() * 6, vx: -1 - Math.random() * 2, vy: -Math.random() * 3, life: 1, c: "#2a3a6b", s: 3 });
 
-    for (const m of mobs) if (!m.dead && head >= m.x + m.w * 0.3) explode(m);
-
+    for (const m of mobs) if (!m.dead && x >= m.x + m.w * 0.3) explode(m);
     if (p < 1) shake = Math.max(shake, 2 + firing.pct * 6);
-    if (p >= 1 && t > DROP_MS + BEAM_MS + END_MS && !firing.done) {
+    if (p >= 1 && t > DROP_MS + WAVE_MS + END_MS && !firing.done) {
       firing.done = true;
       firing.onDone && firing.onDone(firing.kills);
+    }
+  }
+
+  // ---------- Main loop ----------
+
+  function frame() {
+    try { draw(); }
+    catch (e) { console.warn("scene frame error", e); try { ctx.restore(); } catch (e2) {} }
+    if (firing && !firing.done && performance.now() - firing.start > DROP_MS + WAVE_MS + END_MS + 400) {
+      firing.done = true;
+      firing.onDone && firing.onDone(firing.kills);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function draw() {
+    const now = performance.now();
+    const time = now / 1000;
+    ctx.save();
+    if (shake > 0) {
+      ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
+      shake *= 0.9;
+      if (shake < 0.3) shake = 0;
+    }
+    drawBackground(time);
+    if (firing) { drawMobs(now, time); drawDebris(); }
+    drawPillars(now);
+    fighters.forEach((f, i) => drawFighter(f, i, now, time));
+    drawSparks();
+    drawRings(now);
+    if (firing && !firing.instant) drawWave(now, time);
+    drawFloaters(now);
+    ctx.restore();
+    if (flash > 0.01) {
+      ctx.fillStyle = `rgba(255,255,255,${flash})`;
+      ctx.fillRect(0, 0, W, H);
+      flash *= 0.88;
+    }
+  }
+
+  function drawBackground(time) {
+    const sky = ctx.createLinearGradient(0, 0, 0, horizon);
+    sky.addColorStop(0, "#050a14");
+    sky.addColorStop(1, "#121a33");
+    ctx.fillStyle = sky;
+    ctx.fillRect(-20, -20, W + 40, H + 40);
+    for (const s of stars) {
+      const a = 0.35 + 0.65 * Math.abs(Math.sin(time * 0.8 + s.t));
+      ctx.fillStyle = `rgba(200,220,255,${a})`;
+      ctx.fillRect(Math.round(s.x), Math.round(s.y), s.s, s.s);
+    }
+    drawRidge(ridgeFar, "#0d1428");
+    drawRidge(ridgeNear, "#0a1020");
+    ctx.fillStyle = "#070b17";
+    ctx.fillRect(-20, horizon, W + 40, H - horizon + 20);
+    ctx.fillStyle = "#1a2445";
+    ctx.fillRect(-20, horizon, W + 40, 2);
+    ctx.fillStyle = "#111933";
+    for (const r of rocks) ctx.fillRect(Math.round(r.x), Math.round(r.y), r.w, 2);
+  }
+
+  function drawRidge(pts, fill) {
+    ctx.fillStyle = fill;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const [x, y] = pts[i];
+      ctx.fillRect(x, y, pts[i + 1][0] - x + 1, horizon - y + 1);
     }
   }
 
   // ---------- Public ----------
 
   return {
+    FORMS,
+    formOf(pct) { const l = levelOf(Math.min(1, pct)); return { level: l, ...FORMS[l] }; },
+
     init(c) {
       canvas = c; ctx = c.getContext("2d");
+      fighters = [newFighter("")];
       layout();
       window.addEventListener("resize", layout);
       requestAnimationFrame(frame);
     },
 
-    setCharge(pct, c) {
-      if (c) color = c;
-      charge = pct;
+    setPlayers(names) {
+      fighters = (names && names.length ? names : [""]).map(newFighter);
+      active = 0;
+      layoutFighters();
     },
 
-    // One answer's charge-up. Bigger tier = bigger everything.
-    burst(tier, points, pct, c, label, auraColor) {
+    setActive(i) { active = i; },
+
+    setCharge(i, pct) {
+      const f = fighters[i];
+      if (!f) return;
+      f.pct = Math.min(1, pct);
+      f.level = levelOf(f.pct);
+    },
+
+    // One answer's power-up. Bigger tier = bigger everything; crossing into a
+    // new form triggers a transformation.
+    burst(i, tier, points, pct, label) {
+      const f = fighters[i];
+      if (!f) return;
       const now = performance.now();
-      color = auraColor || c; // aura keeps your best tier's color
-      charge = pct;
-      bursts.push({ start: now, tier, color: c, dur: 500 + tier * 280 });
-      rings.push({ start: now, tier, color: c, dur: 500 + tier * 150, max: 18 + tier * (small ? 18 : 32) });
-      if (tier >= 5) rings.push({ start: now + 180, tier, color: "#ffffff", dur: 700, max: 30 + tier * 24 });
-      shake = Math.max(shake, tier * tier * 0.6);
-      const o = fighterOrigin(CHARGE);
-      for (let i = 0; i < tier * tier * 4; i++) sparks.push(spark(o, 1 + Math.random() * tier, c));
-      floaters.push({ start: now, dur: 1600, text: `+${points}`, sub: label, color: c, size: small ? 12 + tier * 2 : 14 + tier * 3 });
+      const before = f.level;
+      f.pct = Math.min(1, pct);
+      f.level = levelOf(f.pct);
+      f.flexUntil = now + 500 + tier * 180;
+      const color = MOB_COLORS[tier];
+      const g = geom(f);
+      if (tier >= 3) pillars.push({ start: now, who: i, tier, color, dur: 500 + tier * 280 });
+      rings.push({ start: now, tier, color, dur: 500 + tier * 150, max: 18 + tier * (small ? 14 : 28), x: f.cx, y: g.mid });
+      shake = Math.max(shake, tier * tier * 0.5);
+      for (let k = 0; k < tier * tier * 3; k++) sparks.push(spark(f, 1 + Math.random() * tier, color));
+      floaters.push({ start: now, dur: 1600, who: i, text: `+${points}`, sub: label, color, size: small ? 11 + tier * 1.5 : 13 + tier * 2.5 });
+
+      if (f.level > before) {
+        const form = FORMS[f.level];
+        const fc = f.level === 7 ? "#ffffff" : form.color;
+        flash = Math.max(flash, 0.25 + f.level * 0.06);
+        shake = Math.max(shake, 8 + f.level * 2);
+        rings.push({ start: now + 120, tier: 6, color: fc, dur: 900, max: 60 + f.level * 30, x: f.cx, y: g.mid });
+        for (let k = 0; k < 40 + f.level * 10; k++) sparks.push(spark(f, 1 + Math.random() * 6, fc));
+        floaters.push({ start: now + 250, dur: 2000, who: i, text: `${form.name}!`, sub: "NEW FORM", color: fc, size: small ? 16 : 26, big: true });
+      }
     },
 
-    fizzle(label) {
+    fizzle(i, label) {
+      const f = fighters[i];
+      if (!f) return;
       const now = performance.now();
-      dimUntil = now + 900;
-      floaters.push({ start: now, dur: 1400, text: "+0", sub: label, color: "#7d88ad", size: small ? 12 : 14 });
-      const o = fighterOrigin(CHARGE);
-      for (let i = 0; i < 10; i++) sparks.push(spark(o, 0.4 + Math.random(), "#4a5578"));
+      f.dimUntil = now + 900;
+      floaters.push({ start: now, dur: 1400, who: i, text: "+0", sub: label, color: "#7d88ad", size: small ? 12 : 14 });
+      for (let k = 0; k < 10; k++) sparks.push(spark(f, 0.4 + Math.random(), "#4a5578"));
     },
 
-    // tiers: one entry per answer (0 = no answer). Each summons a wave of mobs.
-    fire(pct, tiers, onDone, onKill, instant) {
-      bursts = []; floaters = []; rings = []; debris = [];
+    // tiers: one entry per answer (0 = none). Each summons a wave of monsters.
+    finale(i, tiers, onDone, onKill, instant) {
+      pillars = []; floaters = []; rings = []; debris = []; mobs = [];
+      const f = fighters[i] || fighters[0];
       firing = {
-        start: instant ? performance.now() - 60000 : performance.now(),
-        pct, onDone, onKill, kills: 0, done: !!instant
+        who: fighters[i] ? i : 0, start: performance.now(), pct: f ? f.pct : 0,
+        onDone, onKill, kills: 0, done: !!instant, instant: !!instant
       };
-      const o = fighterOrigin(FIRE);
-      if (instant) mobs = [];
-      else spawnMobs(tiers || [], o.x + o.w + (small ? 30 : 70));
+      if (!instant) spawnMobs(tiers || [], zoneEnd + (small ? 20 : 50));
     },
 
-    // Clear the field for a new run
     reset() {
-      firing = null; mobs = []; debris = []; bursts = []; floaters = []; rings = [];
-      charge = 0; shown = 0; gauge = 0;
+      firing = null;
+      mobs = []; debris = []; pillars = []; floaters = []; rings = []; sparks = [];
+      fighters = [newFighter("")];
+      active = 0;
+      layoutFighters();
     }
   };
 })();

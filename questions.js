@@ -13,7 +13,8 @@
 // generated from catalog.js — see CATALOG_PROMPTS below.)
 const QUESTIONS = [
   {
-    prompt: "Name an anime villain",
+    id: "name-an-anime-villain",
+    prompt: "Name an anime villain you love to hate",
     answers: {
       1: ["Frieza|Freeza","Aizen|Sosuke Aizen","Dio|Dio Brando","Sukuna|Ryomen Sukuna","Muzan|Muzan Kibutsuji"],
       2: ["Madara|Madara Uchiha","Light Yagami|Light|Kira","All For One","Shigaraki|Tomura Shigaraki","Griffith|Femto","Orochimaru","Pain|Nagato","Cell","Majin Buu|Buu|Kid Buu","Makima","Itachi|Itachi Uchiha","Geto|Suguru Geto","Akaza","Team Rocket|Jessie|James","Blackbeard|Marshall D. Teach","Naraku"],
@@ -24,7 +25,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who fights with a sword",
+    id: "name-an-anime-character-who-fights-with-a-sword",
+    prompt: "Name a character you'd never challenge to a sword fight",
     answers: {
       1: ["Zoro|Roronoa Zoro","Ichigo|Ichigo Kurosaki","Tanjiro|Tanjiro Kamado"],
       2: ["Kirito","Inuyasha","Kenshin|Himura Kenshin|Kenshin Himura","Mikasa|Mikasa Ackerman","Levi|Levi Ackerman","Trunks|Future Trunks","Rengoku|Kyojuro Rengoku","Zenitsu|Zenitsu Agatsuma","Asta","Sasuke|Sasuke Uchiha","Giyu|Giyu Tomioka","Shinobu|Shinobu Kocho","Meliodas","Toshiro|Hitsugaya|Toshiro Hitsugaya","Rukia|Rukia Kuchiki","Asuna","Shanks"],
@@ -46,7 +48,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who wears glasses (or shades)",
+    id: "name-an-anime-character-who-wears-glasses-or-shades",
+    prompt: "Name a character who'd look totally different without their glasses",
     answers: {
       1: ["Conan|Conan Edogawa|Detective Conan","Master Roshi|Roshi"],
       2: ["Hange|Hange Zoe|Hanji","Aizen|Sosuke Aizen","Iida|Tenya Iida","Nanami|Kento Nanami","Gojo|Satoru Gojo","Kamina","Leorio"],
@@ -255,7 +258,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who can fly",
+    id: "name-an-anime-character-who-can-fly",
+    prompt: "Name a character who'd never need a plane ticket",
     answers: {
       1: ["Goku|Son Goku","Vegeta","Kiki","Frieza"],
       2: ["Gohan","Piccolo","Tatsumaki","Hawks","Sailor Moon"],
@@ -277,7 +281,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name a character who can stop, rewind, or travel through time",
+    id: "name-a-character-who-can-stop-rewind-or-travel-through-time",
+    prompt: "Name a character who messes with time",
     answers: {
       1: ["Dio|Dio Brando","Jotaro|Jotaro Kujo","Okabe|Rintaro Okabe|Okarin","Subaru|Natsuki Subaru"],
       2: ["Homura|Homura Akemi","Hit","Takemichi|Takemichi Hanagaki","Satoru Fujinuma","Makoto Konno","Kurumi|Kurumi Tokisaki","Trunks|Future Trunks","Whis"],
@@ -288,7 +293,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who fights with fire",
+    id: "name-an-anime-character-who-fights-with-fire",
+    prompt: "Name a character who never needs a lighter (fire powers)",
     answers: {
       1: ["Ace|Portgas D. Ace","Natsu|Natsu Dragneel","Roy Mustang|Mustang","Todoroki|Shoto Todoroki","Rengoku|Kyojuro Rengoku"],
       2: ["Endeavor","Shinra|Shinra Kusakabe","Benimaru|Benimaru Shinmon","Sabo","Dabi","Jogo","Charizard","Calcifer","Itachi|Amaterasu"],
@@ -299,7 +305,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who uses ice",
+    id: "name-an-anime-character-who-uses-ice",
+    prompt: "Name a character who could keep your drinks cold forever (ice powers)",
     answers: {
       1: ["Todoroki|Shoto Todoroki","Esdeath","Toshiro|Hitsugaya|Toshiro Hitsugaya","Gray|Gray Fullbuster"],
       2: ["Aokiji|Kuzan","Rukia|Rukia Kuchiki","Haku","Douma|Doma","Miyuki Shiba|Miyuki"],
@@ -310,7 +317,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who uses lightning or electricity",
+    id: "name-an-anime-character-who-uses-lightning-or-electricity",
+    prompt: "Name a character who could charge your phone (lightning powers)",
     answers: {
       1: ["Killua|Killua Zoldyck","Pikachu","Zenitsu|Zenitsu Agatsuma","Kakashi|Kakashi Hatake","Sasuke|Sasuke Uchiha"],
       2: ["Enel|Eneru","Laxus|Laxus Dreyar","Mikoto Misaka|Misaka|Railgun","Denki Kaminari|Kaminari","Raikage|A","Sailor Jupiter|Makoto Kino"],
@@ -321,7 +329,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who died and came back",
+    id: "name-an-anime-character-who-died-and-came-back",
+    prompt: "Name a character who refused to stay dead",
     answers: {
       1: ["Goku|Son Goku","Krillin","Yusuke|Yusuke Urameshi","Brook","Subaru|Natsuki Subaru"],
       2: ["Vegeta","Piccolo","Kakashi|Kakashi Hatake","Rimuru|Rimuru Tempest","Kazuma|Kazuma Sato","Frieza","Itachi|Itachi Uchiha","Madara|Madara Uchiha","Rudeus|Rudeus Greyrat"],
@@ -332,7 +341,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime pet, mascot, or animal sidekick",
+    id: "name-an-anime-pet-mascot-or-animal-sidekick",
+    prompt: "Name an anime pet or mascot you'd want to adopt",
     answers: {
       1: ["Pikachu","Happy","Chopper|Tony Tony Chopper","Pochita","Bond|Bond Forger"],
       2: ["Luna","Artemis","Kyubey","Ein","Akamaru","Pakkun","Jiji","Kero|Kero-chan|Keroberos","Meowth","Puar","Doraemon","Totoro","Catbus"],
@@ -343,7 +353,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name the smartest character in their anime",
+    id: "name-the-smartest-character-in-their-anime",
+    prompt: "Name a character who'd ace every exam",
     answers: {
       1: ["L|Ryuzaki|L Lawliet","Light|Light Yagami","Senku|Senku Ishigami","Lelouch|Lelouch Lamperouge","Shikamaru|Shikamaru Nara"],
       2: ["Kurisu|Kurisu Makise","Near","Shiro","Sora","Ayanokoji|Kiyotaka Ayanokoji","Johan|Johan Liebert","Ray","Norman","Kaguya|Kaguya Shinomiya","Bulma","Armin|Armin Arlert","Erwin|Erwin Smith","Conan|Conan Edogawa"],
@@ -354,7 +365,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who wears an eyepatch",
+    id: "name-an-anime-character-who-wears-an-eyepatch",
+    prompt: "Name a character who rocks an eyepatch",
     answers: {
       1: ["Kenpachi|Kenpachi Zaraki","Kaneki|Ken Kaneki"],
       2: ["Rikka|Rikka Takanashi","Mei Misaki|Mei","King Bradley|Bradley","Hange|Hange Zoe","Himeno","Captain Harlock|Harlock"],
@@ -365,7 +377,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who wears a mask",
+    id: "name-an-anime-character-who-wears-a-mask",
+    prompt: "Name a character who hides their face",
     answers: {
       1: ["Kakashi|Kakashi Hatake","Tobi|Obito","Inosuke|Inosuke Hashibira","Zero|Lelouch"],
       2: ["Tuxedo Mask|Mamoru","Char Aznable|Char","No-Face|Kaonashi","Overhaul|Kai Chisaki","Twice","Gojo|Satoru Gojo","Kaneki|Ken Kaneki","Sogeking"],
@@ -376,7 +389,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime teacher or mentor",
+    id: "name-an-anime-teacher-or-mentor",
+    prompt: "Name a mentor who'd train you into a monster",
     answers: {
       1: ["Kakashi|Kakashi Hatake","Jiraiya","Master Roshi|Roshi","Koro-sensei","Gojo|Satoru Gojo","All Might"],
       2: ["Aizawa|Shota Aizawa","Iruka","Might Guy|Guy","Urokodaki|Sakonji Urokodaki","Bisky|Biscuit Krueger","Genkai","Izumi Curtis|Izumi","Rayleigh|Silvers Rayleigh","Onizuka|Eikichi Onizuka","Reigen|Arataka Reigen","Piccolo","King Kai","Whis","Professor Oak|Oak","Saitama","Yami|Yami Sukehiro","Frieren"],
@@ -387,7 +401,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name a famous anime rival",
+    id: "name-a-famous-anime-rival",
+    prompt: "Name a rival who'd never let it go",
     answers: {
       1: ["Vegeta","Sasuke|Sasuke Uchiha","Bakugo|Katsuki Bakugo","Kaiba|Seto Kaiba","Gary Oak|Gary"],
       2: ["L|Ryuzaki","Suzaku|Suzaku Kururugi","Char Aznable|Char","Rukawa|Kaede Rukawa","Oikawa|Toru Oikawa","Rin Itoshi|Rin","Yuno","Gray|Gray Fullbuster","Todoroki|Shoto Todoroki"],
@@ -398,7 +413,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime ninja",
+    id: "name-an-anime-ninja",
+    prompt: "Name a ninja you'd never see coming",
     answers: {
       1: ["Naruto|Naruto Uzumaki","Sasuke|Sasuke Uchiha","Kakashi|Kakashi Hatake","Itachi|Itachi Uchiha"],
       2: ["Jiraiya","Sakura|Sakura Haruno","Hinata|Hinata Hyuga","Gaara","Rock Lee","Might Guy","Minato|Minato Namikaze","Madara|Madara Uchiha","Gabimaru","Speed-o'-Sound Sonic|Sonic","Shikamaru|Shikamaru Nara","Orochimaru","Tsunade"],
@@ -409,7 +425,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime robot, android, or cyborg",
+    id: "name-an-anime-robot-android-or-cyborg",
+    prompt: "Name a character who's more machine than human",
     answers: {
       1: ["Android 18","Genos","Doraemon","Astro Boy|Atom","Android 17"],
       2: ["Franky","Motoko Kusanagi|Motoko|Major","Android 16","Arale|Arale Norimaki","Cell","Mechamaru","David Martinez|David","2B"],
@@ -420,7 +437,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime vampire",
+    id: "name-an-anime-vampire",
+    prompt: "Name an anime vampire (no garlic allowed)",
     answers: {
       1: ["Alucard","Dio|Dio Brando","Nazuna|Nazuna Nanakusa"],
       2: ["Seras Victoria|Seras","Shinobu Oshino|Kiss-shot","Moka Akashiya|Moka","Krul Tepes|Krul","Mikaela Hyakuya|Mika","Kaname Kuran|Kaname","Zero Kiryu|Zero","Yuki Cross|Yuki","D"],
@@ -431,7 +449,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name a giant monster or kaiju from anime",
+    id: "name-a-giant-monster-or-kaiju-from-anime",
+    prompt: "Name a monster big enough to step on a city",
     answers: {
       1: ["Kaiju No. 8|Kaiju No 8","Colossal Titan","Nine-Tails|Kurama"],
       2: ["Godzilla","Attack Titan","Armored Titan","Female Titan","Beast Titan","Ten-Tails","Shukaku|One-Tail"],
@@ -442,7 +461,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime pirate",
+    id: "name-an-anime-pirate",
+    prompt: "Name a pirate you'd sail with",
     answers: {
       1: ["Luffy|Monkey D. Luffy","Zoro|Roronoa Zoro","Nami","Sanji","Shanks"],
       2: ["Ace","Whitebeard","Blackbeard","Buggy","Usopp","Chopper","Robin","Franky","Brook","Jinbe","Captain Harlock|Harlock","Law|Trafalgar Law"],
@@ -453,7 +473,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who can heal others",
+    id: "name-an-anime-character-who-can-heal-others",
+    prompt: "Name a character who could patch you up mid-battle",
     answers: {
       1: ["Orihime|Orihime Inoue","Josuke|Josuke Higashikata","Chopper|Tony Tony Chopper","Tsunade","Dende"],
       2: ["Sakura|Sakura Haruno","Recovery Girl","Aqua","Wendy|Wendy Marvell","Law|Trafalgar Law","Black Jack","Giorno|Giorno Giovanna"],
@@ -475,7 +496,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character known for super strength",
+    id: "name-an-anime-character-known-for-super-strength",
+    prompt: "Name a character who could flip a truck",
     answers: {
       1: ["Saitama","Goku|Son Goku","All Might"],
       2: ["Yujiro Hanma|Yujiro","Baki|Baki Hanma","Escanor","Gyomei|Gyomei Himejima","Tsunade","Whitebeard","Garp","Kenpachi|Kenpachi Zaraki","Broly","Might Guy","Kenshiro","Luffy","Yuji Itadori|Yuji","Mash|Mash Burnedead","Yor|Yor Forger"],
@@ -486,7 +508,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime samurai",
+    id: "name-an-anime-samurai",
+    prompt: "Name a samurai who'd win a duel at dawn",
     answers: {
       1: ["Kenshin|Himura Kenshin","Gintoki|Gintoki Sakata"],
       2: ["Jin","Mugen","Zoro|Roronoa Zoro","Yoriichi|Yoriichi Tsugikuni","Kokushibo"],
@@ -497,7 +520,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character with a famous scar",
+    id: "name-an-anime-character-with-a-famous-scar",
+    prompt: "Name a character with a scar that tells a story",
     answers: {
       1: ["Zoro|Roronoa Zoro","Kenshin|Himura Kenshin","Scar","Tanjiro|Tanjiro Kamado","Luffy"],
       2: ["Shanks","Kenpachi|Kenpachi Zaraki","Iruka","Kakashi","Sanemi|Sanemi Shinazugawa","Toji|Toji Fushiguro","Guts","Dabi","Todoroki|Shoto Todoroki","Kenshiro","Crocodile","Yamcha","Kenjaku"],
@@ -632,7 +656,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who works as a teacher",
+    id: "name-an-anime-character-who-works-as-a-teacher",
+    prompt: "Name a teacher you'd want for homeroom",
     answers: {
       1: ["Koro-sensei","Onizuka|Eikichi Onizuka","Aizawa|Shota Aizawa|Eraser Head","Gojo|Satoru Gojo","Kakashi|Kakashi Hatake","Iruka"],
       2: ["All Might","Might Guy|Guy","Kurenai","Asuma","Karasuma|Tadaomi Karasuma","Irina|Irina Jelavic","Present Mic","Midnight","Yaga|Masamichi Yaga","Utahime|Utahime Iori"],
@@ -643,7 +668,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who's a doctor or nurse",
+    id: "name-an-anime-character-who-s-a-doctor-or-nurse",
+    prompt: "Name a character you'd trust as your doctor",
     answers: {
       1: ["Chopper|Tony Tony Chopper","Black Jack","Nurse Joy","Law|Trafalgar Law"],
       2: ["Tsunade","Maomao","Dr. Tenma|Kenzo Tenma|Tenma","Recovery Girl","Shoko Ieiri|Shoko","Unohana|Retsu Unohana","Leorio","White Blood Cell|U-1146","Red Blood Cell|AE3803","Platelet"],
@@ -654,7 +680,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who is royalty",
+    id: "name-an-anime-character-who-is-royalty",
+    prompt: "Name a character with royal blood",
     answers: {
       1: ["Vegeta|Prince Vegeta","Lelouch|Lelouch vi Britannia"],
       2: ["Vivi|Nefertari Vivi","Bojji","Yona","Historia|Historia Reiss","Saber|Artoria","Gilgamesh","Meruem","Nausicaa","Princess Serenity|Serenity","San|Princess Mononoke"],
@@ -665,7 +692,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who's an orphan",
+    id: "name-an-anime-character-who-s-an-orphan",
+    prompt: "Name an orphan who made it anyway",
     answers: {
       1: ["Naruto|Naruto Uzumaki","Eren|Eren Yeager","Tanjiro|Tanjiro Kamado","Sasuke|Sasuke Uchiha","Denji"],
       2: ["Mikasa|Mikasa Ackerman","Armin|Armin Arlert","Ace|Portgas D. Ace","L|L Lawliet","Kurapika","Emma","Norman","Ray","Asta","Yuno","Ciel|Ciel Phantomhive"],
@@ -709,7 +737,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who's always hungry",
+    id: "name-an-anime-character-who-s-always-hungry",
+    prompt: "Name a character who'd eat you out of house and home",
     answers: {
       1: ["Luffy|Monkey D. Luffy","Goku|Son Goku","Sasha|Sasha Blouse"],
       2: ["Saber","Choji|Choji Akimichi","Naruto|Naruto Uzumaki","Mitsuri|Mitsuri Kanroji","Rengoku|Kyojuro Rengoku","Majin Buu|Buu","Toriko","L|L Lawliet"],
@@ -720,7 +749,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character with a famous catchphrase",
+    id: "name-an-anime-character-with-a-famous-catchphrase",
+    prompt: "Name a character with a catchphrase everyone quotes",
     answers: {
       1: ["Naruto|Naruto Uzumaki","Jotaro|Jotaro Kujo","Dio|Dio Brando","Luffy|Monkey D. Luffy","All Might"],
       2: ["Rengoku|Kyojuro Rengoku","Sailor Moon|Usagi","Okabe|Rintaro Okabe","Kenshin|Himura Kenshin","Shikamaru|Shikamaru Nara","Anya|Anya Forger","Eren|Eren Yeager","Megumin","Joseph|Joseph Joestar","Kamina","Vegeta","Ash Ketchum|Ash","Pikachu","Team Rocket","Yugi|Yugi Muto","Gojo|Satoru Gojo","Aizen|Sosuke Aizen","Natsu|Natsu Dragneel","Happy","Franky"],
@@ -731,7 +761,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who lost an arm, leg, or hand",
+    id: "name-an-anime-character-who-lost-an-arm-leg-or-hand",
+    prompt: "Name a character who lost a limb and kept fighting",
     answers: {
       1: ["Edward Elric|Edward|Ed","Shanks","Guts"],
       2: ["Erwin|Erwin Smith","Naruto|Naruto Uzumaki","Sasuke|Sasuke Uchiha","Tengen|Tengen Uzui","Violet Evergarden|Violet"],
@@ -764,7 +795,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime dad",
+    id: "name-an-anime-dad",
+    prompt: "Name an anime dad (great or terrible)",
     answers: {
       1: ["Goku|Son Goku","Vegeta","Loid Forger|Loid|Twilight","Endeavor"],
       2: ["Minato|Minato Namikaze","Hohenheim|Van Hohenheim","Isshin Kurosaki|Isshin","Ging|Ging Freecss","Whitebeard","Monkey D. Dragon|Dragon","Maes Hughes|Hughes","Bardock","Grisha Yeager|Grisha","Toji Fushiguro|Toji","Joseph Joestar|Joseph","Jotaro|Jotaro Kujo","Kohei Inuzuka|Kohei","Gendo Ikari|Gendo","Naruto|Naruto Uzumaki"],
@@ -775,7 +807,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime mom",
+    id: "name-an-anime-mom",
+    prompt: "Name an anime mom (great or terrifying)",
     answers: {
       1: ["Chi-Chi","Yor Forger|Yor","Inko Midoriya|Inko"],
       2: ["Bulma","Kushina|Kushina Uzumaki","Trisha Elric|Trisha","Carla Yeager|Carla","Hinata|Hinata Hyuga","Isabella|Mama Isabella","Bellemere","Big Mom|Charlotte Linlin","Mitsuki Bakugo|Mitsuki"],
@@ -786,7 +819,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime idol, singer, or band member",
+    id: "name-an-anime-idol-singer-or-band-member",
+    prompt: "Name a character who could headline a concert",
     answers: {
       1: ["Ai Hoshino|Ai","Bocchi|Hitori Gotoh","Yui Hirasawa|Yui"],
       2: ["Ruby Hoshino|Ruby","Kana Arima|Kana","Nijika Ijichi|Nijika","Ikuyo Kita|Kita","Ryo Yamada|Ryo","Mio Akiyama|Mio","Ritsu Tainaka|Ritsu","Mugi|Tsumugi Kotobuki","Azusa Nakano|Azusa","Nana Osaki|Nana","Uta","Brook","Kaori Miyazono|Kaori","Kousei Arima|Kousei","Honoka Kosaka|Honoka"],
@@ -797,7 +831,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character with an alter ego or second personality",
+    id: "name-an-anime-character-with-an-alter-ego-or-second-personality",
+    prompt: "Name a character with a secret second identity",
     answers: {
       1: ["Yugi|Yugi Muto|Pharaoh|Yami Yugi","Lelouch|Zero"],
       2: ["Diavolo","Doppio|Vinegar Doppio","Hollow Ichigo|Ichigo","Yami Bakura|Bakura","Marik|Yami Marik","Sailor Moon|Usagi","Conan|Shinichi Kudo","Great Saiyaman|Gohan"],
@@ -808,7 +843,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who sacrificed themselves for others",
+    id: "name-an-anime-character-who-sacrificed-themselves-for-others",
+    prompt: "Name a character who gave everything to save others",
     answers: {
       1: ["Rengoku|Kyojuro Rengoku","Jiraiya","Ace|Portgas D. Ace","Kamina","Goku|Son Goku","Vegeta"],
       2: ["Itachi|Itachi Uchiha","Maes Hughes|Hughes","Neji|Neji Hyuga","Minato|Minato Namikaze","Kushina","Erwin|Erwin Smith","Hange|Hange Zoe","Piccolo","Nanami|Kento Nanami","Power","Himeno","Netero|Isaac Netero","Lelouch","Pain|Nagato","Whitebeard","Bellemere","Oden|Kozuki Oden","Shinobu|Shinobu Kocho"],
@@ -819,7 +855,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime butler or maid",
+    id: "name-an-anime-butler-or-maid",
+    prompt: "Name a butler or maid who could also take you out",
     answers: {
       1: ["Sebastian|Sebastian Michaelis","Rem","Ram","Tohru (Dragon Maid)|Tohru"],
       2: ["Misaki Ayuzawa|Misaki","Hayate Ayasaki|Hayate","Ai Hayasaka|Hayasaka"],
@@ -841,7 +878,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who can turn into an animal",
+    id: "name-an-anime-character-who-can-turn-into-an-animal",
+    prompt: "Name a character who can turn into an animal",
     answers: {
       1: ["Yoruichi|Yoruichi Shihoin","Chopper|Tony Tony Chopper","Kyo Sohma|Kyo"],
       2: ["Marco|Marco the Phoenix","Kaido","Holo","Shippo","Haku","Rob Lucci|Lucci","Yuki Sohma|Yuki","Shigure Sohma|Shigure","Momiji Sohma|Momiji","Genma Saotome|Genma","Ryoga|Ryoga Hibiki|P-chan"],
@@ -852,7 +890,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime character who uses water",
+    id: "name-an-anime-character-who-uses-water",
+    prompt: "Name a character who'd never lose a water balloon fight (water powers)",
     answers: {
       1: ["Tanjiro|Tanjiro Kamado","Giyu|Giyu Tomioka","Squirtle"],
       2: ["Juvia|Juvia Lockser","Aqua","Urokodaki|Sakonji Urokodaki","Blastoise","Kisame|Kisame Hoshigaki"],
@@ -863,7 +902,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime scientist or inventor",
+    id: "name-an-anime-scientist-or-inventor",
+    prompt: "Name a character who'd win the science fair",
     answers: {
       1: ["Senku|Senku Ishigami","Bulma","Okabe|Rintaro Okabe","Kurisu|Kurisu Makise"],
       2: ["Dr. Gero","Vegapunk","Mayuri|Mayuri Kurotsuchi","Professor Oak|Oak","Urahara|Kisuke Urahara","Franky","Mei Hatsume|Hatsume","Orochimaru","Chrome","Hange|Hange Zoe","Edward Elric|Edward"],
@@ -885,7 +925,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime detective",
+    id: "name-an-anime-detective",
+    prompt: "Name a detective who'd crack your case in one episode",
     answers: {
       1: ["Conan|Conan Edogawa|Shinichi Kudo","L|L Lawliet|Ryuzaki"],
       2: ["Near","Kogoro Mouri|Kogoro","Heiji Hattori|Heiji","Kindaichi|Hajime Kindaichi","Ranpo|Ranpo Edogawa","Houtarou Oreki|Oreki","Dazai|Osamu Dazai","Atsushi|Atsushi Nakajima","Akane Tsunemori|Akane","Shinya Kogami|Kogami"],
@@ -896,7 +937,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name an anime delinquent or gang member",
+    id: "name-an-anime-delinquent-or-gang-member",
+    prompt: "Name a delinquent you wouldn't want to bump into",
     answers: {
       1: ["Mikey|Manjiro Sano","Yusuke|Yusuke Urameshi","Jotaro|Jotaro Kujo"],
       2: ["Draken|Ken Ryuguji","Takemichi|Takemichi Hanagaki","Baji|Keisuke Baji","Onizuka|Eikichi Onizuka","Kuwabara|Kazuma Kuwabara","Josuke|Josuke Higashikata","Hanamichi Sakuragi|Sakuragi","Kaneda|Shotaro Kaneda","Tatsu|Immortal Dragon","Haruka Sakura|Sakura"],
@@ -918,7 +960,8 @@ const QUESTIONS = [
     }
   },
   {
-    prompt: "Name a famously lazy anime character",
+    id: "name-a-famously-lazy-anime-character",
+    prompt: "Name a character who'd skip class to take a nap",
     answers: {
       1: ["Shikamaru|Shikamaru Nara","Gintoki|Gintoki Sakata","Nagi|Seishiro Nagi","Umaru|Umaru Doma"],
       2: ["Saitama","Houtarou Oreki|Oreki","Tanaka (Tanaka-kun Is Always Listless)|Tanaka","Aizawa|Shota Aizawa","Aokiji|Kuzan","Snorlax"],
@@ -929,6 +972,140 @@ const QUESTIONS = [
     }
   },
 
+
+  // ================= JUST FOR FUN =================
+  {
+    prompt: "Name a character with a ridiculous hairstyle",
+    answers: {
+      1: ["Yugi|Yugi Muto","Vegeta","Josuke|Josuke Higashikata","Rock Lee"],
+      2: ["Might Guy|Guy","Kenpachi|Kenpachi Zaraki","Kamina","Jotaro|Jotaro Kujo","Bakugo|Katsuki Bakugo","Goku|Son Goku","Kaiba|Seto Kaiba"],
+      3: ["Gintoki|Gintoki Sakata","Mineta|Minoru Mineta","Kakashi|Kakashi Hatake","Joey|Jonouchi|Katsuya Jonouchi","Buggy","Bartolomeo","Franky","Sanji"],
+      4: ["Bon Clay|Mr. 2","Ivankov|Iva"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character who's always smiling (even when it's creepy)",
+    answers: {
+      1: ["Gin Ichimaru|Gin","Hisoka","Koro-sensei"],
+      2: ["Douma|Doma","Sai","Kyubey","Izaya Orihara|Izaya","Doflamingo"],
+      3: ["Joker (Fire Force)|Joker","Mahito","Nagito Komaeda|Komaeda"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character who gets motion sick",
+    answers: {
+      1: ["Natsu|Natsu Dragneel"],
+      2: ["Gajeel|Gajeel Redfox"],
+      3: ["Laxus|Laxus Dreyar","Sting|Sting Eucliffe","Rogue|Rogue Cheney"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character who wears an iconic hat",
+    answers: {
+      1: ["Luffy|Monkey D. Luffy","Ash|Ash Ketchum","Jotaro|Jotaro Kujo"],
+      2: ["Law|Trafalgar Law","Ace|Portgas D. Ace","Chopper|Tony Tony Chopper","Urahara|Kisuke Urahara","Shunsui|Shunsui Kyoraku|Kyoraku","Brook","Sabo","Mihawk|Dracule Mihawk","Megumin"],
+      3: ["Lucci|Rob Lucci","Chuuya|Chuuya Nakahara"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character with a laugh you'd recognize anywhere",
+    answers: {
+      1: ["Brook","Whitebeard|Edward Newgate","Blackbeard|Marshall D. Teach"],
+      2: ["Doflamingo|Donquixote Doflamingo","Big Mom|Charlotte Linlin","Kaido","Light Yagami|Light|Kira","Dio|Dio Brando"],
+      3: ["Moria|Gecko Moria","Caesar Clown|Caesar","Shiki|Golden Lion"],
+      4: ["Eneru|Enel"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a tsundere (\"it's not like I like you or anything!\")",
+    answers: {
+      1: ["Taiga|Taiga Aisaka","Asuka|Asuka Langley"],
+      2: ["Kurisu|Kurisu Makise","Rin Tohsaka|Rin","Louise","Chitoge|Chitoge Kirisaki","Nino Nakano|Nino","Senjougahara|Hitagi Senjougahara","Kaguya|Kaguya Shinomiya","Vegeta","Bakugo|Katsuki Bakugo"],
+      3: ["Shana","Kyo Sohma|Kyo","Kirino|Kirino Kosaka"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a yandere (love you... a little too much)",
+    answers: {
+      1: ["Yuno Gasai|Yuno"],
+      2: ["Toga|Himiko Toga","Kurumi|Kurumi Tokisaki","Kotonoha|Kotonoha Katsura","Shion Sonozaki|Shion","Esdeath"],
+      3: ["Satou|Satou Matsuzaka"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a total crybaby",
+    answers: {
+      1: ["Zenitsu|Zenitsu Agatsuma","Deku|Izuku Midoriya"],
+      2: ["Usopp","Aqua","Usagi|Usagi Tsukino|Sailor Moon","Shinji|Shinji Ikari"],
+      3: ["Chopper|Tony Tony Chopper"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character who loves explosions a little too much",
+    answers: {
+      1: ["Megumin","Bakugo|Katsuki Bakugo","Deidara"],
+      2: ["Kimblee|Solf J. Kimblee","Kira|Yoshikage Kira"],
+      3: ["Mr. 5"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character with a special eye power",
+    answers: {
+      1: ["Sasuke|Sasuke Uchiha","Itachi|Itachi Uchiha","Kakashi|Kakashi Hatake","Gojo|Satoru Gojo"],
+      2: ["Madara|Madara Uchiha","Obito|Obito Uchiha","Hinata|Hinata Hyuga","Neji|Neji Hyuga","Pain|Nagato","Lelouch|Lelouch Lamperouge","Kurapika","Shisui|Shisui Uchiha","Boruto"],
+      3: ["Hiei","Ciel Phantomhive|Ciel","Sarada|Sarada Uchiha","Kaguya|Kaguya Otsutsuki","Ryuk","Misa|Misa Amane"],
+      4: ["Hanabi|Hanabi Hyuga","Hiashi|Hiashi Hyuga","Danzo","Shiki Ryougi|Shiki"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character who breaks the fourth wall",
+    answers: {
+      1: ["Gintoki|Gintoki Sakata"],
+      2: ["Shinpachi|Shinpachi Shimura","Kagura","Saiki|Saiki Kusuo"],
+      3: ["Excel","Hayate|Hayate Ayasaki"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    prompt: "Name a character who gets a nosebleed over a crush",
+    answers: {
+      1: ["Sanji","Master Roshi|Roshi"],
+      2: ["Mineta|Minoru Mineta","Jiraiya","Ebisu"],
+      3: [],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
   // ================= HARD PROMPTS =================
   {
     hard: true,
