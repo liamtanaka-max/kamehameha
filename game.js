@@ -89,7 +89,7 @@ function goMenu() {
   daily = loadDaily();
   const done = daily.results.length >= PER_DAY;
   $("daily-btn-label").textContent = done ? `CHARGE #${dayNum} ✓ SEE RESULTS` : daily.results.length ? "RESUME CHARGE" : "BEGIN CHARGE";
-  $("daily-btn-sub").textContent = done ? `${powerOf(daily.results)} power · next charge at midnight` : "today's 7 prompts · last 2 are HARD";
+  $("daily-btn-sub").textContent = done ? `${powerOf(daily.results)} power · next charge at midnight` : "today's 7 prompts · one from every theme";
   const best = getBest();
   $("infinite-best").textContent = best ? `BEST: ${best} power` : "";
   if (done) Scene.setCharge(0, powerOf(daily.results) / MAX_POWER);
@@ -98,38 +98,22 @@ function goMenu() {
 
 // ---------- Starting modes ----------
 
-// Today's 7 prompts: from Supabase (never used in any earlier Daily), with a
-// local fallback if the database can't be reached. Saved once per day.
-async function dailyPrompts() {
+// Today's 7 prompts: one from each theme, picked by a shuffle seeded with
+// the date, so everyone gets the same set. Saved once per day.
+function dailyPrompts() {
   if (daily.ids) {
     const qs = daily.ids.map((id) => QUESTION_BY_ID.get(id));
     if (qs.every(Boolean)) return qs;
   }
-  if (daily.results.length) return questionsFor(dateKey); // started before the database existed
-  const local = questionsFor(dateKey);
-  let qs = local;
-  try {
-    const ids = await DB.getDaily(dateKey, {
-      character: CHARACTER_QUESTIONS.map((q) => q.id),
-      title: TITLE_QUESTIONS.map((q) => q.id),
-      hard: HARD_QUESTIONS.map((q) => q.id)
-    });
-    if (ids && ids.length === PER_DAY) qs = ids.map((id, i) => QUESTION_BY_ID.get(id) || local[i]);
-  } catch (e) { /* offline: use the local schedule */ }
-  qs = personalizeDaily(qs);
+  const qs = personalizeDaily(questionsFor(dateKey));
   daily.ids = qs.map((q) => q.id);
   saveDaily();
   return qs;
 }
 
-let dailyLoading = false;
-async function startDaily() {
-  if (dailyLoading) return;
+function startDaily() {
   daily = loadDaily();
-  dailyLoading = true;
-  $("daily-btn-label").textContent = "LOADING…";
-  const prompts = await dailyPrompts();
-  dailyLoading = false;
+  const prompts = dailyPrompts();
   run = { mode: "daily", prompts, results: daily.results };
   Scene.reset();
   if (run.results.length >= PER_DAY) {
@@ -199,7 +183,7 @@ function showRoundSummary() {
   $("round-reveal").innerHTML = revealHtml(run.prompt);
   renderBoard($("round-board"));
   const last = run.round >= run.rounds - 1;
-  $("round-next").textContent = last ? "FINAL POWER-UP ›" : "NEXT ROUND ›";
+  $("round-next").textContent = last ? "WINNER FIRES ›" : "NEXT ROUND ›";
   $("round-next").classList.toggle("pink", last);
   $("round-next").focus();
 }
@@ -224,12 +208,11 @@ function partyFinale() {
   show("play");
   $("play").classList.add("firing");
   $("fire-hud").hidden = false;
-  $("fire-label").textContent = `${winner.name.toUpperCase()} POWERS UP!`;
-  startFireCounters(winner.power);
+  prepareFireHud(`${winner.name.toUpperCase()} FIRES!`);
   const who = run.players.findIndex((p) => p.name === winner.name);
   Scene.finale(who, tiers, () => {
-    setTimeout(() => { endFire(); showPartyResults(winner); }, 500);
-  }, onKill);
+    setTimeout(() => { endFire(); showPartyResults(winner); }, 400);
+  }, onKill, false, (ms) => onBeamFired(winner.power, ms));
 }
 
 function showPartyResults(winner) {
@@ -277,6 +260,7 @@ function beginTurn() {
   $("form").querySelector("button").disabled = false;
   $("flash").innerHTML = "";
   $("flash").className = "result-flash";
+  delete $("flash").dataset.tier;
   $("reveal").hidden = true;
   $("skip").hidden = false;
   $("next").hidden = true;
@@ -298,6 +282,7 @@ function renderTaken() {
 function refreshHud(animate = true) {
   const results = curResults();
   const power = powerOf(results);
+  setCharge(chargePct(), animate);
   if (animate) animateNumber($("power"), power, 600); else setNumber($("power"), power);
   $("power-label").textContent = run.mode === "party" ? `${curPlayer().name.toUpperCase()}'S POWER` : "POWER";
 
@@ -314,6 +299,93 @@ function refreshHud(animate = true) {
     const style = r && r.tier ? `style="--c:${TIER_COLORS[r.tier]}"` : "";
     return `<span class="pip ${cls}" ${style}></span>`;
   }).join("");
+}
+
+// ---------- Charge meter + answer reveal ----------
+
+const calm = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const canAnimate = () => !calm() && typeof Element.prototype.animate === "function";
+
+// The meter eases to the new level; its glow and colour follow the form
+function setCharge(pct, animate) {
+  const el = $("charge");
+  const fill = $("charge-fill");
+  const prev = Number(el.dataset.pct || 0);
+  if (!animate) fill.style.transition = "none";
+  el.style.setProperty("--pct", pct.toFixed(4));
+  el.style.setProperty("--glow", (0.15 + 0.85 * pct).toFixed(3));
+  el.style.setProperty("--fc", Scene.formOf(pct).color);
+  el.classList.toggle("max", pct >= 0.95);
+  el.dataset.pct = pct;
+  if (!animate) { void fill.offsetWidth; fill.style.transition = ""; return; }
+  if (pct > prev && canAnimate()) {
+    $("charge-sheen").animate([{ transform: "translateX(-120%)" }, { transform: "translateX(420%)" }],
+      { duration: 700, delay: 120, easing: "cubic-bezier(.25, 1, .5, 1)" });
+  }
+}
+
+// How loud each tier's reveal is. Common is a quick nudge; Deep Cut is the big one.
+const TIER_FX = {
+  1: { from: 0.92, peak: 1.03, ms: 220 },
+  2: { from: 0.86, peak: 1.07, ms: 300 },
+  3: { from: 0.8, peak: 1.12, ms: 380 },
+  4: { from: 0.7, peak: 1.2, ms: 480, shake: 3, bits: 14 },
+  5: { from: 0.6, peak: 1.28, ms: 580, shake: 5, bits: 24, ring: true },
+  6: { from: 0.5, peak: 1.36, ms: 700, shake: 7, bits: 36, ring: true }
+};
+
+function revealTier(tier) {
+  const flash = $("flash");
+  flash.dataset.tier = tier;
+  if (!canAnimate()) return;
+  const fx = TIER_FX[tier];
+  const stamp = flash.querySelector(".tier-name");
+  const easeOut = "cubic-bezier(.19, 1, .22, 1)";
+  stamp.animate([
+    { transform: `scale(${fx.from})`, opacity: 0 },
+    { transform: `scale(${fx.peak})`, opacity: 1, offset: 0.55 },
+    { transform: "scale(1)", opacity: 1 }
+  ], { duration: fx.ms, easing: easeOut });
+  flash.querySelector(".tier-pts").animate([{ transform: "translateY(10px)", opacity: 0 }, { transform: "none", opacity: 1 }],
+    { duration: 260, delay: fx.ms * 0.35, easing: easeOut, fill: "backwards" });
+  flash.querySelector(".tier-answer").animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, delay: fx.ms * 0.45, fill: "backwards" });
+
+  if (fx.shake) {
+    const a = fx.shake;
+    document.querySelector(".wrap").animate([
+      { transform: "none" }, { transform: `translate(${-a}px, ${a * 0.4}px)` }, { transform: `translate(${a * 0.8}px, ${-a * 0.4}px)` },
+      { transform: `translate(${-a * 0.5}px, 0)` }, { transform: `translate(${a * 0.25}px, 0)` }, { transform: "none" }
+    ], { duration: 380, easing: "linear" });
+  }
+  if (fx.bits || fx.ring) {
+    const cx = stamp.offsetLeft + stamp.offsetWidth / 2;
+    const cy = stamp.offsetTop + stamp.offsetHeight / 2;
+    if (fx.ring) {
+      const ring = document.createElement("span");
+      ring.className = "fx-ring";
+      ring.style.left = cx + "px"; ring.style.top = cy + "px";
+      flash.appendChild(ring);
+      ring.animate([{ transform: "scale(.2)", opacity: 1 }, { transform: `scale(${tier === 6 ? 3.4 : 2.6})`, opacity: 0 }],
+        { duration: 650, easing: easeOut }).onfinish = () => ring.remove();
+    }
+    const colors = tier === 6 ? Object.values(TIER_COLORS).slice(2) : [TIER_COLORS[tier], "#ffffff"];
+    for (let i = 0; i < fx.bits; i++) {
+      const bit = document.createElement("span");
+      bit.className = "fx-bit";
+      bit.style.setProperty("--c", colors[i % colors.length]);
+      const size = 4 + Math.round(Math.random() * 5);
+      bit.style.width = bit.style.height = size + "px";
+      bit.style.left = cx + "px"; bit.style.top = cy + "px";
+      flash.appendChild(bit);
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 50 + Math.random() * (40 + (tier - 3) * 45);
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist * 0.7 - 10;
+      bit.animate([
+        { transform: "translate(0, 0) scale(1)", opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) scale(.2)`, opacity: 0 }
+      ], { duration: 500 + Math.random() * 450, easing: easeOut, delay: Math.random() * 60 }).onfinish = () => bit.remove();
+    }
+  }
 }
 
 // ---------- Timer ----------
@@ -382,8 +454,8 @@ function record(result) {
   }
 
   let label = "NEXT ›", fire = false;
-  if (run.mode === "daily" && run.results.length >= PER_DAY) { label = "FINAL POWER-UP ›"; fire = true; }
-  if (run.mode === "infinite" && run.lives <= 0) { label = "OUT OF LIVES — POWER UP ›"; fire = true; }
+  if (run.mode === "daily" && run.results.length >= PER_DAY) { label = "FIRE ›"; fire = true; }
+  if (run.mode === "infinite" && run.lives <= 0) { label = "OUT OF LIVES — FIRE ›"; fire = true; }
   if (run.mode === "party") {
     label = run.turn < run.players.length - 1
       ? `PASS TO ${run.players[run.order[run.turn + 1]].name.toUpperCase()} ›`
@@ -411,6 +483,7 @@ function accept(match) {
   $("flash").className = "result-flash hit";
   $("flash").style.setProperty("--c", color);
   $("flash").innerHTML = `<span class="tier-name">${tier.name.toUpperCase()}</span><span class="tier-pts">+${tier.points}</span><span class="tier-answer">${escapeHtml(match.name)}</span>`;
+  revealTier(match.tier);
   record({ prompt: q.prompt, answer: match.name, tier: match.tier });
   Scene.burst(fighterIndex(), match.tier, tier.points, chargePct(), tier.name.toUpperCase());
 }
@@ -497,11 +570,23 @@ $("next").addEventListener("click", () => {
 
 // ---------- Fire ----------
 
-function startFireCounters(power) {
-  for (const id of ["fire-km", "fire-power", "fire-ko"]) $(id).dataset.value = 0;
+// The HUD says CHARGING… while the orb builds, then the label pops and
+// the numbers count up for as long as the beam is flying.
+function prepareFireHud(label) {
+  setNumber($("fire-km"), 0, " km");
+  setNumber($("fire-power"), 0);
   $("fire-ko").textContent = "0";
-  animateNumber($("fire-km"), power * KM_PER_POWER, 2600, " km");
-  animateNumber($("fire-power"), power, 2600);
+  $("fire-label").textContent = "CHARGING…";
+  $("fire-label").dataset.fire = label;
+}
+
+function onBeamFired(power, ms) {
+  const el = $("fire-label");
+  el.textContent = el.dataset.fire;
+  if (canAnimate()) el.animate([{ transform: "scale(.6)", opacity: 0 }, { transform: "scale(1.12)", opacity: 1, offset: 0.6 }, { transform: "none" }],
+    { duration: 420, easing: "cubic-bezier(.19, 1, .22, 1)" });
+  animateNumber($("fire-km"), power * KM_PER_POWER, ms, " km");
+  animateNumber($("fire-power"), power, ms);
 }
 
 function onKill(kills) { $("fire-ko").textContent = kills; }
@@ -516,12 +601,11 @@ function fireRun() {
   show("play");
   $("play").classList.add("firing");
   $("fire-hud").hidden = false;
-  $("fire-label").textContent = "FINAL POWER-UP!";
+  prepareFireHud("KAMEHAME-HA!");
   const power = powerOf(run.results);
-  startFireCounters(power);
   Scene.finale(0, run.results.map((r) => r.tier || 0), (kills) => {
-    setTimeout(() => { endFire(); showResults(true, kills); }, 500);
-  }, onKill);
+    setTimeout(() => { endFire(); showResults(true, kills); }, 400);
+  }, onKill, false, (ms) => onBeamFired(power, ms));
 }
 
 // ---------- Results (Daily + Infinite) ----------

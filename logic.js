@@ -2,11 +2,10 @@
 //  GAME LOGIC (no page code here)
 //  - checkAnswer: forgiving matching (typos, word order, romanization)
 //  - catalog prompts: "Name a 2010s anime" built from catalog.js
-//  - prompt picking: daily cycle + no repeats in Infinite / Party
+//  - prompt picking: one prompt per theme each day, no repeats
 // =========================================================
 
 const PER_DAY = 7;
-const HARD_PER_DAY = 2;
 const TIME_LIMIT = 25; // seconds per prompt
 const MAX_POWER = PER_DAY * TIERS[6].points; // 700
 const KM_PER_POWER = 10;
@@ -259,64 +258,20 @@ function findInCatalog(input) {
   return { ...m, year: item ? item.year : null };
 }
 
-// Turn the compact specs in questions.js into question objects, plus
-// automatic combos ("Name a 1990s sports anime", "Name a horror anime movie")
-// so the bank is deep enough to never repeat.
-const COMBO_ERAS = [[1980, 1989, "1980s"], [1990, 1999, "1990s"], [2000, 2009, "2000s"], [2010, 2019, "2010s"], [2020, 2100, "2020s"]];
-const COMBO_MIN = 25;        // a decade combo needs at least this many fitting anime
-const COMBO_MOVIE_MIN = 15;  // a genre-movie combo needs at least this many
-const COMBO_HARD_BELOW = 60; // smaller sets go in the hard pool
-
-function countFits(where) {
-  let n = 0;
-  for (const item of catalogItems()) if (matchesWhere(item, where)) n++;
-  return n;
-}
-
-function comboQuestions(specs) {
-  const out = [];
-  for (const spec of specs) {
-    const w = spec.where;
-    if (!w || spec.nameTest || w.years || w.type != null || (w.genre == null && w.studio == null)) continue;
-    const rest = spec.prompt.replace(/^Name an? /, "");
-    for (const [from, to, label] of COMBO_ERAS) {
-      const where = { ...w, years: [from, to] };
-      const n = countFits(where);
-      if (n >= COMBO_MIN) out.push({ prompt: `Name a ${label} ${rest}`, where, combo: true, hard: spec.hard || n < COMBO_HARD_BELOW });
-    }
-    if (w.genre != null && w.studio == null) {
-      const where = { ...w, type: 1 };
-      const n = countFits(where);
-      if (n >= COMBO_MOVIE_MIN) out.push({ prompt: spec.prompt.replace(/\banime\b/, "anime movie"), where, combo: true, hard: true });
-    }
-  }
-  return out;
-}
-
+// Catalog prompts (title answers) from questions.js
 function catalogQuestions() {
   if (typeof CATALOG_PROMPTS === "undefined" || !catalogItems().length) return [];
-  return CATALOG_PROMPTS.concat(comboQuestions(CATALOG_PROMPTS)).map((spec) => ({ ...spec, catalog: true }));
+  return CATALOG_PROMPTS.map((spec) => ({ ...spec, catalog: true }));
 }
 
 // ---------------------------------------------------------
-//  Picking prompts — no repeats
+//  Picking prompts — themes + no repeats
 // ---------------------------------------------------------
 
 const ALL_QUESTIONS = QUESTIONS.concat(catalogQuestions());
-// Hand-written prompts that are really about titles, not characters
-const TITLE_STYLE = new Set([
-  "Name an anime studio", "Name a Shonen Jump series that started before 2000", "Name an anime OVA released before 2000",
-  "Name a Gundam series or film"
-]);
-ALL_QUESTIONS.forEach((q) => {
-  if (!q.id) q.id = slug(q.prompt);
-  q.kind = q.catalog || TITLE_STYLE.has(q.prompt) ? "title" : "character";
-});
-const NORMAL_QUESTIONS = ALL_QUESTIONS.filter((q) => !q.hard);
-const HARD_QUESTIONS = ALL_QUESTIONS.filter((q) => q.hard);
-// Character prompts get the bigger share; "name an anime that..." prompts mix in
-const CHARACTER_QUESTIONS = NORMAL_QUESTIONS.filter((q) => q.kind === "character");
-const TITLE_QUESTIONS = NORMAL_QUESTIONS.filter((q) => q.kind === "title");
+ALL_QUESTIONS.forEach((q) => { if (!q.id) q.id = slug(q.prompt); });
+const QUESTION_BY_ID = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
+const BY_THEME = Object.fromEntries(THEMES.map((t) => [t, ALL_QUESTIONS.filter((q) => q.theme === t)]));
 
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
@@ -324,16 +279,28 @@ function todayKey(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function dayNumber(dateKey) {
-  const ms = new Date(dateKey + "T00:00:00") - new Date(LAUNCH_DATE + "T00:00:00");
-  return Math.max(1, Math.round(ms / 86400000) + 1);
+function daysBetween(fromKey, toKey) {
+  return Math.round((new Date(toKey + "T00:00:00") - new Date(fromKey + "T00:00:00")) / 86400000);
 }
 
+function dayNumber(dateKey) { return Math.max(1, daysBetween(LAUNCH_DATE, dateKey) + 1); }
+
+// Small, fast, seedable random numbers (mulberry32)
 function seededRandom(seed) {
+  let a = seed >>> 0;
   return function () {
-    seed = (seed * 1664525 + 1013904223) % 4294967296;
-    return seed / 4294967296;
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+function hashString(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return h >>> 0;
 }
 
 function shuffle(list, rand = Math.random) {
@@ -345,19 +312,23 @@ function shuffle(list, rand = Math.random) {
   return a;
 }
 
-// Daily: 3 character prompts + 2 title prompts + 2 hard ones.
-// Each pool walks one fixed shuffled order, so days never repeat a prompt
-// until that pool has been used up.
-const DAILY_SEED = 20261111;
+// Daily: one prompt from each of the 7 themes, the same for everyone.
+// Each theme walks a shuffled order seeded by its name and the cycle number,
+// so a prompt only comes back after every prompt in its theme has been used
+// (every theme is the same size, so that's the whole pool). Each new cycle
+// gets a fresh order. HARD prompts go last.
+const POOL_START = "2026-11-24"; // day 0 of the current question pool
+const DAILY_SEED = 20261124;
 function questionsFor(dateKey) {
-  const d = dayNumber(dateKey) - 1;
-  const pick = (list, per, seed) => {
-    const order = shuffle(list, seededRandom(seed));
-    return Array.from({ length: per }, (_, i) => order[(d * per + i) % order.length]);
-  };
-  const [c1, c2, c3] = pick(CHARACTER_QUESTIONS, 3, DAILY_SEED);
-  const [t1, t2] = pick(TITLE_QUESTIONS, 2, DAILY_SEED + 2);
-  return [c1, t1, c2, t2, c3, ...pick(HARD_QUESTIONS, HARD_PER_DAY, DAILY_SEED + 1)];
+  const d = Math.max(0, daysBetween(POOL_START, dateKey));
+  const picks = THEMES.map((theme) => {
+    const pool = BY_THEME[theme];
+    const cycle = Math.floor(d / pool.length);
+    const order = shuffle(pool, seededRandom(DAILY_SEED + hashString(theme) + cycle * 7919));
+    return order[d % pool.length];
+  });
+  const mixed = shuffle(picks, seededRandom(DAILY_SEED + d));
+  return mixed.filter((q) => !q.hard).concat(mixed.filter((q) => q.hard));
 }
 
 // Prompts this player has already seen (any mode), oldest first.
@@ -379,68 +350,68 @@ function mergeRemoteSeen(remote) {
   saveSeen([...remote, ...loadSeen().filter((id) => !remoteSet.has(id))]);
 }
 
-const QUESTION_BY_ID = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
-function poolFor(q) { return q.hard ? HARD_QUESTIONS : q.kind === "title" ? TITLE_QUESTIONS : CHARACTER_QUESTIONS; }
-const FALLBACK = {
-  c: [CHARACTER_QUESTIONS, TITLE_QUESTIONS, HARD_QUESTIONS],
-  t: [TITLE_QUESTIONS, CHARACTER_QUESTIONS, HARD_QUESTIONS],
-  h: [HARD_QUESTIONS, TITLE_QUESTIONS, CHARACTER_QUESTIONS]
-};
-
-// The Daily is shared by everyone, but if this player already met one of
-// today's prompts in Infinite or Party, swap it for a fresh one of the same kind.
+// If this player already met one of today's prompts in Infinite or Party,
+// swap it for a fresh prompt from the same theme (so the round still has
+// one prompt per theme).
 function personalizeDaily(qs) {
   const seen = new Set(loadSeen());
   const taken = new Set(qs.map((q) => q.id));
   return qs.map((q) => {
     if (!seen.has(q.id)) return q;
-    const slot = q.hard ? "h" : q.kind === "title" ? "t" : "c";
-    for (const pool of FALLBACK[slot]) {
-      const fresh = pool.filter((x) => !seen.has(x.id) && !taken.has(x.id));
-      if (fresh.length) {
-        const pick = fresh[Math.floor(Math.random() * fresh.length)];
-        taken.add(pick.id);
-        return pick;
-      }
-    }
-    return q;
+    const fresh = BY_THEME[q.theme].filter((x) => !seen.has(x.id) && !taken.has(x.id));
+    if (!fresh.length) return q;
+    const pick = fresh[Math.floor(Math.random() * fresh.length)];
+    taken.add(pick.id);
+    return pick;
   });
 }
 
-// Infinite / Party: mostly character prompts, some title prompts, and a hard
-// one every so often. Never shows a prompt this player has seen before: if a
-// pool runs dry it borrows from the others, and only when every single prompt
-// has been seen does it bring back the ones seen longest ago.
-const STREAM_PATTERN = ["c", "t", "c", "c", "h", "c", "t", "c"]; // 5 character : 2 title : 1 hard
+// Infinite / Party: cycles through all 7 themes in a shuffled order, never
+// the same theme twice in a row. Never shows a prompt this player has seen
+// (or one that's in today's Daily) while unseen ones are left; after that it
+// brings back the ones seen longest ago.
 function promptStream() {
   const used = new Set();
-  let n = 0;
-  function pick(slot) {
-    const seen = loadSeen();
-    const seenSet = new Set(seen);
-    for (const pool of FALLBACK[slot]) {
-      const fresh = pool.filter((q) => !used.has(q.id) && !seenSet.has(q.id));
-      if (fresh.length) {
-        const q = fresh[Math.floor(Math.random() * fresh.length)];
+  const dailyIds = new Set(questionsFor(todayKey()).map((q) => q.id));
+  let lap = [];
+  let lastTheme = null;
+
+  function nextTheme() {
+    if (!lap.length) {
+      lap = shuffle(THEMES);
+      if (lap[0] === lastTheme) lap.push(lap.shift());
+    }
+    return lap.shift();
+  }
+
+  function pickFrom(theme) {
+    const seenList = loadSeen();
+    const seen = new Set(seenList);
+    const pool = BY_THEME[theme].filter((q) => !used.has(q.id));
+    const fresh = pool.filter((q) => !seen.has(q.id) && !dailyIds.has(q.id));
+    const unseen = fresh.length ? fresh : pool.filter((q) => !seen.has(q.id));
+    if (unseen.length) return unseen[Math.floor(Math.random() * unseen.length)];
+    if (!pool.length) return null;
+    const age = new Map(seenList.map((id, i) => [id, i]));
+    const oldest = pool.slice().sort((a, b) => (age.get(a.id) ?? -1) - (age.get(b.id) ?? -1));
+    return oldest[Math.floor(Math.random() * Math.min(3, oldest.length))];
+  }
+
+  return function next() {
+    for (let tries = 0; tries < THEMES.length * 2; tries++) {
+      const theme = nextTheme();
+      const q = pickFrom(theme);
+      if (q) {
         used.add(q.id);
+        lastTheme = theme;
         return q;
       }
     }
-    // Everything has been seen: oldest first
-    const pool = FALLBACK[slot][0];
-    let candidates = pool.filter((q) => !used.has(q.id));
-    if (!candidates.length) { used.clear(); candidates = pool.slice(); }
-    const age = new Map(seen.map((id, i) => [id, i]));
-    candidates.sort((a, b) => (age.get(a.id) ?? -1) - (age.get(b.id) ?? -1));
-    const q = candidates[Math.floor(Math.random() * Math.min(5, candidates.length))];
-    used.add(q.id);
-    return q;
-  }
-  return function next() {
-    return pick(STREAM_PATTERN[n++ % STREAM_PATTERN.length]);
+    used.clear(); // played every prompt in one sitting: start over
+    return next();
   };
 }
 
 if (typeof module !== "undefined") {
-  module.exports = { normalize, checkAnswer, findInCatalog, questionsFor, promptStream, personalizeDaily, mergeRemoteSeen, loadSeen, markSeen, QUESTION_BY_ID, CHARACTER_QUESTIONS, TITLE_QUESTIONS, dayNumber, todayKey, answersOf, ALL_QUESTIONS, NORMAL_QUESTIONS, HARD_QUESTIONS, similarity, prep };
+  module.exports = { normalize, checkAnswer, findInCatalog, questionsFor, promptStream, personalizeDaily, mergeRemoteSeen, loadSeen, markSeen, QUESTION_BY_ID, BY_THEME, dayNumber, todayKey, answersOf, ALL_QUESTIONS, similarity, prep, slug };
 }

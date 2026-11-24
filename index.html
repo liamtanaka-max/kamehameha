@@ -29,7 +29,7 @@
 
       <button class="btn pink big daily-btn" id="daily-btn">
         <span id="daily-btn-label">BEGIN CHARGE</span>
-        <small id="daily-btn-sub">today's 7 prompts · last 2 are HARD</small>
+        <small id="daily-btn-sub">today's 7 prompts · one from every theme</small>
       </button>
 
       <div class="modes">
@@ -80,6 +80,9 @@
       <div class="hud">
         <div class="power-readout"><span id="power">0</span><small id="power-label">POWER</small></div>
         <div class="pips" id="pips"></div>
+      </div>
+      <div class="charge" id="charge" aria-hidden="true">
+        <div class="charge-fill" id="charge-fill"><span class="charge-sheen" id="charge-sheen"></span></div>
       </div>
 
       <div class="prompt-head">
@@ -177,9 +180,9 @@
   <dialog id="help">
     <h2>HOW TO PLAY</h2>
     <p>Every prompt has lots of right answers. <b>Obvious answers charge a little, obscure ones charge a lot.</b> You get 25 seconds per prompt; wrong guesses cost nothing. Close typos get a "Did you mean…?" — press Enter again to accept.</p>
-    <p>Every answer powers up your fighter — rarer answers make him grow more, and he transforms as he goes: SPARK, SURGE, OVERDRIVE, STORM, ASCENDED, ZENITH… and a secret form for near-perfect runs. At the end his aura explodes and wipes out a wave of monsters for each answer.</p>
+    <p>Every answer powers up your fighter — rarer answers make him grow more, and he transforms as he goes: SPARK, SURGE, OVERDRIVE, STORM, ASCENDED, ZENITH… and a secret form for near-perfect runs. At the end he charges up and fires: the more niche your answers, the thicker, brighter and farther the beam goes, wiping out a wave of monsters for each answer.</p>
     <table class="tier-table" id="tier-table"></table>
-    <p><b>Daily Charge</b> — 7 prompts, same for everyone, last 2 are HARD.<br>
+    <p><b>Daily Charge</b> — 7 prompts, same for everyone, one from each theme.<br>
        <b>Infinite</b> — endless prompts. A skip or time-out costs one of 3 lives.<br>
        <b>Party</b> — pass one device around. Everyone answers the same prompt, and answers already taken that round don't count.</p>
     <button class="btn cyan" id="help-close">GOT IT</button>

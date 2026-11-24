@@ -6,8 +6,9 @@
 //  he visibly grows, and as his total climbs he transforms through
 //  eight forms (BASE -> SPARK -> SURGE -> OVERDRIVE -> STORM ->
 //  ASCENDED -> ZENITH -> the secret VOID form).
-//  At the end his aura explodes into a shockwave that wipes out
-//  a wave of monsters for every answer.
+//  At the end he charges up for a second and fires a beam across the
+//  screen: thicker, brighter and longer the more niche the answers were.
+//  It wipes out a wave of monsters for every answer.
 //
 //  Public API:
 //    Scene.init(canvas)
@@ -16,7 +17,7 @@
 //    Scene.setCharge(i, pct)            set a fighter's power (0..1) silently
 //    Scene.burst(i, tier, points, pct, label)   power-up for one answer
 //    Scene.fizzle(i, label)             a dud (skip / time out)
-//    Scene.finale(i, tiers, onDone, onKill, instant)
+//    Scene.finale(i, tiers, onDone, onKill, instant, onFire)
 //    Scene.reset()
 //    Scene.FORMS, Scene.formOf(pct)
 // =========================================================
@@ -96,14 +97,18 @@ const Scene = (() => {
     6: ["............###.", "...........##o##", "..#.......######", ".###.....###....", "#####...####....", "##############..", ".##############.", "..############..", "...##########...", "....##....##....", "....##....##....", "...###...###...."]
   };
   const MOB_COLORS = { 1: "#9aa4c4", 2: "#48d6ff", 3: "#5dff9b", 4: "#b86bff", 5: "#ffd23f", 6: "#ff4f8b" };
-  const DROP_MS = 1000, WAVE_MS = 2600, END_MS = 600;
   const MAX_MOBS = 60;
+  // Players who ask for less motion get no shake, softer flashes and a quicker finale
+  const motionQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  const calm = () => !!(motionQuery && motionQuery.matches);
+  function addShake(v) { if (!calm()) shake = Math.max(shake, v); }
+  function addFlash(v) { flash = Math.max(flash, calm() ? Math.min(v, 0.15) : v); }
 
   let canvas, ctx, W, H, horizon, small;
   let stars = [], ridgeFar = [], ridgeNear = [], rocks = [];
   let fighters = [], active = 0;
   let sparks = [], floaters = [], rings = [], pillars = [], mobs = [], debris = [];
-  let firing = null, shake = 0, flash = 0, zoneEnd = 0;
+  let firing = null, shake = 0, flash = 0, zoneEnd = 0, motes = [];
 
   // ---------- Layout ----------
 
@@ -451,13 +456,13 @@ const Scene = (() => {
 
   // ---------- Mobs + finale ----------
 
-  function spawnMobs(tiers, startX) {
+  function spawnMobs(tiers, startX, endX) {
     let list = [];
     tiers.forEach((t, wave) => { for (let k = t; k >= 1; k--) list.push({ type: k, wave }); });
     if (list.length > MAX_MOBS) {
       list = list.map((m, i) => ({ ...m, i })).sort((a, b) => b.type - a.type).slice(0, MAX_MOBS).sort((a, b) => a.i - b.i);
     }
-    const right = W - 12;
+    const right = Math.max(startX + 60, endX || W - 12);
     const mp = small ? 2 : 4;
     const gap = small ? 3 : 8;
     const widths = list.map((m) => MOB_SPRITES[m.type][0].length * mp);
@@ -516,7 +521,7 @@ const Scene = (() => {
       });
     }
     rings.push({ start: performance.now(), tier: Math.min(3, m.type), color: c, dur: 350, max: 10 + m.type * 6, x: m.x + m.w / 2, y: m.y + m.h / 2 });
-    shake = Math.max(shake, 1 + m.type * 0.8);
+    addShake(1 + m.type * 0.8);
     firing.kills++;
     firing.onKill && firing.onKill(firing.kills, m.type);
   }
@@ -532,53 +537,163 @@ const Scene = (() => {
     ctx.globalAlpha = 1;
   }
 
-  // The leader's aura explodes into a wall of energy that sweeps the field
-  function drawWave(now, time) {
-    const t = now - firing.start;
+  // ---------- Finale: charge up, then fire the beam ----------
+  //
+  //  CHARGE  ~1s   energy gathers into an orb in front of the fighter
+  //  FIRE          the beam pushes right; mobs explode as the tip passes
+  //  IMPACT        flash + shockwave where the tip lands (or off-screen)
+  //  FADE          the beam thins out, then onDone()
+  //
+  // Everything scales with pct (0..1 of max power): orb size, beam
+  // thickness, brightness, how far it reaches, and how hard it hits.
+
+  function timings(pct) {
+    if (calm()) return { charge: 350, fire: 550, impact: 350, fade: 300 };
+    return { charge: 1000, fire: 900 + pct * 900, impact: 650, fade: 450 };
+  }
+
+  function beamGeom(f, pct) {
+    const g = geom(f);
+    const x0 = f.cx + g.w * 0.42;
+    const y = g.top + g.h * 0.42;
+    // A weak run fizzles partway across; a great one leaves the screen
+    const reach = pct >= 0.85 ? W - x0 + 160 : (W - x0) * (0.32 + 0.68 * (pct / 0.85));
+    const thick = (small ? 8 : 12) + pct * (small ? 46 : 92);
+    return { x0, y, reach, thick, offscreen: pct >= 0.85 };
+  }
+
+  function drawOrb(x, y, r, c, time) {
+    if (r <= 0) return;
+    ctx.save();
+    ctx.shadowColor = c;
+    ctx.shadowBlur = r * 1.6;
+    glowCircle(x, y, r * (1 + Math.sin(time * 40) * 0.06), c, hexA(c.startsWith("#") ? c : "#ffffff", 0));
+    ctx.restore();
+  }
+
+  // The beam body: a glowing band with a white-hot core and wobbling edges
+  function drawBeamBody(x0, y, len, thick, c, alpha, time) {
+    if (len <= 1 || thick <= 0.5) return;
+    const seg = small ? 10 : 14;
+    const edge = (x, k) => Math.sin(x * 0.045 + time * 30 + k) * thick * 0.07;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.shadowColor = c;
+    ctx.shadowBlur = 18 + thick * 0.6;
+    for (const [w, fill] of [[1, c], [0.5, "#ffffff"]]) {
+      const h = (thick * w) / 2;
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      ctx.moveTo(x0, y - h * 0.6);
+      for (let x = 0; x <= len; x += seg) ctx.lineTo(x0 + x, y - h - edge(x, 0) * w);
+      ctx.lineTo(x0 + len, y - h);
+      ctx.lineTo(x0 + len, y + h);
+      for (let x = len; x >= 0; x -= seg) ctx.lineTo(x0 + x, y + h + edge(x, 2) * w);
+      ctx.lineTo(x0, y + h * 0.6);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawFinale(now, time) {
     const f = fighters[firing.who];
     if (!f) return;
-    const g = geom(f);
-    const c = formColor(f.level, time);
-    if (t < DROP_MS) {
-      shake = Math.max(shake, 1 + firing.pct * 2);
-      if (Math.random() < 0.6) sparks.push(spark(f, 1 + Math.random() * 4, f.level === 7 ? "#ffffff" : FORMS[f.level].color));
+    const T = firing.t;
+    const pct = firing.pct;
+    const t = now - firing.start;
+    const c = f.level === 7 ? formColor(7, time) : FORMS[Math.max(1, f.level)].color;
+    const bg = beamGeom(f, pct);
+
+    // CHARGE
+    if (t < T.charge) {
+      const p = t / T.charge;
+      const r = (3 + bg.thick * 0.55) * p * p;
+      addShake(p * (1 + pct * 4));
+      // Energy motes pulled into the orb
+      if (!calm() && Math.random() < 0.9) {
+        const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * (small ? 70 : 140);
+        motes.push({ x: bg.x0 + Math.cos(a) * d, y: bg.y + Math.sin(a) * d, life: 1 });
+      }
+      drawMotes(bg.x0, bg.y, c);
+      drawOrb(bg.x0, bg.y, r, c, time);
       return;
     }
-    if (!firing.burst) {
-      firing.burst = true;
-      flash = 0.5 + firing.pct * 0.4;
-      rings.push({ start: now, tier: 6, color: f.level === 7 ? "#ffffff" : FORMS[f.level].color, dur: 900, max: W * 0.5, x: f.cx, y: g.mid });
-    }
-    const p = Math.min(1, (t - DROP_MS) / WAVE_MS);
-    const ease = 1 - Math.pow(1 - p, 2);
-    const startX = f.cx;
-    const x = startX + (W - startX + 80) * ease;
-    const hgt = 40 + firing.pct * horizon * 0.65;
-    const wid = 14 + firing.pct * 30;
-    ctx.save();
-    const grad = ctx.createLinearGradient(x - wid * 3, 0, x + wid, 0);
-    grad.addColorStop(0, "rgba(0,0,0,0)");
-    grad.addColorStop(0.7, hexA(f.level === 7 ? "#ffffff" : FORMS[f.level].color, 0.55));
-    grad.addColorStop(1, "#ffffff");
-    ctx.fillStyle = grad;
-    ctx.shadowColor = c;
-    ctx.shadowBlur = 30;
-    ctx.beginPath();
-    ctx.moveTo(x - wid * 3, horizon);
-    ctx.quadraticCurveTo(x + wid, horizon - hgt * 0.5, x - wid, horizon - hgt);
-    ctx.lineTo(x + wid * 0.6, horizon - hgt);
-    ctx.quadraticCurveTo(x + wid * 2, horizon - hgt * 0.5, x + wid, horizon);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-    if (Math.random() < 0.8) debris.push({ x, y: horizon - Math.random() * 6, vx: -1 - Math.random() * 2, vy: -Math.random() * 3, life: 1, c: "#2a3a6b", s: 3 });
 
-    for (const m of mobs) if (!m.dead && x >= m.x + m.w * 0.3) explode(m);
-    if (p < 1) shake = Math.max(shake, 2 + firing.pct * 6);
-    if (p >= 1 && t > DROP_MS + WAVE_MS + END_MS && !firing.done) {
+    // FIRE
+    const tf = t - T.charge;
+    if (!firing.fired) {
+      firing.fired = true;
+      motes = [];
+      addFlash(0.1 + pct * 0.28);
+      rings.push({ start: now, tier: 6, color: c, dur: 500, max: bg.thick * 1.8, x: bg.x0, y: bg.y });
+      firing.onFire && firing.onFire(T.fire + T.impact);
+    }
+    const pFire = Math.min(1, tf / T.fire);
+    const ease = 1 - Math.pow(1 - pFire, 3);
+    const len = bg.reach * ease;
+    const tipX = bg.x0 + len;
+
+    // FADE thins and dims the beam after impact
+    const tFade = tf - T.fire - T.impact;
+    const fade = tFade > 0 ? Math.max(0, 1 - tFade / T.fade) : 1;
+    const pulse = 1 + Math.sin(time * 50) * 0.05;
+    const thick = bg.thick * pulse * (0.35 + 0.65 * fade);
+    const bright = (0.65 + 0.35 * pct) * fade;
+
+    if (pFire < 1) addShake(2 + pct * 5);
+    drawBeamBody(bg.x0, bg.y, len, thick, c, bright, time);
+    drawOrb(bg.x0, bg.y, thick * 0.62, c, time);
+    if (!bg.offscreen || tipX < W) drawOrb(tipX, bg.y, thick * 0.75, c, time);
+
+    // Spray from the beam's edges
+    if (!calm() && pFire < 1 && Math.random() < 0.85) {
+      debris.push({ x: tipX, y: bg.y + (Math.random() - 0.5) * thick, vx: -1 - Math.random() * 3, vy: (Math.random() - 0.5) * 4,
+        life: 1, c: Math.random() < 0.4 ? "#ffffff" : c, s: Math.random() < 0.3 ? 3 : 2 });
+    }
+    for (const m of mobs) if (!m.dead && tipX >= m.x + m.w * 0.3) explode(m);
+
+    // IMPACT
+    if (pFire >= 1 && !firing.hit) {
+      firing.hit = true;
+      for (const m of mobs) if (!m.dead) explode(m);
+      const ix = Math.min(tipX, W - 10);
+      addFlash(bg.offscreen ? 0.55 + pct * 0.35 : 0.25 + pct * 0.45);
+      addShake(4 + pct * 12);
+      for (let k = 0; k < 3; k++) {
+        rings.push({ start: now + k * 90, tier: 6, color: k === 1 ? "#ffffff" : c, dur: 700 + k * 120, max: (small ? 60 : 110) + pct * (small ? 140 : 320) + k * 30, x: ix, y: bg.y });
+      }
+      const n = calm() ? 10 : 30 + Math.round(pct * 70);
+      for (let k = 0; k < n; k++) {
+        const a = Math.random() * Math.PI * 2, v = 1 + Math.random() * (3 + pct * 6);
+        debris.push({ x: ix, y: bg.y, vx: Math.cos(a) * v - (bg.offscreen ? 2 : 0), vy: Math.sin(a) * v - 1, life: 1, c: Math.random() < 0.35 ? "#ffffff" : c, s: Math.random() < 0.4 ? 4 : 2 });
+      }
+    }
+    if (tFade >= T.fade && !firing.done) {
       firing.done = true;
       firing.onDone && firing.onDone(firing.kills);
     }
+  }
+
+  // Dim the world (behind the fighter) while the energy gathers and fires
+  function drawDim(now) {
+    const T = firing.t, t = now - firing.start;
+    const hold = T.charge + T.fire + T.impact;
+    const dim = 0.45 * (t < T.charge ? t / T.charge : t < hold ? 1 : Math.max(0, 1 - (t - hold) / T.fade));
+    if (dim <= 0) return;
+    ctx.fillStyle = `rgba(2,4,10,${dim})`;
+    ctx.fillRect(-20, -20, W + 40, H + 40);
+  }
+
+  function drawMotes(x, y, c) {
+    motes = motes.filter((m) => {
+      m.x += (x - m.x) * 0.12; m.y += (y - m.y) * 0.12; m.life -= 0.03;
+      ctx.globalAlpha = Math.max(0, m.life);
+      ctx.fillStyle = Math.random() < 0.3 ? "#ffffff" : c;
+      ctx.fillRect(Math.round(m.x), Math.round(m.y), 3, 3);
+      return m.life > 0 && Math.hypot(x - m.x, y - m.y) > 4;
+    });
+    ctx.globalAlpha = 1;
   }
 
   // ---------- Main loop ----------
@@ -586,7 +701,7 @@ const Scene = (() => {
   function frame() {
     try { draw(); }
     catch (e) { console.warn("scene frame error", e); try { ctx.restore(); } catch (e2) {} }
-    if (firing && !firing.done && performance.now() - firing.start > DROP_MS + WAVE_MS + END_MS + 400) {
+    if (firing && !firing.done && firing.t && performance.now() - firing.start > firing.t.total + 600) {
       firing.done = true;
       firing.onDone && firing.onDone(firing.kills);
     }
@@ -603,12 +718,13 @@ const Scene = (() => {
       if (shake < 0.3) shake = 0;
     }
     drawBackground(time);
+    if (firing && !firing.instant) drawDim(now);
     if (firing) { drawMobs(now, time); drawDebris(); }
     drawPillars(now);
     fighters.forEach((f, i) => drawFighter(f, i, now, time));
     drawSparks();
     drawRings(now);
-    if (firing && !firing.instant) drawWave(now, time);
+    if (firing && !firing.instant) drawFinale(now, time);
     drawFloaters(now);
     ctx.restore();
     if (flash > 0.01) {
@@ -690,15 +806,15 @@ const Scene = (() => {
       const g = geom(f);
       if (tier >= 3) pillars.push({ start: now, who: i, tier, color, dur: 500 + tier * 280 });
       rings.push({ start: now, tier, color, dur: 500 + tier * 150, max: 18 + tier * (small ? 14 : 28), x: f.cx, y: g.mid });
-      shake = Math.max(shake, tier * tier * 0.5);
+      if (tier >= 4) addShake((tier - 3) * 2.5); // a subtle shake for Epic and up only
       for (let k = 0; k < tier * tier * 3; k++) sparks.push(spark(f, 1 + Math.random() * tier, color));
       floaters.push({ start: now, dur: 1600, who: i, text: `+${points}`, sub: label, color, size: small ? 11 + tier * 1.5 : 13 + tier * 2.5 });
 
       if (f.level > before) {
         const form = FORMS[f.level];
         const fc = f.level === 7 ? "#ffffff" : form.color;
-        flash = Math.max(flash, 0.25 + f.level * 0.06);
-        shake = Math.max(shake, 8 + f.level * 2);
+        addFlash(0.25 + f.level * 0.06);
+        addShake(6 + f.level * 1.5);
         rings.push({ start: now + 120, tier: 6, color: fc, dur: 900, max: 60 + f.level * 30, x: f.cx, y: g.mid });
         for (let k = 0; k < 40 + f.level * 10; k++) sparks.push(spark(f, 1 + Math.random() * 6, fc));
         floaters.push({ start: now + 250, dur: 2000, who: i, text: `${form.name}!`, sub: "NEW FORM", color: fc, size: small ? 16 : 26, big: true });
@@ -715,19 +831,28 @@ const Scene = (() => {
     },
 
     // tiers: one entry per answer (0 = none). Each summons a wave of monsters.
-    finale(i, tiers, onDone, onKill, instant) {
-      pillars = []; floaters = []; rings = []; debris = []; mobs = [];
-      const f = fighters[i] || fighters[0];
+    finale(i, tiers, onDone, onKill, instant, onFire) {
+      pillars = []; floaters = []; rings = []; debris = []; mobs = []; motes = [];
+      const who = fighters[i] ? i : 0;
+      const f = fighters[who];
+      const pct = f ? f.pct : 0;
+      const t = timings(pct);
+      t.total = t.charge + t.fire + t.impact + t.fade;
       firing = {
-        who: fighters[i] ? i : 0, start: performance.now(), pct: f ? f.pct : 0,
-        onDone, onKill, kills: 0, done: !!instant, instant: !!instant
+        who, start: performance.now(), pct, t,
+        onDone, onKill, onFire, kills: 0, done: !!instant, instant: !!instant
       };
-      if (!instant) spawnMobs(tiers || [], zoneEnd + (small ? 20 : 50));
+      if (!instant && f) {
+        // Monsters line up inside the beam's reach, so every wave gets hit
+        const bg = beamGeom(f, pct);
+        const startX = Math.max(zoneEnd + (small ? 20 : 50), bg.x0 + bg.thick);
+        spawnMobs(tiers || [], startX, Math.min(W - 12, bg.x0 + bg.reach - 10));
+      }
     },
 
     reset() {
       firing = null;
-      mobs = []; debris = []; pillars = []; floaters = []; rings = []; sparks = [];
+      mobs = []; debris = []; pillars = []; floaters = []; rings = []; sparks = []; motes = [];
       fighters = [newFighter("")];
       active = 0;
       layoutFighters();
