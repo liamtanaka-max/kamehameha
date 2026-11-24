@@ -18,6 +18,13 @@ const all = [
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 all.forEach((q) => { q.id = q.id || slug(q.prompt); });
 
+// Pairs a person has checked and decided are different questions, even though
+// they share answers (the big heroes show up everywhere). Keep this short.
+const REVIEWED_OK = [
+  ["Name a fighter who refuses to kill", "Name a character who's part of a famous duo"]
+];
+const reviewed = (a, b) => REVIEWED_OK.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+
 const problems = [];
 const flag = (msg) => problems.push(msg);
 
@@ -69,7 +76,7 @@ for (let i = 0; i < all.length; i++) {
       continue;
     }
     // Same idea reworded: hand-written prompts whose easy answers mostly match
-    if (a.kind === "hand" && b.kind === "hand") {
+    if (a.kind === "hand" && b.kind === "hand" && !reviewed(a.prompt, b.prompt)) {
       const easy = overlap(easyNames(a), easyNames(b));
       const full = overlap(allNames(a), allNames(b));
       // Both the easy answers and the whole lists have to match: villains and

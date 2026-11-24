@@ -13,7 +13,7 @@
 //  Each answer is a string. Use "|" to list alternate names/spellings:
 //    "Zoro|Roronoa Zoro"  -> either one counts.
 //  Capitals, spaces and punctuation are ignored when matching.
-//  Close typos get a "Did you mean...?" prompt.
+//  Close typos get a  prompt.
 //  To add a question, copy one block and edit it, then run
 //    node tools/check_questions.js
 // =========================================================
@@ -78,19 +78,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-character-who-wears-an-eyepatch",
-    theme: "characters",
-    prompt: "Name a character who wears an eyepatch",
-    answers: {
-      1: ["Kenpachi|Kenpachi Zaraki","Kaneki|Ken Kaneki","Roy Mustang|Mustang"],
-      2: ["Rikka|Rikka Takanashi","Mei Misaki|Mei","King Bradley|Bradley","Hange|Hange Zoe","Himeno","Captain Harlock|Harlock"],
-      3: ["Danzo","Takasugi|Shinsuke Takasugi","Lavi","Rei Ayanami|Rei","Asuka Langley|Asuka"],
-      4: ["Date Masamune|Masamune"],
-      5: ["Yagyu Jubei"],
-      6: ["Kyubei Yagyu|Kyubei"]
-    }
-  },
-  {
     id: "name-an-anime-character-who-wears-a-mask",
     theme: "characters",
     prompt: "Name a character who wears a mask or helmet",
@@ -130,19 +117,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-vampire",
-    theme: "characters",
-    prompt: "Name an anime vampire",
-    answers: {
-      1: ["Alucard","Dio|Dio Brando","Nazuna|Nazuna Nanakusa"],
-      2: ["Seras Victoria|Seras","Shinobu Oshino|Kiss-shot","Moka Akashiya|Moka","Krul Tepes|Krul","Mikaela Hyakuya|Mika","Kaname Kuran|Kaname","Zero Kiryu|Zero","Yuki Cross|Yuki","D"],
-      3: ["Vanilla Ice","Arcueid|Arcueid Brunestud","Karin Maaka|Karin","Saya Otonashi|Saya","Ayato Sakamaki|Ayato","Kojo Akatsuki|Kojo","Ko Yamori|Ko","Straizo"],
-      4: ["Miyu","Hagi|Haji","Mina Tepes","Vlad III|Vlad","Ferid Bathory|Ferid"],
-      5: ["Carmilla","Fine"],
-      6: []
-    }
-  },
-  {
     id: "name-an-anime-pirate",
     theme: "characters",
     prompt: "Name an anime pirate",
@@ -153,19 +127,6 @@ const QUESTIONS = [
       4: ["Bonney|Jewelry Bonney","Killer","Bartolomeo","Cavendish","Captain Kuro|Kuro","Don Krieg|Krieg","Alvida","Moria|Gecko Moria","Dutch","Marika Kato|Marika","Cobra"],
       5: ["Scratchmen Apoo|Apoo","Basil Hawkins|Hawkins","X Drake|Drake","Urouge","Capone Bege|Bege","Foxy","Queen Emeraldas|Emeraldas"],
       6: ["Gin (One Piece)|Gin"]
-    }
-  },
-  {
-    id: "name-an-anime-character-who-d-win-a-cooking-contest",
-    theme: "characters",
-    prompt: "Name a character who's an amazing cook",
-    answers: {
-      1: ["Soma|Soma Yukihira","Sanji","Senshi"],
-      2: ["Erina|Erina Nakiri","Tonio|Tonio Trussardi","Shirou Emiya|Shirou","Laios"],
-      3: ["Megumi Tadokoro|Megumi","Takumi Aldini|Takumi","Alice Nakiri|Alice","Akira Hayama|Hayama","Joichiro|Joichiro Yukihira","Mukoda|Tsuyoshi Mukoda","Liu Maoxing|Mao","Azuma Kazuma|Kazuma","Toriko","Komatsu","Kohei Inuzuka|Kohei","Tohru Honda|Tohru"],
-      4: ["Tsukasa Eishi|Tsukasa","Kuga Terunori|Kuga","Satoshi Isshiki|Isshiki","Rindo Kobayashi|Rindo","Azami Nakiri|Azami","Master (Restaurant to Another World)|Master"],
-      5: ["Yoichi (Mister Ajikko)|Yoichi","Ichigo Amano","Nobuyuki Yazawa|Nobuyuki"],
-      6: ["Ryo Kurokiba|Kurokiba"]
     }
   },
   {
@@ -221,19 +182,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-butler-or-maid",
-    theme: "characters",
-    prompt: "Name an anime butler or maid",
-    answers: {
-      1: ["Sebastian|Sebastian Michaelis","Rem","Ram","Tohru (Dragon Maid)|Tohru"],
-      2: ["Misaki Ayuzawa|Misaki","Hayate Ayasaki|Hayate","Ai Hayasaka|Hayasaka"],
-      3: ["Mey-Rin","Roberta","Mayuri Shiina|Mayuri","Faris NyanNyan|Faris","Watari","Walter|Walter C. Dornez"],
-      4: ["Tanaka (Black Butler)|Tanaka","Finnian","Baldroy","Gotoh","Canary","Frederica|Frederica Baumann","Petra Leyte|Petra","Siesta"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-an-anime-scientist-or-inventor",
     theme: "characters",
     prompt: "Name a genius scientist or inventor",
@@ -243,32 +191,6 @@ const QUESTIONS = [
       3: ["Senbei Norimaki|Senbei","Usopp","Caesar Clown|Caesar","Kabuto","Shou Tucker","Ritsuko Akagi|Ritsuko","Xeno","Byakuya Ishigami","Kaseki","Daru|Itaru Hashida","Stein|Franken Stein","Lloyd Asplund|Lloyd","Marcoh|Tim Marcoh"],
       4: ["Power Loader","Naoko Akagi","Nina Einstein","Rakshata"],
       5: [],
-      6: []
-    }
-  },
-  {
-    id: "name-an-anime-character-who-s-way-older-than-they-look",
-    theme: "characters",
-    prompt: "Name an anime character who's way older than they look",
-    answers: {
-      1: ["Frieren","Tsunade","Bisky|Biscuit Krueger"],
-      2: ["Shinobu Oshino|Shinobu","Tamayo","Holo","Mavis|Mavis Vermillion","Koenma","Rukia|Rukia Kuchiki","Toshiro|Hitsugaya","Muzan|Muzan Kibutsuji"],
-      3: ["Yoruichi","Urahara|Kisuke Urahara","Beatrice","Emilia","Hestia","Milim|Milim Nava","Kanna|Kanna Kamui","Tohru (Dragon Maid)|Tohru","Lucoa","Zeref","Vash","Alucard","Dio|Dio Brando","Kars","Inuyasha","Sesshomaru","Byakuya Kuchiki|Byakuya","Renji|Renji Abarai","Serie","Aura","Douma","Akaza","Kokushibo"],
-      4: ["Echidna","Roswaal","Shalltear","Knives","Esidisi","Wamuu","Shippo","Unohana","Kyubey","Flamme","Kaguya Otsutsuki","Yushiro"],
-      5: [],
-      6: []
-    }
-  },
-  {
-    id: "name-an-anime-detective",
-    theme: "characters",
-    prompt: "Name an anime detective",
-    answers: {
-      1: ["Conan|Conan Edogawa|Shinichi Kudo","L|L Lawliet|Ryuzaki"],
-      2: ["Near","Kogoro Mouri|Kogoro","Heiji Hattori|Heiji","Kindaichi|Hajime Kindaichi","Ranpo|Ranpo Edogawa","Houtarou Oreki|Oreki","Dazai|Osamu Dazai","Atsushi|Atsushi Nakajima","Akane Tsunemori|Akane","Shinya Kogami|Kogami"],
-      3: ["Mello","Victorique","Eru Chitanda|Chitanda","Sherlock Holmes|Sherlock","Kunikida|Doppo Kunikida","Naomi Misora|Naomi","Soichiro Yagami|Soichiro","Ai Haibara|Haibara","Shuichi Akai|Akai","Amuro Toru|Rei Furuya|Bourbon","Ginoza|Nobuchika Ginoza"],
-      4: ["Matsuda|Touta Matsuda","Kazuya Kujo|Kazuya","Hakuba|Saguru Hakuba","Megure|Inspector Megure","Takagi|Wataru Takagi","Sato|Miwako Sato","Mitsuhiko","Ayumi","Genta"],
-      5: ["Jodie|Jodie Starling"],
       6: []
     }
   },
@@ -307,6 +229,84 @@ const QUESTIONS = [
       2: ["Law|Trafalgar Law","Ace|Portgas D. Ace","Chopper|Tony Tony Chopper","Urahara|Kisuke Urahara","Shunsui|Shunsui Kyoraku|Kyoraku","Brook","Sabo","Mihawk|Dracule Mihawk","Megumin","Kaito Kid|Kid","Gol D. Roger|Roger","Hiruzen|Third Hokage","Jigen|Daisuke Jigen"],
       3: ["Lucci|Rob Lucci","Chuuya|Chuuya Nakahara","Gyro|Gyro Zeppeli","Speedwagon","Hol Horse","Atsuko Kagari|Akko","Zenigata"],
       4: ["Bartholomew Kuma|Kuma"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-an-anime-character-with-red-or-orange-hair",
+    theme: "characters",
+    prompt: "Name an anime character with red or orange hair",
+    answers: {
+      1: ["Shanks","Erza|Erza Scarlet","Gaara","Ichigo|Ichigo Kurosaki","Hinata Shoyo|Shoyo Hinata"],
+      2: ["Kenshin|Himura Kenshin","Kushina|Kushina Uzumaki","Asuka|Asuka Langley","Kirishima|Eijiro Kirishima","Renji|Renji Abarai","Nami","Todoroki|Shoto Todoroki","Rengoku|Kyojuro Rengoku","Makima","Orihime|Orihime Inoue","Hisoka","Nagato","Karin","Kyo Sohma|Kyo","Eustass Kid|Kid","Kagami|Taiga Kagami","Akashi|Seijuro Akashi","Ranma|Ranma Saotome","Lina Inverse|Lina","Eris|Eris Greyrat","Rias Gremory|Rias","Kallen|Kallen Stadtfeld","Kurama (Yu Yu Hakusho)|Kurama","Kita|Ikuyo Kita","Itsuki Nakano|Itsuki","Yotsuba Nakano|Yotsuba","Chigiri|Hyoma Chigiri"],
+      3: ["Reinhard|Reinhard van Astrea","Yoko|Yoko Littner","Haruhi Suzumiya|Haruhi","Sakura Kyoko|Kyoko Sakura","Momo Ayase|Momo","Arima Kana|Kana Arima","Shirou Emiya|Shirou"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-female-character-who-can-really-fight",
+    theme: "characters",
+    prompt: "Name a female character who can really fight",
+    answers: {
+      1: ["Mikasa|Mikasa Ackerman","Erza|Erza Scarlet","Sakura Haruno|Sakura","Yoruichi","Android 18","Nobara|Nobara Kugisaki","Maki Zenin|Maki"],
+      2: ["Tsunade","Rukia|Rukia Kuchiki","Robin|Nico Robin","Boa Hancock|Hancock","Annie|Annie Leonhart","Shinobu|Shinobu Kocho","Mitsuri|Mitsuri Kanroji","Kanao|Kanao Tsuyuri","Nezuko|Nezuko Kamado","Power","Yor|Yor Forger","Revy","Motoko Kusanagi|Motoko","Ryuko|Ryuko Matoi","Satsuki|Satsuki Kiryuin","Asuna","Hinata Hyuga|Hinata","Temari","Tatsumaki","Ochaco|Ochaco Uraraka","Mirko","Esdeath","Akame","Saber","Kagura","Videl","Chi-Chi","Yamato","Riza Hawkeye|Riza","Olivier Armstrong|Olivier","Izumi Curtis|Izumi","Rem","Fern","Noelle|Noelle Silva","Mirajane","Sango","Makima","Toga|Himiko Toga"],
+      3: ["Biscuit|Bisky","Kurenai","Tenten","Konan","Hange|Hange Zoe","Sasha|Sasha Blouse","Pieck","Unohana|Retsu Unohana","Soi Fon|Suifeng","Rangiku|Rangiku Matsumoto","Nelliel","Harribel|Tier Harribel","Zero Two","Casca","Kaoru Kamiya|Kaoru","Shampoo","Akane Tendo|Akane","Kallen|Kallen Stadtfeld","Milim|Milim Nava","Shion","Albedo","Mai Zenin|Mai","Fubuki","Momo Yaoyorozu|Momo","Lady Nagant","Balalaika","Juvia|Juvia Lockser","Sailor Jupiter|Makoto Kino","Sailor Mars|Rei Hino","Kagome|Kagome Higurashi"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-with-spiky-hair",
+    theme: "characters",
+    prompt: "Name a character with spiky hair",
+    answers: {
+      1: ["Goku|Son Goku","Naruto|Naruto Uzumaki","Vegeta","Ichigo|Ichigo Kurosaki","Bakugo|Katsuki Bakugo"],
+      2: ["Gohan|Son Gohan","Trunks","Kakashi|Kakashi Hatake","Natsu|Natsu Dragneel","Gon|Gon Freecss","Killua|Killua Zoldyck","Yugi|Yugi Muto","Bardock","Broly","Kirishima|Eijiro Kirishima","Sasuke|Sasuke Uchiha","Kamina","Deku|Izuku Midoriya","Kenpachi|Kenpachi Zaraki","Grimmjow","Gray|Gray Fullbuster","Hiei","Asta","Minato|Minato Namikaze","Jiraiya","Raditz","Hinata Shoyo|Shoyo Hinata","Bokuto|Kotaro Bokuto","Kuroo|Tetsuro Kuroo","Boruto|Boruto Uzumaki","Tsuna|Tsunayoshi Sawada","Jaden Yuki|Jaden","Yusei|Yusei Fudo"],
+      3: ["Goten|Son Goten","Turles","Dabi","Endeavor","Hisoka","Renji|Renji Abarai","Toshiro|Hitsugaya","Shinra|Shinra Kusakabe","Sanemi|Sanemi Shinazugawa","Rengoku|Kyojuro Rengoku","Kaminari|Denki Kaminari","Gaara","Simon","Inosuke|Inosuke Hashibira","Gotenks","Vegito","Gogeta"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-with-blonde-hair",
+    theme: "characters",
+    prompt: "Name a character with blonde hair",
+    answers: {
+      1: ["Naruto|Naruto Uzumaki","All Might","Edward Elric|Edward|Ed","Sanji","Zenitsu|Zenitsu Agatsuma","Armin|Armin Arlert"],
+      2: ["Minato|Minato Namikaze","Ino|Ino Yamanaka","Tsunade","Temari","Deidara","Rengoku|Kyojuro Rengoku","Bakugo|Katsuki Bakugo","Toga|Himiko Toga","Hawks","Erwin|Erwin Smith","Historia|Historia Reiss","Annie|Annie Leonhart","Reiner|Reiner Braun","Zeke|Zeke Yeager","Giorno|Giorno Giovanna","Dio|Dio Brando","Winry|Winry Rockbell","Lucy|Lucy Heartfilia","Laxus|Laxus Dreyar","Saber","Vash|Vash the Stampede","Aqua Hoshino|Aqua","Ruby Hoshino|Ruby","Loid|Loid Forger","Nanami|Kento Nanami","Kaminari|Denki Kaminari","Mirio|Mirio Togata","Usagi|Sailor Moon|Usagi Tsukino","Sailor Venus|Minako","Android 18","Meliodas","Genos","Takemichi|Takemichi Hanagaki","Mikey|Manjiro Sano","Kise|Ryota Kise","Kenma|Kenma Kozume","Tsukishima|Kei Tsukishima","Nijika|Nijika Ijichi","Marco|Marco the Phoenix","Sabo"],
+      3: ["Kurapika","Felt","Darkness|Lalatina","Violet Evergarden|Violet","Gilgamesh","Shinobu Oshino|Shinobu","Naoya|Naoya Zenin","Yuki Tsukumo|Yuki","Tamaki Suoh|Tamaki","Urahara|Kisuke Urahara","Shinji Hirako|Hirako","Hiyori|Hiyori Sarugaki","Nui Harime|Nui","Escanor","Gilthunder","Yami Bakura"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-who-s-famously-short",
+    theme: "characters",
+    prompt: "Name a character who's famously short",
+    answers: {
+      1: ["Levi|Levi Ackerman","Edward Elric|Edward|Ed","Krillin","Hinata Shoyo|Shoyo Hinata"],
+      2: ["Mineta|Minoru Mineta","Toshiro|Hitsugaya|Toshiro Hitsugaya","Nishinoya|Yu Nishinoya","Yugi|Yugi Muto","Hiei","Biscuit|Bisky","Taiga|Taiga Aisaka","Soi Fon|Suifeng","Tatsumaki","Shinobu|Shinobu Kocho","Asta","Wendy|Wendy Marvell","Chopper|Tony Tony Chopper","Yachiru|Yachiru Kusajishi","Hunny|Honey|Mitsukuni Haninozuka","Master Roshi|Roshi","Netero|Isaac Netero"],
+      3: ["Yaku|Morisuke Yaku","Konata|Konata Izumi","Nagisa|Nagisa Shiota","Megumin","Frieren","Kenma|Kenma Kozume","Mob|Shigeo Kageyama","Nezuko|Nezuko Kamado","Ritsu Tainaka|Ritsu","Chiyo|Chiyo Mihama","Hachikuji|Mayoi Hachikuji"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-an-anime-kid-a-character-under-13",
+    theme: "characters",
+    prompt: "Name an anime kid (a character under 13)",
+    answers: {
+      1: ["Anya|Anya Forger","Gon|Gon Freecss","Killua|Killua Zoldyck","Conan|Conan Edogawa","Goten|Son Goten","Gohan|Kid Gohan"],
+      2: ["Ash Ketchum|Ash","Chibiusa","Shin-chan|Shinnosuke Nohara","Nobita|Nobita Nobi","Pan","Trunks","Konohamaru","Boruto|Boruto Uzumaki","Himawari|Himawari Uzumaki","Sarada|Sarada Uchiha","Emma","Norman","Ray","Eri","Kota|Kota Izumi","Mei (Totoro)|Mei","Satsuki (Totoro)|Satsuki","Chihiro","Ponyo","Sosuke","Kanna|Kanna Kamui","Hina (Hinamatsuri)|Hina","Yotsuba|Yotsuba Koiwai","Maruko|Chibi Maruko","Sakura Kinomoto","Momonosuke","Nina Tucker|Nina","Selim Bradley|Selim","Shippo","Rin (Inuyasha)"],
+      3: ["Tsumugi|Tsumugi Inuzuka","Rin Kaga|Rin (Bunny Drop)","Naru (Barakamon)|Naru","Pinoko","Inari","Kohaku (Inuyasha)","Hachikuji|Mayoi Hachikuji","Kotaro","Gaara"],
+      4: [],
       5: [],
       6: []
     }
@@ -470,45 +470,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-psychic-who-can-move-things-with-their-mind",
-    theme: "powers",
-    prompt: "Name a psychic who can move things with their mind",
-    answers: {
-      1: ["Mob|Shigeo Kageyama","Tatsumaki","Saiki|Saiki Kusuo"],
-      2: ["Fubuki","Tetsuo|Tetsuo Shima","Teru|Teruki Hanazawa","Ritsu|Ritsu Kageyama","Mewtwo","Lucy|Nyu|Kaede (Elfen Lied)"],
-      3: ["Akira (Akira)|Akira","Sho Suzuki|Sho","Alakazam","Nagato|Pain","Kuroko Shirai|Kuroko","Hiei"],
-      4: ["Nana (Elfen Lied)|Nana","Kyoka Jiro","Toichiro Suzuki","Kei Kurono"],
-      5: ["Ageha Yoshina|Ageha","Kotoko"],
-      6: []
-    }
-  },
-  {
-    id: "name-a-character-who-can-copy-other-people-s-powers",
-    theme: "powers",
-    prompt: "Name a character who can copy other people's powers",
-    answers: {
-      1: ["Kakashi|Kakashi Hatake|Copy Ninja","Rimuru|Rimuru Tempest","All For One","Cell"],
-      2: ["Monoma|Neito Monoma","Yuta|Yuta Okkotsu","Sasuke|Sasuke Uchiha","Bon Clay|Mr. 2","Chrollo|Chrollo Lucilfer"],
-      3: ["Ditto","Kise|Ryota Kise","Mahoraga","Obito|Obito Uchiha","Archer|Emiya"],
-      4: ["Zetsu"],
-      5: [],
-      6: []
-    }
-  },
-  {
-    id: "name-a-character-who-can-stretch-or-reshape-their-body",
-    theme: "powers",
-    prompt: "Name a character who can stretch or reshape their body",
-    answers: {
-      1: ["Luffy|Monkey D. Luffy","Envy","Rimuru|Rimuru Tempest"],
-      2: ["Chopper|Tony Tony Chopper","Choji|Choji Akimichi","Majin Buu|Buu","Piccolo","Toga|Himiko Toga","Mahito","Bon Clay|Mr. 2"],
-      3: ["Tamaki Amajiki|Tamaki|Suneater","Alucard","Migi","Ditto","Hisoka","Bobobo"],
-      4: ["Kakuzu","Mt. Lady","Mitsuri|Mitsuri Kanroji","Doflamingo"],
-      5: ["Momonga"],
-      6: []
-    }
-  },
-  {
     id: "name-a-character-who-summons-creatures-to-fight",
     theme: "powers",
     prompt: "Name a character who summons creatures to fight",
@@ -522,19 +483,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-character-with-shadow-or-darkness-powers",
-    theme: "powers",
-    prompt: "Name a character with shadow or darkness powers",
-    answers: {
-      1: ["Shikamaru|Shikamaru Nara","Sung Jinwoo|Jinwoo","Blackbeard|Marshall D. Teach","Megumi|Megumi Fushiguro"],
-      2: ["Yami|Yami Sukehiro","Moria|Gecko Moria","Tokoyami|Fumikage Tokoyami","Zeref","Ainz|Ainz Ooal Gown"],
-      3: ["Rogue|Rogue Cheney","Cid Kagenou|Cid|Shadow","Kaname Tosen|Tosen","Alucard","Hiei","Deku|Izuku Midoriya"],
-      4: ["Shikaku|Shikaku Nara","Licht"],
-      5: ["Dark Schneider"],
-      6: []
-    }
-  },
-  {
     id: "name-a-character-who-can-heal-from-almost-any-wound",
     theme: "powers",
     prompt: "Name a character who can heal from almost any wound",
@@ -544,19 +492,6 @@ const QUESTIONS = [
       3: ["Kei Nagai|Kei","Seras Victoria|Seras","Ulquiorra","Reiner|Reiner Braun","Annie|Annie Leonhart","Marco|Marco the Phoenix","Shinobu Oshino|Kiss-shot","Greed","Dio|Dio Brando","Kars","Gyutaro","Mahito"],
       4: ["Rin Okumura|Rin","Lust","Kakuzu"],
       5: ["Utsuro","Hyakkimaru"],
-      6: []
-    }
-  },
-  {
-    id: "name-a-character-who-can-make-clones-of-themselves",
-    theme: "powers",
-    prompt: "Name a character who can make clones of themselves",
-    answers: {
-      1: ["Naruto|Naruto Uzumaki","Twice"],
-      2: ["Kakashi|Kakashi Hatake","Itachi|Itachi Uchiha","Tien|Tenshinhan","Kisame|Kisame Hoshigaki","Zabuza","Gaara","Saitama","Sonic|Speed-o'-Sound Sonic"],
-      3: ["Killua|Killua Zoldyck","Boruto|Boruto Uzumaki","Tobirama|Tobirama Senju","Zetsu","Madara|Madara Uchiha"],
-      4: ["Gemini","Nagi (Blue Lock)"],
-      5: [],
       6: []
     }
   },
@@ -595,6 +530,71 @@ const QUESTIONS = [
       2: ["Reiner|Reiner Braun","Bertholdt","Zeke|Zeke Yeager","Ultraman","Kaido","Luffy|Monkey D. Luffy","Kurama|Nine-Tails","Momonosuke"],
       3: ["Gigantomachia","Kafka Hibino|Kaiju No. 8","Elfman|Elfman Strauss","Ymir","Annie|Annie Leonhart","Pieck","Porco|Porco Galliard"],
       4: ["Choza|Choza Akimichi","Oars","Little Oars Jr."],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-who-fires-energy-blasts",
+    theme: "powers",
+    prompt: "Name a character who fires energy blasts",
+    answers: {
+      1: ["Goku|Son Goku","Vegeta","Gohan|Son Gohan","Frieza","Piccolo","Cell"],
+      2: ["Yusuke|Yusuke Urameshi","Krillin","Majin Buu|Buu","Broly","Trunks","Tien|Tenshinhan","Ulquiorra","Grimmjow","Ichigo|Ichigo Kurosaki","Aoyama|Yuga Aoyama","Gojo|Satoru Gojo","Sailor Moon|Usagi","Mewtwo","Pikachu","Boros|Lord Boros","Genos","Naruto|Naruto Uzumaki","Killer B|Killer Bee","Enel|Eneru","Kizaru|Borsalino","Jiren","Beerus","Android 17","Android 18","Nappa","Raditz","Goku Black","Yamcha"],
+      3: ["Sensui|Shinobu Sensui","Starrk|Coyote Starrk","Uryu|Uryu Ishida","Sting|Sting Eucliffe","Gajeel|Gajeel Redfox","Garou","Pegasus Seiya|Seiya","Ultraman","Gotenks","Vegito","Gogeta","Bardock","Cooler"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-who-fights-with-their-fists",
+    theme: "powers",
+    prompt: "Name a character who fights with their fists",
+    answers: {
+      1: ["Luffy|Monkey D. Luffy","Saitama","Yuji|Yuji Itadori","Deku|Izuku Midoriya","Rock Lee|Lee","Jotaro|Jotaro Kujo"],
+      2: ["Baki|Baki Hanma","Ippo|Ippo Makunouchi","Goku|Son Goku","Might Guy|Guy|Gai","Tsunade","Sakura Haruno|Sakura","All Might","Yusuke|Yusuke Urameshi","Kirishima|Eijiro Kirishima","Garou","Bang|Silver Fang","Mikey|Manjiro Sano","Draken","Akaza","Todo|Aoi Todo","Kenshiro","Raoh","Jinbe|Jinbei","Garp|Monkey D. Garp","Vegeta","Krillin","Gon|Gon Freecss","Uvogin","Netero|Isaac Netero","Biscuit|Bisky","Yamcha","Mirio|Mirio Togata","Fat Gum","Mirko","Takemichi|Takemichi Hanagaki","Baji|Keisuke Baji"],
+      3: ["Takamura|Mamoru Takamura","Miyata|Ichiro Miyata","Sendo|Takeshi Sendo","Ohma Tokita|Ohma","Yujiro Hanma|Yujiro","Kenichi|Kenichi Shirahama","Apachai","Ranma|Ranma Saotome","Ryoga|Ryoga Hibiki","Joseph|Joseph Joestar","Jonathan|Jonathan Joestar","Josuke|Josuke Higashikata","Hakari|Kinji Hakari","Kafka Hibino|Kafka","Joe Yabuki|Joe","Rikiishi|Toru Rikiishi"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-who-uses-magic",
+    theme: "powers",
+    prompt: "Name a character who uses magic",
+    answers: {
+      1: ["Frieren","Megumin","Natsu|Natsu Dragneel","Lucy|Lucy Heartfilia","Yuno","Sailor Moon|Usagi"],
+      2: ["Fern","Noelle|Noelle Silva","Yami|Yami Sukehiro","Gray|Gray Fullbuster","Erza|Erza Scarlet","Juvia|Juvia Lockser","Wendy|Wendy Marvell","Makarov","Zeref","Rimuru|Rimuru Tempest","Ainz|Ainz Ooal Gown","Emilia","Roxy|Roxy Migurdia","Rudeus|Rudeus Greyrat","Madoka|Madoka Kaname","Homura|Homura Akemi","Sakura Kinomoto|Sakura","Kiki","Howl","Akko|Atsuko Kagari","Chise|Chise Hatori","Elias|Elias Ainsworth","Aqua","Kazuma|Kazuma Sato","Rin Tohsaka|Rin","Index","Coco (Witch Hat Atelier)|Coco","Flamme","Serie","Ubel","Merlin","Marcille","Nanoha|Nanoha Takamachi","Fate Testarossa|Fate","Laxus|Laxus Dreyar","Mirajane","Jellal|Jellal Fernandes","Julius|Julius Novachrono","Mereoleona","Vanessa|Vanessa Enoteca","Finral","Luck|Luck Voltia","Magna|Magna Swing","Mimosa|Mimosa Vermillion"],
+      3: ["Wiz","Yunyun","Tanya|Tanya Degurechaff","Tatsuya Shiba|Tatsuya","Miyuki Shiba|Miyuki","Rem","Ram","Beatrice","Roswaal","Echidna","Puck","Sylphy|Sylphiette","Shuna","Yubaba","Zeniba","Sophie","Calcifer","Witch of the Waste","Caster|Medea","Illya|Illyasviel","Mami|Mami Tomoe","Yue","Syaoran|Syaoran Li","Eriol|Eriol Hiiragizawa"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-the-strongest-character-in-their-anime",
+    theme: "powers",
+    prompt: "Name the strongest character in their anime",
+    answers: {
+      1: ["Saitama","Goku|Son Goku","Gojo|Satoru Gojo","Sukuna","Whis","Zeno"],
+      2: ["Meruem","Yhwach","Aizen|Sosuke Aizen","Kaido","Whitebeard|Edward Newgate","Gol D. Roger|Roger","Kaguya|Kaguya Otsutsuki","Madara|Madara Uchiha","Naruto|Naruto Uzumaki","Muzan|Muzan Kibutsuji","Yoriichi|Yoriichi Tsugikuni","Beerus","Grand Priest","Anos|Anos Voldigoad","Rimuru|Rimuru Tempest","Ainz|Ainz Ooal Gown","Mob|Shigeo Kageyama","Blast","Boros|Lord Boros","Garou","All For One","All Might","Shigaraki|Tomura Shigaraki","Levi|Levi Ackerman","Eren|Eren Yeager","Sung Jinwoo|Jinwoo","Zeref","Acnologia","Meliodas","Escanor","Asta","Pucci|Enrico Pucci","Giorno|Giorno Giovanna","Kars","Father","Van Hohenheim|Hohenheim","Gilgamesh","Alucard","Vash|Vash the Stampede","Knives|Millions Knives","Kenshiro","Raoh","Yujiro Hanma|Yujiro","Netero|Isaac Netero","Ichigo|Ichigo Kurosaki","Yamamoto|Genryusai Yamamoto"],
+      3: ["Saiki|Saiki Kusuo","Hashirama|Hashirama Senju","Shanks","Imu","Kirito","Thomas Andre","Reinhard|Reinhard van Astrea","Satella","Milim|Milim Nava","Guy Crimson","Veldora","Frieren","Unohana|Retsu Unohana"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-who-fights-with-a-gun-or-bow",
+    theme: "powers",
+    prompt: "Name a character who fights with a gun or bow",
+    answers: {
+      1: ["Spike|Spike Spiegel","Vash|Vash the Stampede","Revy","Usopp","Uryu|Uryu Ishida"],
+      2: ["Jigen|Daisuke Jigen","Lupin|Lupin III","Sasha|Sasha Blouse","Riza Hawkeye|Riza","Akane Tsunemori|Akane","Kogami|Shinya Kogami","Wolfwood|Nicholas D. Wolfwood","Alucard","Seras Victoria|Seras","Kagome|Kagome Higurashi","Kikyo","Archer|Emiya","Sinon","Mikoto Misaka|Misaka","Kurumi|Kurumi Tokisaki","Loid|Loid Forger","Lady Nagant","Snipe","Kino","Hiruma|Yoichi Hiruma","Balalaika","Roberta","Dutch","Golgo 13|Duke Togo","Zenigata","Jet|Jet Black","Faye|Faye Valentine","Genya|Genya Shinazugawa","Kazuma|Kazuma Sato","Ryo Saeba|Ryo"],
+      3: ["Rally Vincent|Rally","Rip Van Winkle","Van Augur","Yasopp","Quanxi","Kenny Ackerman|Kenny","Gabi|Gabi Braun","Eda"],
+      4: [],
       5: [],
       6: []
     }
@@ -654,19 +654,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-character-who-lost-an-arm-leg-or-hand",
-    theme: "tropes",
-    prompt: "Name a character who lost a limb and kept fighting",
-    answers: {
-      1: ["Edward Elric|Edward|Ed","Shanks","Guts"],
-      2: ["Erwin|Erwin Smith","Naruto|Naruto Uzumaki","Sasuke|Sasuke Uchiha","Tengen|Tengen Uzui","Violet Evergarden|Violet","Levi|Levi Ackerman"],
-      3: ["Eren|Eren Yeager","Denji","Zeff","Eustass Kid|Kid","Lan Fan","Obito|Obito Uchiha","Netero|Isaac Netero","Vash","Genos","Tetsuo|Tetsuo Shima","Hyakkimaru"],
-      4: ["Yamamoto|Genryusai Yamamoto","Kirito","Rudeus|Rudeus Greyrat"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-an-anime-character-with-an-alter-ego-or-second-personality",
     theme: "tropes",
     prompt: "Name a character with a secret second identity",
@@ -719,19 +706,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-character-with-a-laugh-you-d-recognize-anywhere",
-    theme: "tropes",
-    prompt: "Name a character with a laugh you'd recognize anywhere",
-    answers: {
-      1: ["Brook","Whitebeard|Edward Newgate","Blackbeard|Marshall D. Teach"],
-      2: ["Doflamingo|Donquixote Doflamingo","Big Mom|Charlotte Linlin","Kaido","Light Yagami|Light|Kira","Dio|Dio Brando","Ryuk","Okabe|Rintaro Okabe|Okarin","Kaiba|Seto Kaiba","Yami Marik|Marik"],
-      3: ["Moria|Gecko Moria","Caesar Clown|Caesar","Shiki|Golden Lion","Perona","Mr. Satan|Hercule"],
-      4: ["Eneru|Enel"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-a-tsundere-it-s-not-like-i-like-you-or-anything",
     theme: "tropes",
     prompt: "Name a tsundere (\"it's not like I like you or anything!\")",
@@ -758,28 +732,15 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-character-who-loves-explosions-a-little-too-much",
+    id: "name-a-character-who-powers-up-when-they-get-angry",
     theme: "tropes",
-    prompt: "Name a character who loves explosions a little too much",
+    prompt: "Name a character who powers up when they get angry",
     answers: {
-      1: ["Megumin","Bakugo|Katsuki Bakugo","Deidara"],
-      2: ["Kimblee|Solf J. Kimblee","Kira|Yoshikage Kira"],
-      3: ["Mr. 5","Reze|Bomb Devil","Kiritsugu|Kiritsugu Emiya","Katsura|Kotaro Katsura","Vegeta","Joseph|Joseph Joestar"],
-      4: ["Genthru|Bomber","Revy","Hiruma|Yoichi Hiruma"],
-      5: ["Gari"],
-      6: []
-    }
-  },
-  {
-    id: "name-an-overpowered-main-character",
-    theme: "tropes",
-    prompt: "Name an overpowered main character",
-    answers: {
-      1: ["Saitama","Goku|Son Goku","Rimuru|Rimuru Tempest","Sung Jinwoo|Jinwoo","Anos|Anos Voldigoad","Mob|Shigeo Kageyama"],
-      2: ["Kirito","Ainz|Ainz Ooal Gown|Momonga","Tatsuya Shiba|Tatsuya","Saiki|Saiki Kusuo","Cid Kagenou|Cid|Shadow","Vash|Vash the Stampede","Alucard","Frieren","Mash|Mash Burnedead","Meliodas"],
-      3: ["Ayanokoji|Kiyotaka Ayanokoji","Wang Ling","Hajime Nagumo|Hajime","Shin Wolford","Kenshiro","Naruto|Naruto Uzumaki","Gojo|Satoru Gojo"],
-      4: ["Maple","Satou (Death March)|Satou","Seiya (Cautious Hero)|Seiya"],
-      5: ["Kazuya (Tsukimichi)|Makoto Misumi","Rudeus|Rudeus Greyrat"],
+      1: ["Goku|Son Goku","Gohan|Son Gohan","Naruto|Naruto Uzumaki","Eren|Eren Yeager","Vegeta"],
+      2: ["Broly","Ichigo|Ichigo Kurosaki","Natsu|Natsu Dragneel","Inuyasha","Bakugo|Katsuki Bakugo","Gon|Gon Freecss","Tanjiro|Tanjiro Kamado","Sasuke|Sasuke Uchiha","Kenpachi|Kenpachi Zaraki","Escanor","Meliodas","Yuji|Yuji Itadori","Denji","Kaneki|Ken Kaneki","Erza|Erza Scarlet","Simon","Kamina","Ryuko|Ryuko Matoi","Shinji|Shinji Ikari","Goten|Son Goten","Trunks"],
+      3: ["Yusuke|Yusuke Urameshi","Kuwabara|Kazuma Kuwabara","Hiei","Gaara","Killer B|Killer Bee","Kurama|Nine-Tails","Endeavor","Shoto Todoroki|Todoroki","Rin Okumura|Rin","Garou","Grimmjow","Uryu|Uryu Ishida","Akaza","Inosuke|Inosuke Hashibira","Zenitsu|Zenitsu Agatsuma","Ippo|Ippo Makunouchi","Baki|Baki Hanma"],
+      4: [],
+      5: [],
       6: []
     }
   },
@@ -849,19 +810,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-character-known-for-a-dramatic-pose",
-    theme: "tropes",
-    prompt: "Name a character known for a dramatic pose",
-    answers: {
-      1: ["Jotaro|Jotaro Kujo","Dio|Dio Brando","Giorno|Giorno Giovanna","Ginyu|Captain Ginyu|Ginyu Force","All Might","Might Guy|Guy|Gai"],
-      2: ["Joseph|Joseph Joestar","Josuke|Josuke Higashikata","Kamina","Sailor Moon|Usagi","Kakyoin|Noriaki Kakyoin","Rock Lee|Lee","Mr. Satan|Hercule","Great Saiyaman","Zero|Lelouch","Light Yagami|Light","Megumin"],
-      3: ["Kars","Esidisi","Polnareff|Jean Pierre Polnareff","Bucciarati|Bruno Bucciarati","Yoshikage Kira|Kira","Rohan|Rohan Kishibe","Jolyne|Jolyne Cujoh","Gyro|Gyro Zeppeli","Kaneda|Shotaro Kaneda","Rikka|Rikka Takanashi","Recoome","Jeice","Team Rocket|Jessie|James"],
-      4: ["Jonathan|Jonathan Joestar","Gai Daigo|Gai (Nadesico)"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-a-lone-wolf-who-d-rather-work-alone",
     theme: "tropes",
     prompt: "Name a lone wolf who'd rather work alone",
@@ -882,6 +830,58 @@ const QUESTIONS = [
       1: ["Mr. Satan|Hercule","Kaiba|Seto Kaiba","Gilgamesh","Oikawa|Tooru Oikawa","Tamaki Suoh|Tamaki"],
       2: ["Kise|Ryota Kise","Gary Oak|Gary","Vegeta","Captain Ginyu|Ginyu","Aqua","Megumin","Tuxedo Mask|Mamoru","Usopp","Tengen|Tengen Uzui","Aoyama|Yuga Aoyama","Jiraiya","Dio|Dio Brando","Gojo|Satoru Gojo","Escanor","Todo|Aoi Todo","Bon Clay|Mr. 2","Buggy"],
       3: ["Monoma|Neito Monoma","Enel|Eneru","Barou|Shoei Barou","Atsumu|Atsumu Miya","Bokuto|Kotaro Bokuto","Inosuke|Inosuke Hashibira"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-comic-relief-character",
+    theme: "tropes",
+    prompt: "Name a comic-relief character",
+    answers: {
+      1: ["Usopp","Zenitsu|Zenitsu Agatsuma","Mr. Satan|Hercule","Happy","Brook","Mineta|Minoru Mineta"],
+      2: ["Buggy","Chopper|Tony Tony Chopper","Kaminari|Denki Kaminari","Inosuke|Inosuke Hashibira","Sasha|Sasha Blouse","Connie|Connie Springer","Yamcha","Oolong","Master Roshi|Roshi","Kuwabara|Kazuma Kuwabara","Power","Reigen|Arataka Reigen","King","Aqua","Kazuma|Kazuma Sato","Darkness","Chika Fujiwara|Chika","Armstrong|Alex Louis Armstrong","Kon","Bon Clay|Mr. 2","Team Rocket|Jessie|James","Meowth","Kero|Kero-chan","Shippo","Jaken","Leorio","Okuyasu|Okuyasu Nijimura","Polnareff|Jean Pierre Polnareff","Speedwagon","Mista|Guido Mista","Tanaka (Haikyu)|Ryunosuke Tanaka","Nishinoya|Yu Nishinoya","Bokuto|Kotaro Bokuto","Might Guy|Guy|Gai","Tobi","Jiraiya","Krillin","Shinpachi|Shinpachi Shimura","Kagura"],
+      3: ["Puar","Chiaotzu","Yajirobe","King Kai","Bubbles","Pilaf|Emperor Pilaf","Shu","Mai (Dragon Ball)","Ginyu|Captain Ginyu","Foxy","Mr. 3","Wapol","Duval","Franky","Iggy","Hol Horse","Boingo","Monoma|Neito Monoma","Present Mic","Myoga"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-genius-strategist",
+    theme: "tropes",
+    prompt: "Name a genius strategist",
+    answers: {
+      1: ["Shikamaru|Shikamaru Nara","Lelouch|Lelouch Lamperouge","Light Yagami|Light","L|L Lawliet","Armin|Armin Arlert","Erwin|Erwin Smith"],
+      2: ["Aizen|Sosuke Aizen","Ayanokoji|Kiyotaka Ayanokoji","Senku|Senku Ishigami","Law|Trafalgar Law","Kurapika","Sora (No Game No Life)|Sora","Shiro (No Game No Life)|Shiro","Ray","Norman","Kaguya|Kaguya Shinomiya","Miyuki Shirogane|Shirogane","Gen|Gen Asagiri","Kongming|Zhuge Liang","Yang Wen-li|Yang","Reinhard|Reinhard von Lohengramm","Kisaki|Tetta Kisaki","Isagi|Yoichi Isagi","Ego|Jinpachi Ego","Kenma|Kenma Kozume","Oikawa|Tooru Oikawa","Akashi|Seijuro Akashi","Hiruma|Yoichi Hiruma","Johan|Johan Liebert","Near","Mello","Shiroe","Ainz|Ainz Ooal Gown","Demiurge","Albedo","Schneizel","Tanya|Tanya Degurechaff","Kaiji","Akagi","Yumeko|Yumeko Jabami","Kenjaku","Tobirama|Tobirama Senju","Itachi|Itachi Uchiha","Kakashi|Kakashi Hatake","Doflamingo","Nami","Robin|Nico Robin","Zeke|Zeke Yeager","Hange|Hange Zoe"],
+      3: ["Komugi","Meruem","Chrollo|Chrollo Lucilfer","Emma","Isabella|Mama Isabella","Danzo","Kabuto|Kabuto Yakushi","Diablo","Benimaru"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-with-a-big-dream-they-never-stop-chasing",
+    theme: "tropes",
+    prompt: "Name a character with a big dream they never stop chasing",
+    answers: {
+      1: ["Luffy|Monkey D. Luffy","Naruto|Naruto Uzumaki","Deku|Izuku Midoriya","Asta","Ash Ketchum|Ash"],
+      2: ["Goku|Son Goku","Gon|Gon Freecss","Yuno","Hinata Shoyo|Shoyo Hinata","Isagi|Yoichi Isagi","Zoro|Roronoa Zoro","Sanji","Nami","Usopp","Chopper|Tony Tony Chopper","Robin|Nico Robin","Franky","Brook","Senku|Senku Ishigami","Eren|Eren Yeager","Edward Elric|Edward|Ed","Ruby Hoshino|Ruby","Tanjiro|Tanjiro Kamado","Kamina","Simon","Bakugo|Katsuki Bakugo","Ochaco|Ochaco Uraraka","Iida|Tenya Iida","Rock Lee|Lee","Gaara","Sasuke|Sasuke Uchiha","Kuroko|Tetsuya Kuroko","Kagami|Taiga Kagami","Rin Matsuoka|Rin","Soma|Soma Yukihira","Shirou Emiya|Shirou","Lelouch|Lelouch Lamperouge","Kageyama|Tobio Kageyama","Sakuragi|Hanamichi Sakuragi","Ippo|Ippo Makunouchi","Bocchi|Hitori Gotoh"],
+      3: ["Leorio","Kurapika","Roy Mustang|Mustang","Mashiro Moritaka|Moritaka","Akito Takagi|Takagi","Midori Asakusa|Midori","Shizuku Tsukishima|Shizuku","Hikaru Shindo|Hikaru","Akira Toya|Akira","Bartolomeo","Whitebeard|Edward Newgate"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-character-with-a-tragic-backstory",
+    theme: "tropes",
+    prompt: "Name a character with a tragic backstory",
+    answers: {
+      1: ["Itachi|Itachi Uchiha","Sasuke|Sasuke Uchiha","Naruto|Naruto Uzumaki","Gaara","Eren|Eren Yeager","Tanjiro|Tanjiro Kamado"],
+      2: ["Obito|Obito Uchiha","Nagato|Pain","Kakashi|Kakashi Hatake","Haku","Zabuza","Robin|Nico Robin","Ace|Portgas D. Ace","Sabo","Law|Trafalgar Law","Nami","Brook","Chopper|Tony Tony Chopper","Kurapika","Akaza","Gyutaro","Daki","Rui","Muichiro|Muichiro Tokito","Sanemi|Sanemi Shinazugawa","Kokushibo","Gyomei|Gyomei Himejima","Kanao|Kanao Tsuyuri","Shinobu|Shinobu Kocho","Genya|Genya Shinazugawa","Kaneki|Ken Kaneki","Edward Elric|Edward|Ed","Alphonse Elric|Alphonse|Al","Scar","Levi|Levi Ackerman","Reiner|Reiner Braun","Zeke|Zeke Yeager","Historia|Historia Reiss","Mikasa|Mikasa Ackerman","Shoto Todoroki|Shoto|Todoroki","Dabi","Shigaraki|Tomura Shigaraki","Toga|Himiko Toga","Eri","Twice","Toji|Toji Fushiguro","Geto|Suguru Geto","Junpei|Junpei Yoshino","Guts","Casca","Lelouch|Lelouch Lamperouge","Suzaku|Suzaku Kururugi","Shinji|Shinji Ikari","Asuka|Asuka Langley","Violet Evergarden|Violet","Thorfinn","Vash|Vash the Stampede","Wolfwood|Nicholas D. Wolfwood","Faye|Faye Valentine","Ray","Denji","Aki|Aki Hayakawa","Makima","Shinra|Shinra Kusakabe","Kosei|Kosei Arima"],
+      3: ["Hyakkimaru","Askeladd","Kaiji","Johan|Johan Liebert","Mello","Tamayo","Rengoku|Kyojuro Rengoku","Nezuko|Nezuko Kamado","Yuta|Yuta Okkotsu","Inosuke|Inosuke Hashibira","Sasori","Konan","Kisame|Kisame Hoshigaki"],
       4: [],
       5: [],
       6: []
@@ -942,19 +942,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-character-who-has-a-twin",
-    theme: "relationships",
-    prompt: "Name an anime character who has a twin",
-    answers: {
-      1: ["Rem","Ram","Maki Zenin|Maki","Mai Zenin|Mai"],
-      2: ["Atsumu|Atsumu Miya","Osamu|Osamu Miya","Hikaru Hitachiin|Hikaru","Kaoru Hitachiin|Kaoru","Rin Okumura|Rin","Yukio Okumura|Yukio"],
-      3: ["Ichika Nakano|Ichika","Nino Nakano|Nino","Miku Nakano|Miku","Yotsuba Nakano|Yotsuba","Itsuki Nakano|Itsuki"],
-      4: ["Sakon","Ukon","Saga|Gemini Saga","Kanon","Ciel Phantomhive|Ciel","Ami Futami","Mami Futami"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-an-anime-dad",
     theme: "relationships",
     prompt: "Name an anime dad (great or terrible)",
@@ -994,15 +981,15 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-character-who-s-married",
+    id: "name-a-character-who-s-part-of-a-famous-duo",
     theme: "relationships",
-    prompt: "Name an anime character who's married",
+    prompt: "Name a character who's part of a famous duo",
     answers: {
-      1: ["Goku|Son Goku","Chi-Chi","Vegeta","Bulma","Naruto|Naruto Uzumaki","Hinata|Hinata Hyuga"],
-      2: ["Loid|Loid Forger","Yor|Yor Forger","Minato|Minato Namikaze","Kushina|Kushina Uzumaki","Krillin","Android 18","Gohan|Son Gohan","Videl","Sasuke|Sasuke Uchiha","Sakura|Sakura Haruno","Shikamaru|Shikamaru Nara","Temari","Asuna","Kirito","Hughes|Maes Hughes","Ichigo|Ichigo Kurosaki","Orihime|Orihime Inoue","Inuyasha","Kagome|Kagome Higurashi","Miroku","Sango","Kenshin|Himura Kenshin","Kaoru|Kaoru Kamiya","Endeavor","Gendo|Gendo Ikari"],
-      3: ["Grisha|Grisha Yeager","Izumi Curtis|Izumi","Hohenheim|Van Hohenheim","Isshin|Isshin Kurosaki","Renji|Renji Abarai","Rukia|Rukia Kuchiki","Choji|Choji Akimichi","Tsukasa Tsukuyomi|Tsukasa","Nasa Yuzaki|Nasa","Rudeus|Rudeus Greyrat","Big Mom|Charlotte Linlin","Kozuki Oden|Oden","Yui Ikari"],
-      4: ["Paul Greyrat|Paul","Gol D. Roger|Roger","Rayleigh|Silvers Rayleigh","Shakky","Toki","Rei Todoroki","Trisha Elric","Gracia Hughes","Sig Curtis"],
-      5: ["Vinsmoke Judge|Judge","Hiashi"],
+      1: ["Edward Elric|Edward|Ed","Alphonse Elric|Alphonse|Al","Gon|Gon Freecss","Killua|Killua Zoldyck","Jessie","James","Naruto|Naruto Uzumaki","Sasuke|Sasuke Uchiha"],
+      2: ["Goku|Son Goku","Vegeta","Mob|Shigeo Kageyama","Reigen|Arataka Reigen","Denji","Power","Luffy|Monkey D. Luffy","Zoro|Roronoa Zoro","Roy Mustang|Mustang","Riza Hawkeye|Riza","Lupin|Lupin III","Jigen|Daisuke Jigen","Spike|Spike Spiegel","Jet|Jet Black","Saitama","Genos","Natsu|Natsu Dragneel","Happy","Gintoki|Gintoki Sakata","Shinpachi|Shinpachi Shimura","Hinata Shoyo|Shoyo Hinata","Kageyama|Tobio Kageyama","Isagi|Yoichi Isagi","Bachira|Meguru Bachira","Nagi|Seishiro Nagi","Reo|Reo Mikage","Mikey|Manjiro Sano","Draken","Tanjiro|Tanjiro Kamado","Nezuko|Nezuko Kamado","Yuji|Yuji Itadori","Todo|Aoi Todo","Inuyasha","Kagome|Kagome Higurashi","Ash Ketchum|Ash","Pikachu","Rem","Ram","Light Yagami|Light","Ryuk","Okarun|Ken Takakura","Momo Ayase|Momo","Frieren","Fern","Asta","Yuno","Deku|Izuku Midoriya","Bakugo|Katsuki Bakugo","Kirito","Asuna","Shikamaru|Shikamaru Nara","Choji|Choji Akimichi","Senku|Senku Ishigami","Chrome","Loid|Loid Forger","Anya|Anya Forger","Atsumu|Atsumu Miya","Osamu|Osamu Miya","Maki Zenin|Maki","Mai Zenin|Mai"],
+      3: ["Gojo|Satoru Gojo","Geto|Suguru Geto","Kuroko|Tetsuya Kuroko","Kagami|Taiga Kagami","Sora (No Game No Life)|Sora","Shiro (No Game No Life)|Shiro","Hikaru Hitachiin|Hikaru","Kaoru Hitachiin|Kaoru","Kenma|Kenma Kozume","Kuroo|Tetsuro Kuroo","Mugen","Jin (Samurai Champloo)|Jin","Vash|Vash the Stampede","Wolfwood|Nicholas D. Wolfwood","Haruhi Suzumiya|Haruhi","Kyon","Kazuma|Kazuma Sato","Aqua","Gyutaro","Daki","Ginyu|Captain Ginyu","Jeice","Recoome","Burter","Rin Itoshi|Rin","Sae Itoshi|Sae"],
+      4: [],
+      5: [],
       6: []
     }
   },
@@ -1085,19 +1072,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-grandparent-blood-or-not",
-    theme: "relationships",
-    prompt: "Name an anime grandparent (blood or not)",
-    answers: {
-      1: ["Garp|Monkey D. Garp","Grandpa Gohan|Gohan (grandpa)","Zeno|Zeno Zoldyck","Granny Chiyo|Chiyo","Hiruzen|Third Hokage|Hiruzen Sarutobi","Joseph|Joseph Joestar"],
-      2: ["Professor Oak|Oak","Sugoroku Muto|Grandpa Muto|Solomon Muto","Wasuke Itadori|Wasuke","Seiko Ayase|Seiko","Jigoro Kuwajima|Jigoro","Makarov","Pinako|Pinako Rockbell","Hashirama|Hashirama Senju","Hitoha Miyamizu|Hitoha","Granny Kanta","Genkai"],
-      3: ["Maha Zoldyck|Maha","Kozuki Sukiyaki|Sukiyaki","Ryohei Higashikata|Ryohei","Yhwach"],
-      4: [],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-a-character-stuck-in-a-love-triangle",
     theme: "relationships",
     prompt: "Name a character stuck in a love triangle",
@@ -1171,6 +1145,32 @@ const QUESTIONS = [
       2: ["Denji","Killer B|Killer Bee","Asta","Hikaru Shindo|Hikaru","Kaneki|Ken Kaneki","Shinichi Izumi|Shinichi","Bakura|Ryou Bakura|Yami Bakura","Marik|Marik Ishtar","Kurama (Yu Yu Hakusho)|Shuichi Minamino","Okarun|Ken Takakura","Yoh|Yoh Asakura","Rimuru|Rimuru Tempest","Yuta|Yuta Okkotsu","Deku|Izuku Midoriya","Shigaraki|Tomura Shigaraki","Kenjaku","Zetsu","Diavolo","Megumi|Megumi Fushiguro"],
       3: ["Akira Fudo|Akira (Devilman)","Allen Walker|Allen","Sensui|Shinobu Sensui","Yuno","Lucy|Nyu (Elfen Lied)","Inner Sakura|Sakura Haruno","Emilia","Liebe"],
       4: ["Doppio|Vinegar Doppio"],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-one-half-of-a-famous-anime-couple",
+    theme: "relationships",
+    prompt: "Name one half of a famous anime couple",
+    answers: {
+      1: ["Naruto|Naruto Uzumaki","Hinata|Hinata Hyuga","Goku|Son Goku","Chi-Chi","Vegeta","Bulma","Sasuke|Sasuke Uchiha","Sakura|Sakura Haruno"],
+      2: ["Ichigo|Ichigo Kurosaki","Orihime|Orihime Inoue","Inuyasha","Kagome|Kagome Higurashi","Loid|Loid Forger","Yor|Yor Forger","Kirito","Asuna","Edward Elric|Edward|Ed","Winry|Winry Rockbell","Kaguya|Kaguya Shinomiya","Miyuki Shirogane|Shirogane","Taiga|Taiga Aisaka","Ryuji|Ryuji Takasu","Kenshin|Himura Kenshin","Kaoru|Kaoru Kamiya","Krillin","Android 18","Gohan|Son Gohan","Videl","Minato|Minato Namikaze","Kushina|Kushina Uzumaki","Shikamaru|Shikamaru Nara","Temari","Usagi|Sailor Moon|Usagi Tsukino","Mamoru|Tuxedo Mask","Hori|Kyoko Hori","Miyamura|Izumi Miyamura","Marin|Marin Kitagawa","Wakana Gojo|Gojo (Dress-Up Darling)","Komi|Shoko Komi","Tadano|Hitohito Tadano","Tohru Honda|Tohru","Kyo Sohma|Kyo","Okabe|Rintaro Okabe","Kurisu|Kurisu Makise","Taki|Taki Tachibana","Mitsuha|Mitsuha Miyamizu","Shoko Nishimiya|Shoko","Shoya Ishida|Shoya","Mai Sakurajima|Mai","Sakuta|Sakuta Azusagawa","Zero Two","Hiro","Jellal|Jellal Fernandes","Erza|Erza Scarlet","Natsu|Natsu Dragneel","Lucy|Lucy Heartfilia","Gray|Gray Fullbuster","Juvia|Juvia Lockser","Momo Ayase|Momo","Okarun|Ken Takakura","Mitsuri|Mitsuri Kanroji","Obanai|Obanai Iguro","Tanjiro|Tanjiro Kamado","Kanao|Kanao Tsuyuri","Tsukasa Tsukuyomi|Tsukasa","Nasa Yuzaki|Nasa","Naofumi|Naofumi Iwatani","Raphtalia","Rudeus|Rudeus Greyrat","Subaru|Natsuki Subaru","Emilia","Rem","Takemichi|Takemichi Hanagaki","Hinata Tachibana"],
+      3: ["Gajeel|Gajeel Redfox","Levy|Levy McGarden","Kazuya|Kazuya Kinoshita","Chizuru|Chizuru Mizuhara","Hachiman|Hachiman Hikigaya","Yukino|Yukino Yukinoshita","Roxy|Roxy Migurdia","Sylphy|Sylphiette","Fujiko|Fujiko Mine","Lupin|Lupin III","Spike|Spike Spiegel","Julia","Renji|Renji Abarai","Rukia|Rukia Kuchiki","Miroku","Sango","Holo","Lawrence|Kraft Lawrence","Tamaki Suoh|Tamaki","Haruhi Fujioka|Haruhi"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-member-of-a-famous-anime-crew-or-group",
+    theme: "relationships",
+    prompt: "Name a member of a famous anime crew or group",
+    answers: {
+      1: ["Luffy|Monkey D. Luffy","Zoro|Roronoa Zoro","Nami","Sanji","Usopp","Naruto|Naruto Uzumaki","Sasuke|Sasuke Uchiha","Sakura|Sakura Haruno","Kakashi|Kakashi Hatake","Levi|Levi Ackerman","Mikasa|Mikasa Ackerman","Armin|Armin Arlert"],
+      2: ["Chopper|Tony Tony Chopper","Robin|Nico Robin","Franky","Brook","Jinbe|Jinbei","Pain|Nagato","Konan","Deidara","Sasori","Hidan","Kakuzu","Kisame|Kisame Hoshigaki","Itachi|Itachi Uchiha","Tobi|Obito","Shikamaru|Shikamaru Nara","Ino|Ino Yamanaka","Choji|Choji Akimichi","Kiba|Kiba Inuzuka","Hinata|Hinata Hyuga","Shino|Shino Aburame","Rock Lee|Lee","Neji|Neji Hyuga","Tenten","Hange|Hange Zoe","Erwin|Erwin Smith","Jean|Jean Kirstein","Connie|Connie Springer","Sasha|Sasha Blouse","Eren|Eren Yeager","Rengoku|Kyojuro Rengoku","Giyu|Giyu Tomioka","Shinobu|Shinobu Kocho","Mitsuri|Mitsuri Kanroji","Tengen|Tengen Uzui","Sanemi|Sanemi Shinazugawa","Obanai|Obanai Iguro","Muichiro|Muichiro Tokito","Gyomei|Gyomei Himejima","Yami|Yami Sukehiro","Asta","Noelle|Noelle Silva","Magna|Magna Swing","Luck|Luck Voltia","Finral","Vanessa|Vanessa Enoteca","Erza|Erza Scarlet","Natsu|Natsu Dragneel","Gray|Gray Fullbuster","Lucy|Lucy Heartfilia","Happy","Wendy|Wendy Marvell","Chrollo|Chrollo Lucilfer","Hisoka","Feitan","Machi","Nobunaga","Uvogin","Ginyu|Captain Ginyu","Recoome","Burter","Jeice","Guldo","Jessie","James","Meowth","Spike|Spike Spiegel","Jet|Jet Black","Faye|Faye Valentine","Lupin|Lupin III","Jigen|Daisuke Jigen","Goemon","Kamina","Simon","Yoko","Hinata Shoyo|Shoyo Hinata","Kageyama|Tobio Kageyama","Daichi|Daichi Sawamura","Tanaka (Haikyu)|Ryunosuke Tanaka","Nishinoya|Yu Nishinoya","Tsukishima|Kei Tsukishima","Isagi|Yoichi Isagi","Bachira|Meguru Bachira","Chigiri|Hyoma Chigiri","Nagi|Seishiro Nagi","Mikey|Manjiro Sano","Draken","Baji|Keisuke Baji","Mitsuya|Takashi Mitsuya","Takemichi|Takemichi Hanagaki","Denji","Power","Aki|Aki Hayakawa","Himeno","Frieren","Fern","Stark","Himmel","Heiter","Eisen","Deku|Izuku Midoriya","Bakugo|Katsuki Bakugo","Todoroki|Shoto Todoroki","Ochaco|Ochaco Uraraka","Iida|Tenya Iida"],
+      3: ["Kobeni","Sugawara|Koshi Sugawara","Asahi|Asahi Azumane","Yamaguchi|Tadashi Yamaguchi","Kunigami|Rensuke Kunigami","Reo|Reo Mikage","Chifuyu|Chifuyu Matsuno","Gauche","Charmy","Zora","Secre","Gordon","Shizuku (Phantom Troupe)|Shizuku","Phinks","Edward (Cowboy Bebop)|Radical Edward","Ein","Fujiko|Fujiko Mine","Tokoyami|Fumikage Tokoyami","Tsuyu|Tsuyu Asui","Momo Yaoyorozu|Momo"],
+      4: [],
       5: [],
       6: []
     }
@@ -1295,9 +1295,9 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-organization-crew-or-group",
+    id: "name-an-anime-organization-or-faction",
     theme: "objects",
-    prompt: "Name an anime organization, crew or group",
+    prompt: "Name an anime organization or faction",
     answers: {
       1: ["Akatsuki","Straw Hat Pirates|Straw Hats","Survey Corps|Scout Regiment","Team Rocket","Phantom Troupe|Spiders"],
       2: ["Hashira","Demon Slayer Corps","Gotei 13","Espada","Twelve Kizuki|Upper Moons|Lower Moons","Black Bulls","Fairy Tail","Hero Association","Toman|Tokyo Manji Gang","League of Villains","Homunculi|Homunculus","Marines|Navy","Yonko|Four Emperors","Seven Warlords|Shichibukai|Warlords","Ginyu Force","Frieza Force","Red Ribbon Army|Red Ribbon","Z Fighters","Team 7","Sannin|Legendary Sannin","Shinsengumi","Yorozuya","Black Knights","NERV","Section 9","Public Safety|Public Safety Devil Hunters","Jujutsu High","Hunter Association","Seven Deadly Sins","Golden Dawn","Host Club|Ouran Host Club","SOS Brigade","Shadow Garden","CCG","Aogiri Tree","Anteiku","Elite Four","Revolutionary Army|Revolutionaries","Whitebeard Pirates","Red Hair Pirates","Beast Pirates","Big Mom Pirates","Heart Pirates","Blackbeard Pirates","Arrancar","Visored|Vizards","Sternritter|Wandenreich","Capsule Corp|Capsule Corporation"],
@@ -1399,19 +1399,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-board-or-card-game-played-in-an-anime",
-    theme: "objects",
-    prompt: "Name a board or card game played in an anime",
-    answers: {
-      1: ["Shogi","Go","Chess","Duel Monsters|Yu-Gi-Oh|Yugioh","Mahjong","Poker"],
-      2: ["Karuta|Competitive karuta","Blackjack","Rock paper scissors|Janken|Jajanken","Old Maid","Hanafuda|Koi-koi","Gungi","Othello|Reversi","E-Card","Dice|Cho-han","Roulette","Tarot","Pokemon cards|Pokemon TCG","Cardfight Vanguard|Vanguard","Duel Masters","Shiritori","Indian poker","Baccarat"],
-      3: ["Checkers","Backgammon","Uno","Sugoroku","Daifugo|President","Jenga","Bingo","Werewolf|Mafia","Tic tac toe","Billiards|Pool","Darts","Restricted Rock Paper Scissors|Restricted janken","Russian roulette"],
-      4: ["Battle Spirits","Twister","Concentration|Memory","Monopoly"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-a-famous-anime-transformation-or-power-up-form",
     theme: "objects",
     prompt: "Name a famous anime transformation or power-up form",
@@ -1438,19 +1425,6 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-a-famous-book-scroll-or-notebook-from-an-anime",
-    theme: "objects",
-    prompt: "Name a famous book, scroll or notebook from an anime",
-    answers: {
-      1: ["Death Note","Icha Icha|Make-Out Paradise|Icha Icha Paradise","Grimoire","Scroll of Seals|Forbidden Scroll"],
-      2: ["Hero notebook|Deku's notebook|Hero Analysis notebook","Book of Darkness","Clow Book","Book of Zeref|E.N.D. book","Book of Friends","Future Diary","Summoning contract|Toad contract","Tale of the Utterly Gutsy Shinobi","Spellbook","Necronomicon"],
-      3: ["Book of Eibon","Book of Thoth","Index's grimoires|103,000 grimoires","The Book (Bungo Stray Dogs)|The Book","Akashic Records","Black Goat's Egg"],
-      4: ["Hyouka anthology","Grimoire of Zero"],
-      5: [],
-      6: []
-    }
-  },
-  {
     id: "name-a-signature-attack-someone-shouts",
     theme: "objects",
     prompt: "Name a signature attack someone shouts",
@@ -1461,6 +1435,32 @@ const QUESTIONS = [
       4: ["Final Shine Attack","Big Bang Kamehameha","Planet Burst","Vanishing Ball","Eraser Cannon","Gigantic Meteor","Solar Kamehameha","FLEIJA","Miniature Rose","Infinite Big Bang Storm","Raigo"],
       5: ["Supernova Cooler","Fallen Down","Colony Drop|Axis Drop","Colony Laser"],
       6: ["Kill Driver"]
+    }
+  },
+  {
+    id: "name-a-sport-or-game-anime-characters-compete-in",
+    theme: "objects",
+    prompt: "Name a sport or game anime characters compete in",
+    answers: {
+      1: ["Volleyball","Basketball","Soccer|Football","Baseball","Tennis","Boxing"],
+      2: ["Swimming","Shogi","Go","Chess","Card games|Duel Monsters|Yu-Gi-Oh","Pokemon battles|Pokemon","Beyblade","Karuta","Rugby","American football","Figure skating|Ice skating","Cycling|Bike racing","Racing|Street racing|Car racing","Table tennis|Ping pong","Badminton","Kendo","Judo","Karate","Wrestling|Pro wrestling","Sumo","Martial arts","Golf","Mahjong","Poker","Archery|Kyudo","Track|Running|Track and field","Skateboarding","Esports|Video games","Cooking battles|Cooking","Dance|Dancing","Ballroom dancing","Handball","Rock paper scissors|Janken","Gambling","Billiards|Pool","Gymnastics"],
+      3: ["Bowling","Darts","Skiing","Surfing","Snowboarding","Ice hockey|Hockey","Water polo","Kabaddi","Fencing","Horse racing","Dodgeball","Arm wrestling","Bodybuilding","Fishing","Rowing","Climbing|Bouldering","Cheerleading","Hanafuda","Othello|Reversi"],
+      4: [],
+      5: [],
+      6: []
+    }
+  },
+  {
+    id: "name-a-famous-anime-house-castle-or-building",
+    theme: "objects",
+    prompt: "Name a famous anime house, castle or building",
+    answers: {
+      1: ["Kame House","Capsule Corp|Capsule Corporation","Howl's Moving Castle","U.A. High|UA"],
+      2: ["The bathhouse|Aburaya|Spirited Away bathhouse","Las Noches","Fairy Tail guild hall|Fairy Tail guild","Nazarick|Great Tomb of Nazarick","Marineford","Impel Down","Enies Lobby","Whole Cake Chateau","Baratie","Laputa","Grace Field House|Grace Field","Hokage Mansion|Hokage building","Hokage Rock|Hokage Monument","Kami's Lookout|Lookout","Hyperbolic Time Chamber|Room of Spirit and Time","Jujutsu High","Anteiku","Infinity Castle","Butterfly Mansion","Heaven's Arena","Zoldyck mansion|Testing Gate","Castle Utgard","Black Bulls hideout","NERV HQ|NERV","Tokyo Tower","Honnouji Academy","Roswaal Mansion","Totoro house|Kusakabe house","Satsuki and Mei's house","Ouran Academy|Ouran","Ichiraku Ramen|Ichiraku","Thriller Bark","Kiki's bakery|Gutiokipanja"],
+      3: ["Shibuya Station","Seireitei","Muken","Gravity room","Cafe Leblanc|Leblanc","Rabbit House","Wall Maria","Survey Corps HQ","Orange Star High","Babidi's ship","Akatsuki hideout","Valley of the End"],
+      4: [],
+      5: [],
+      6: []
     }
   },
 
@@ -1544,14 +1544,14 @@ const QUESTIONS = [
     }
   },
   {
-    id: "name-an-anime-shop-cafe-or-restaurant",
+    id: "name-an-anime-set-in-tokyo",
     theme: "settings",
-    prompt: "Name an anime shop, cafe or restaurant",
+    prompt: "Name an anime set in Tokyo",
     answers: {
-      1: ["Ichiraku Ramen|Ichiraku","Baratie","Anteiku","Maid Latte","Urahara Shop|Urahara Shoten"],
-      2: ["Rabbit House","LycoReco|Lycoris Cafe","Restaurant Yukihira|Yukihira Diner","Wagnaria","MgRonald","Nekoya|Western Restaurant Nekoya","Gutiokipanja|Kiki's bakery|Osono's bakery","Aburaya|The bathhouse","Shakky's Rip-off Bar","Partys Bar|Makino's bar","STARRY","Snack Otose|Otose's bar","Cafe Leblanc|Leblanc","Polar Bear Cafe|Shirokuma Cafe"],
-      3: ["Yakiniku Q","Tamaya","Russia Sushi","May Queen Nyan Nyan","Cafe Stile","Wiz's magic shop","Pantasia"],
-      4: ["Fleur de Lapin","Ama Usa An","Takesushi"],
+      1: ["Jujutsu Kaisen|JJK","Tokyo Ghoul","Tokyo Revengers","Chainsaw Man","Your Name|Kimi no Na wa","Death Note"],
+      2: ["Akira","Steins","Gate|Steins Gate","Durarara|Durarara!!","Bocchi the Rock|Bocchi the Rock!","Kaiju No. 8","Dandadan|Dan Da Dan","Sailor Moon","Weathering With You","Tokyo Godfathers","Fire Force","Oshi no Ko|[Oshi No Ko]","Tokyo Mew Mew","March Comes in Like a Lion","Perfect Blue","Paprika","Psycho-Pass","Persona 5","Kaguya-sama|Kaguya-sama: Love Is War","Zom 100","Detective Conan|Case Closed","Whisper of the Heart","Bakuman","Wotakoi","Shirobako","Neon Genesis Evangelion|Evangelion"],
+      3: ["Tokyo Ravens","Ikebukuro West Gate Park","Tokyo Babylon","Tokyo Magnitude 8.0","Tokyo 24th Ward","Toilet-bound Hanako-kun|Hanako-kun","Mieruko-chan","Sword Art Online|SAO","Horimiya"],
+      4: [],
       5: [],
       6: []
     }
@@ -1610,14 +1610,14 @@ const CATALOG_PROMPTS = [
   { theme: "settings", prompt: "Name an anime set in the age of samurai", where: { genre: 21 } },
   { theme: "settings", prompt: "Name an anime set inside a video game", where: { genre: 79 } },
   { theme: "settings", prompt: "Name an anime where characters fight to survive", where: { genre: 76 } },
-  { theme: "settings", prompt: "Name an anime set behind the scenes of showbiz", hard: true, where: { genre: 75 } },
+  { theme: "settings", prompt: "Name an anime set in a fantasy world", where: { genre: 10 } },
   { theme: "settings", prompt: "Name an anime set around cooking and food", where: { genre: 47 } },
   { theme: "settings", prompt: "Name an anime set among street gangs or delinquents", where: { genre: 55 } },
-  { theme: "settings", prompt: "Name an anime set in the criminal underworld", where: { genre: 68 } },
-  { theme: "settings", prompt: "Name an anime set in a world of gods and myths", where: { genre: 6 } },
+  { theme: "settings", prompt: "Name an anime full of ghosts, spirits or the supernatural", where: { genre: 37 } },
+  { theme: "settings", prompt: "Name an anime about a big journey or adventure", where: { genre: 2 } },
 
   // ---------- SHOWS ----------
-  { theme: "shows", prompt: "Name an anime from the 1980s", hard: true, where: { years: [1980, 1989] } },
+  { theme: "shows", prompt: "Name an action anime", where: { genre: 1 } },
   { theme: "shows", prompt: "Name an anime from the 1990s", where: { years: [1990, 1999] } },
   { theme: "shows", prompt: "Name an anime from the 2000s", where: { years: [2000, 2009] } },
   { theme: "shows", prompt: "Name an anime from the 2010s", where: { years: [2010, 2019] } },
@@ -1626,7 +1626,7 @@ const CATALOG_PROMPTS = [
   { theme: "shows", prompt: "Name a romance anime", where: { genre: 22 } },
   { theme: "shows", prompt: "Name a horror anime", where: { genre: 14 } },
   { theme: "shows", prompt: "Name a mecha (giant robot) anime", where: { genre: 18 } },
-  { theme: "shows", prompt: "Name a magical girl anime", where: { genre: 66 } },
+  { theme: "shows", prompt: "Name an anime that'll make you cry", where: { genre: 8 } },
   { theme: "shows", prompt: "Name a music or band anime", where: { genre: 19 } },
   { theme: "shows", prompt: "Name a mystery anime", where: { genre: [7, 39] } },
   { theme: "shows", prompt: "Name a sci-fi anime", where: { genre: 24 } },
