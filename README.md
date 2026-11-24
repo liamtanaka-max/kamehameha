@@ -42,6 +42,7 @@ index.html          the page (menu, prompts, results)
 style.css           retro pixel look
 catalog.js          ~7,000 anime (generated — see below)
 questions.js        THEMES, hand-written prompts + CATALOG_PROMPTS (title prompt definitions)
+daily-questions.js  new prompts written every day by the daily agent
 logic.js            answer matching, catalog prompts, daily/infinite prompt picking
 scene.js            pixel background: fighter, forms, mobs, the beam finale
 game.js             the three modes and all screens
@@ -49,11 +50,20 @@ db.js               Supabase sync (seen prompts + the Daily)
 supabase/schema.sql database tables and functions
 tools/build_catalog.py   rebuilds catalog.js from the open datasets
 tools/check_questions.js flags duplicate / near-duplicate / thin prompts
+tools/DAILY_AGENT.md     instructions for the daily question agent
 .claude/skills/     design skills for Claude Code (see below)
 fonts/              VT323 + Press Start 2P (free, Open Font License)
 ```
 
 No build step to play, no backend. Just open `index.html`.
+
+## New questions every day
+
+A scheduled Claude agent runs every evening and writes **7 brand-new prompts for tomorrow** (one per theme, with full answer lists) into `daily-questions.js`, checks them with `tools/check_questions.js`, and pushes to `main`. Its instructions are in [`tools/DAILY_AGENT.md`](tools/DAILY_AGENT.md); edit that file to change what it writes.
+
+- On its `debut` day a new prompt is that day's Daily for everyone, then joins the pool for Infinite and Party. Nobody can see it earlier.
+- The agent fills two days ahead, so one failed run doesn't leave a gap. If a day has no new prompts, the Daily falls back to the shuffled fixed pool in `questions.js`.
+- The pool grows by 7 a day, so there's no limit on how many questions there are.
 
 ## Adding prompts
 

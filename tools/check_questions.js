@@ -10,10 +10,12 @@
 // Exits with code 1 if anything is flagged.
 
 const { THEMES, QUESTIONS, CATALOG_PROMPTS } = require("../questions.js");
+const { DAILY_QUESTIONS } = require("../daily-questions.js");
 
 const all = [
   ...QUESTIONS.map((q) => ({ ...q, kind: "hand" })),
-  ...CATALOG_PROMPTS.map((q) => ({ ...q, kind: "catalog" }))
+  ...CATALOG_PROMPTS.map((q) => ({ ...q, kind: "catalog" })),
+  ...DAILY_QUESTIONS.map((q) => ({ ...q, kind: q.where ? "catalog" : "hand" }))
 ];
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 all.forEach((q) => { q.id = q.id || slug(q.prompt); });
@@ -33,6 +35,20 @@ const sizes = Object.fromEntries(THEMES.map((t) => [t, all.filter((q) => q.theme
 const stray = all.filter((q) => !THEMES.includes(q.theme));
 stray.forEach((q) => flag(`no valid theme: "${q.prompt}" (${q.theme})`));
 if (new Set(Object.values(sizes)).size > 1) flag(`themes are not the same size: ${JSON.stringify(sizes)}`);
+
+// ---- 1b. Daily prompts: 7 per debut date, one per theme ----
+const byDay = {};
+for (const q of DAILY_QUESTIONS) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(q.debut || "")) { flag(`daily prompt needs a debut date (YYYY-MM-DD): "${q.prompt}"`); continue; }
+  (byDay[q.debut] = byDay[q.debut] || []).push(q);
+  if (!q.where && !q.answers) flag(`daily prompt has no answers or where: "${q.prompt}"`);
+}
+for (const [day, qs] of Object.entries(byDay)) {
+  const themes = new Set(qs.map((q) => q.theme));
+  if (qs.length !== THEMES.length || themes.size !== THEMES.length) {
+    flag(`${day} needs exactly one prompt per theme (has ${qs.length}: ${[...themes].join(", ")})`);
+  }
+}
 
 // ---- 2. Exact duplicates ----
 const byKey = new Map();
@@ -107,7 +123,7 @@ for (const q of all.filter((x) => x.kind === "hand")) {
 }
 
 // ---- Report ----
-console.log(`${all.length} prompts · ${THEMES.map((t) => `${t} ${sizes[t]}`).join(" · ")}`);
+console.log(`${all.length} prompts · ${THEMES.map((t) => `${t} ${sizes[t]}`).join(" · ")} · ${Object.keys(byDay).length} daily sets`);
 if (problems.length) {
   console.log(`\n${problems.length} problem${problems.length > 1 ? "s" : ""}:\n`);
   problems.forEach((p) => console.log("  ✗ " + p));

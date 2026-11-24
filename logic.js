@@ -268,10 +268,19 @@ function catalogQuestions() {
 //  Picking prompts — themes + no repeats
 // ---------------------------------------------------------
 
-const ALL_QUESTIONS = QUESTIONS.concat(catalogQuestions());
+// New prompts written every day by the daily question agent (daily-questions.js).
+// Each has a `debut` date: it's that day's Daily, then joins the pool.
+const DAILY_EXTRA = (typeof DAILY_QUESTIONS !== "undefined" ? DAILY_QUESTIONS : [])
+  .map((q) => (q.where ? { ...q, catalog: true } : q));
+
+const ALL_QUESTIONS = QUESTIONS.concat(catalogQuestions(), DAILY_EXTRA);
 ALL_QUESTIONS.forEach((q) => { if (!q.id) q.id = slug(q.prompt); });
 const QUESTION_BY_ID = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
 const BY_THEME = Object.fromEntries(THEMES.map((t) => [t, ALL_QUESTIONS.filter((q) => q.theme === t)]));
+// The fixed pool (no daily prompts), used when a day has no new prompts
+const BASE_BY_THEME = Object.fromEntries(THEMES.map((t) => [t, BY_THEME[t].filter((q) => !q.debut)]));
+// A daily prompt isn't playable anywhere until its debut day
+const released = (q, dateKey = todayKey()) => !q.debut || q.debut <= dateKey;
 
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
@@ -313,7 +322,8 @@ function shuffle(list, rand = Math.random) {
 }
 
 // Daily: one prompt from each of the 7 themes, the same for everyone.
-// Each theme walks a shuffled order seeded by its name and the cycle number,
+// If the daily question agent wrote 7 new prompts for this date, those are
+// the Daily. Otherwise it falls back to the fixed pool: each theme walks a shuffled order seeded by its name and the cycle number,
 // so a prompt only comes back after every prompt in its theme has been used
 // (every theme is the same size, so that's the whole pool). Each new cycle
 // gets a fresh order. HARD prompts go last.
@@ -321,8 +331,10 @@ const POOL_START = "2026-11-24"; // day 0 of the current question pool
 const DAILY_SEED = 20261124;
 function questionsFor(dateKey) {
   const d = Math.max(0, daysBetween(POOL_START, dateKey));
-  const picks = THEMES.map((theme) => {
-    const pool = BY_THEME[theme];
+  const fresh = DAILY_EXTRA.filter((q) => q.debut === dateKey);
+  const freshThemes = new Set(fresh.map((q) => q.theme));
+  const picks = fresh.length === THEMES.length && freshThemes.size === THEMES.length ? fresh : THEMES.map((theme) => {
+    const pool = BASE_BY_THEME[theme];
     const cycle = Math.floor(d / pool.length);
     const order = shuffle(pool, seededRandom(DAILY_SEED + hashString(theme) + cycle * 7919));
     return order[d % pool.length];
@@ -358,7 +370,7 @@ function personalizeDaily(qs) {
   const taken = new Set(qs.map((q) => q.id));
   return qs.map((q) => {
     if (!seen.has(q.id)) return q;
-    const fresh = BY_THEME[q.theme].filter((x) => !seen.has(x.id) && !taken.has(x.id));
+    const fresh = BY_THEME[q.theme].filter((x) => released(x) && !seen.has(x.id) && !taken.has(x.id));
     if (!fresh.length) return q;
     const pick = fresh[Math.floor(Math.random() * fresh.length)];
     taken.add(pick.id);
@@ -387,7 +399,7 @@ function promptStream() {
   function pickFrom(theme) {
     const seenList = loadSeen();
     const seen = new Set(seenList);
-    const pool = BY_THEME[theme].filter((q) => !used.has(q.id));
+    const pool = BY_THEME[theme].filter((q) => released(q) && !used.has(q.id));
     const fresh = pool.filter((q) => !seen.has(q.id) && !dailyIds.has(q.id));
     const unseen = fresh.length ? fresh : pool.filter((q) => !seen.has(q.id));
     if (unseen.length) return unseen[Math.floor(Math.random() * unseen.length)];
